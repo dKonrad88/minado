@@ -83,8 +83,12 @@ Regras que fogem do campo minado clássico:
   tabuleiro entra em modo dica e a casa que você escolher conta a verdade — abre se for segura,
   ou vira bandeira 🚩 com borda verde (`c.dica`) se for mina. **Nunca explode nem custa vida.**
   Casa já aberta não gasta. Usar dica limita a 2 ⭐.
-- **Três estados de marca** (`cel[i].fl`): `0` nada · `1` 🚩 certeza · `2` 🟡 dúvida.
-  Só a `1` desconta do contador, protege do toque e conta no chord. A `2` é anotação.
+- **Marca** (`cel[i].fl`): `0` nada · `1` 🚩 certeza (desconta do contador, protege do toque,
+  conta no chord). A marca amarela de "dúvida" **foi removida** em 20/09/2026 — o botão dela
+  virou o Revelar. Partida salva com `fl===2` é normalizada para `0` ao retomar.
+- **💣 Revelar** (`apostar()`): você aponta onde acha que tem bomba. Acertou, ela fica **exposta**
+  (`c.show`, com `fl=1` — já conta no contador e no chord, e não dá pra mexer). Errou, a casa
+  abre e custa **1 ❤️** (e zera a sequência de fases limpas). Antes do 1º toque não deixa apostar.
 - **Chord:** tocar num número que já tem todas as bandeiras abre a vizinhança.
 - **Derrota em 3 tempos:** mina pisada acende → minas surgem em ondas → pausa pra olhar
   → estouro geral (clarão + tremor). Um toque pula. No fim, "👀 Ver o campo" remonta
@@ -109,7 +113,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.6).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.7).
 
 ## Como testar (workflow da suíte)
 

@@ -175,6 +175,7 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .c.bnd{background:linear-gradient(160deg,#3A3050,#2C2440)}
 .c.certa{background:linear-gradient(160deg,#1E4A32,#17381F);box-shadow:inset 0 0 0 1px rgba(61,220,132,.5)}
 .c.mina{background:#2A1622;box-shadow:inset 0 0 0 1px rgba(255,92,92,.35)}
+.c.achou{background:#12301F!important;box-shadow:inset 0 0 0 1px rgba(61,220,132,.65)!important}
 .c.boom{background:#3A1216!important;box-shadow:inset 0 0 0 1px rgba(255,92,92,.45)!important}
 .c.estourou{animation:estouro .5s ease-out}
 @keyframes estouro{0%{transform:scale(1);background:#FFE9A8}30%{transform:scale(1.35);background:var(--bad)}
@@ -185,8 +186,6 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .c.bum{background:var(--bad)!important;box-shadow:0 0 22px rgba(255,92,92,.7)!important}
 .c.erro{background:rgba(255,92,92,.18);box-shadow:inset 0 0 0 1px rgba(255,92,92,.45)}
 .c.espia{opacity:.5;background:rgba(255,255,255,.05)}
-.c.duv{background:linear-gradient(160deg,#4A3F18,#3A3112);box-shadow:inset 0 0 0 1px rgba(255,212,59,.35)}
-.c.quase{background:#3A2A12;box-shadow:inset 0 0 0 1px rgba(255,212,59,.55)}
 .c svg{display:block;pointer-events:none}
 .n1{color:#5AA9FF}.n2{color:#3DDC84}.n3{color:#FF7B7B}.n4{color:#C08CFF}
 .n5{color:#FFB020}.n6{color:#4FE3D0}.n7{color:#FF9CE8}.n8{color:#9AA8C2}
@@ -241,12 +240,12 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .bt:active{transform:scale(.96)}
 .bt.m0.on{background:var(--ok);color:#06210F;border-color:var(--ok)}
 .bt.m1.on{background:var(--bad);color:#2B0A0A;border-color:var(--bad)}
-.bt.m2.on{background:var(--acc);color:#20160A;border-color:var(--acc)}
+.bt.m2.on{background:#FF8A3D;color:#2B1200;border-color:#FF8A3D}
 .bt em{font-style:normal;font-size:15px}
 .bt .ico{width:15px;height:15px;display:block;flex-shrink:0}
 .bt .ico svg{width:100%;height:100%}
 .bt.m1 .ico{color:var(--bad)} .bt.m1.on .ico{color:#2B0A0A}
-.bt.m2 .ico{color:var(--acc)} .bt.m2.on .ico{color:#20160A}
+
 .chip.dica{cursor:pointer;transition:transform .1s}
 .chip.dica:active{transform:scale(.94)}
 .chip.dica:disabled{opacity:.35}
@@ -340,7 +339,7 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
     <div class="barra">
       <button class="bt m0 on" data-modo="0"><em>⛏️</em> Cavar</button>
       <button class="bt m1" data-modo="1"><em class="ico"></em> Certeza</button>
-      <button class="bt m2" data-modo="2"><em class="ico"></em> Dúvida</button>
+      <button class="bt m2" data-modo="2"><em>💣</em> Revelar</button>
     </div>
   </section>
 
@@ -419,14 +418,14 @@ const LETRAS='ABCDEFGHIJK';
 const FLAG=c=>'<svg viewBox="0 0 24 24" width="72%" height="72%">'+
   '<path d="M7 3.4v17.2" stroke="#C7D0E0" stroke-width="2.2" stroke-linecap="round" fill="none"/>'+
   '<path d="M8.5 4.5 19.2 8.4 8.5 12.3z" fill="'+c+'"/></svg>';
-const BAND=FLAG('#FF5C5C'), TALV=FLAG('#FFD43B');
+const BAND=FLAG('#FF5C5C');
 const FLAGICO='<svg viewBox="0 0 24 24" width="100%" height="100%">'+
   '<path d="M7 3.4v17.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none" opacity=".6"/>'+
   '<path d="M8.5 4.5 19.2 8.4 8.5 12.3z" fill="currentColor"/></svg>';
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='1.6';
+const VERSAO='1.7';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,som:true,prog:{},sta:{}};
@@ -461,7 +460,7 @@ function salvarPartida(){
   try{
     localStorage.setItem(CHAVE_P,JSON.stringify({
       d:st.dif, f:fase, t:tempo, h:dicas, lp:limpa, rk:rei,
-      c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.dica?8:0)|(c.fl<<4)|(c.rev?64:0))
+      c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.dica?8:0)|(c.fl<<4)|(c.rev?64:0)|(c.show?128:0))
     }));
   }catch(e){}
 }
@@ -570,6 +569,8 @@ $('#lnStats').onclick=()=>{
     ['Jornadas completas',a.jornadas],
     ['Bombas pisadas',a.bombas],
     ['Vidas ganhas de volta',a.vidasGanhas],
+    ['Bombas reveladas na aposta',a.achou||0],
+    ['Apostas erradas',a.erros||0],
     ['Dicas usadas',a.dicas],
     ['Tempo jogando',fmt(a.tempo)],
     ['Fase que mais te pega',pior!==undefined?FASES[pior].ic+' '+FASES[pior].nm+' ('+a.mortes[pior]+'×)':'nenhuma ainda'],
@@ -642,7 +643,7 @@ function abrirFase(i){
   regra=f.regra||'';
   cols=f.cols; rows=f.rows; minas=minasDe(i,st.dif); dicas=dicasDe(i,st.dif); vidas=P().vidas;
   aplicarTema(f.tema);
-  cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,fl:0,rev:false,boom:false,dica:false,gelo:false}));
+  cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,fl:0,rev:false,boom:false,dica:false,gelo:false,show:false}));
   gerado=false; vivo=true; bandeiras=0; abertas=0; tempo=0; fatal=-1; espiando=false; limpa=true;
   clearInterval(tick); tick=null;
   $('#tituloFase').innerHTML=f.ic+' '+f.nm+
@@ -701,10 +702,11 @@ function pintar(i){
   const c=cel[i], d=tab.children[i]; if(!d)return;
   d.className='c'; d.style.removeProperty('--d');
   if(c.boom){d.textContent=i===rei?'👹':'💥';d.classList.add('ab','boom');return}
+  if(c.show&&!c.rev2){d.textContent=i===rei?'👹':'💣';d.classList.add('ab','achou');return}
   if(c.gelo&&c.ab&&!c.rev){d.classList.add('gelo');d.textContent='❄';return}
   if(c.rev){
     if(c.m&&c.fl===1){d.innerHTML=BAND;d.classList.add('bnd','certa');return}
-    if(c.m){d.textContent=i===rei?'👹':'💣';d.classList.add('ab',c.fl===2?'quase':'mina');if(i===fatal)d.classList.add('bum');return}
+    if(c.m){d.textContent=i===rei?'👹':'💣';d.classList.add('ab','mina');if(i===fatal)d.classList.add('bum');return}
     if(c.fl===1){d.textContent='❌';d.classList.add('erro');return}
   }
   if(c.ab){
@@ -715,8 +717,6 @@ function pintar(i){
     d.classList.add('ab','espia'); d.textContent=c.n; d.classList.add('n'+c.n);
   }else if(c.fl===1){
     d.innerHTML=BAND; d.classList.add('bnd'); if(c.dica)d.classList.add('conf');
-  }else if(c.fl===2){
-    d.innerHTML=TALV; d.classList.add('duv');
   }else{
     d.textContent='';
   }
@@ -863,6 +863,7 @@ function revelar(i,origem){
 function cavar(i){
   const c=cel[i];
   if(!vivo||c.fl===1)return;
+  if(c.show)return;
   if(c.gelo){c.gelo=false;pintar(i);tab.children[i].classList.add('novo');bip(900,.06,'sine',.04);return}
   if(!gerado)gerarJusto(i);
   relogio();
@@ -881,9 +882,35 @@ function chord(i){
   let n=0; abrir.forEach(k=>{n+=revelar(k,i)});
   sAbrir(n); checar();
 }
+/* aposta: "tenho certeza que aqui tem bomba". Acertou, ela fica exposta. Errou, -1 vida. */
+function apostar(i){
+  const c=cel[i];
+  if(!vivo||c.ab||c.show||c.boom||c.gelo)return;
+  if(!gerado){banner('💣 Cave a primeira casa antes de apostar');return}
+  relogio();
+  if(c.m){
+    c.show=true; c.fl=1; c.rev=true;
+    bandeiras=cel.reduce((a,x)=>a+(x.fl===1?1:0),0);
+    pintar(i); tab.children[i].classList.add('surge');
+    S().achou=(S().achou||0)+1;
+    [880,1180,1480].forEach((hz,k)=>setTimeout(()=>bip(hz,.09,'triangle',.05),k*70));
+    vib([15,30,15]);
+  }else{
+    const p=P();
+    if(p.vidas<=0)return perder(i);        // sem vida pra pagar o erro
+    p.vidas=Math.max(0,p.vidas-1); vidas=p.vidas; limpa=false;
+    S().erros=(S().erros||0)+1; salvar();
+    revelar(i,i);                          // era casa limpa: abre e você paga pela aposta
+    tab.children[i].classList.add('erro');
+    const b=$('#board'); b.classList.remove('chacoalha'); void b.offsetWidth; b.classList.add('chacoalha');
+    banner('Não tinha bomba em '+coord(i)+' · −1 ❤️');
+    bip(200,.3,'sawtooth',.07); vib([40,60,40]);
+  }
+  realce(i); atualizarHud(); atualizarMetas(); checar();
+}
 function marcarComo(i,tipo){        // toca de novo na mesma marca = tira
   const c=cel[i];
-  if(!vivo||c.ab||c.boom)return;
+  if(!vivo||c.ab||c.boom||c.show)return;
   if(gerado)relogio();
   c.fl = c.fl===tipo ? 0 : tipo;
   bandeiras=cel.reduce((s,x)=>s+(x.fl===1?1:0),0);
@@ -892,8 +919,8 @@ function marcarComo(i,tipo){        // toca de novo na mesma marca = tira
 }
 function bandeira(i){
   const c=cel[i];
-  if(!vivo||c.ab||c.boom)return;
-  c.fl=(c.fl+1)%3;                       // nada -> bandeira -> talvez -> nada
+  if(!vivo||c.ab||c.boom||c.show)return;
+  c.fl=c.fl?0:1;                         // nada <-> bandeira
   bandeiras=cel.reduce((s,x)=>s+(x.fl===1?1:0),0);
   pintar(i); if(c.fl)tab.children[i].classList.add('fincou');
   bip(c.fl===1?880:(c.fl===2?640:400),.07,'square',.04); vib(15); atualizarHud();
@@ -902,9 +929,12 @@ function setModo(n){
   modo=n;
   document.querySelectorAll('.barra .bt').forEach(b=>b.classList.toggle('on',+b.dataset.modo===n));
 }
-document.querySelectorAll('.barra .bt').forEach(b=>b.onclick=()=>{sairModoDica();setModo(+b.dataset.modo);bip(520+(+b.dataset.modo)*120,.05,'sine',.04)});
+let explicou=false;
+document.querySelectorAll('.barra .bt').forEach(b=>b.onclick=()=>{sairModoDica();setModo(+b.dataset.modo);
+  if(+b.dataset.modo===2&&!explicou){explicou=true;
+    banner('💣 Revelar: aponte onde tem bomba. Acertou, ela fica exposta e já conta. Errou, −1 ❤️')}bip(520+(+b.dataset.modo)*120,.05,'sine',.04)});
 document.querySelector('.bt.m1 .ico').innerHTML=FLAGICO;
-document.querySelector('.bt.m2 .ico').innerHTML=FLAGICO;
+
 /* dica = detector: você escolhe a casa e ela conta a verdade (abre, ou marca a mina) */
 let modoDica=false;
 function entrarModoDica(){
@@ -949,7 +979,8 @@ function retomar(sv){
   st.dif=sv.d; abrirFase(sv.f); limparAgenda();
   cel.forEach((c,i)=>{
     const v=sv.c[i];
-    c.m=!!(v&1); c.ab=!!(v&2); c.boom=!!(v&4); c.dica=!!(v&8); c.fl=(v>>4)&3; c.rev=!!(v&64);
+    c.m=!!(v&1); c.ab=!!(v&2); c.boom=!!(v&4); c.dica=!!(v&8); c.rev=!!(v&64); c.show=!!(v&128);
+    c.fl=((v>>4)&3)===1?1:0;                       // marca amarela antiga vira nada
   });
   for(let i=0;i<cel.length;i++)cel[i].n=viz(i).filter(v=>cel[v].m).length;
   gerado=true; limpa=sv.lp!==false; dicas=sv.h; tempo=sv.t; rei=sv.rk!==undefined?sv.rk:-1;
@@ -980,7 +1011,11 @@ tab.addEventListener('pointerup',e=>{
   const d=e.target.closest('.c'); if(!d||alvo===null||!vivo)return;
   if(+d.dataset.i!==alvo){alvo=null;return}
   if(modoDica){ usarDica(alvo); alvo=null; return }
-  if(!usouLongo){ modo?marcarComo(alvo,modo):cavar(alvo) }
+  if(!usouLongo){
+    if(modo===2)apostar(alvo);
+    else if(modo===1)marcarComo(alvo,1);
+    else cavar(alvo);
+  }
   alvo=null;
 });
 tab.addEventListener('pointercancel',cancelar);
