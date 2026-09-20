@@ -46,6 +46,30 @@ não voltar a recarregar por fase). Ficam em `P().vidas`, salvas a cada bomba.
 ⭐⭐ até 3:40 · depois ⭐` (ou o teto de 2 ⭐ quando gastou dica), e o chip do relógio muda de
 cor conforme a estrela vigente — ouro dentro do par, prata até o dobro, bronze depois.
 
+**Campo sem chute** (`gerarJusto`): sorteia e roda `resolvivel()` — um solver que simula um
+jogador que só deduz (regras diretas + subconjunto para o 1-2-1 + contagem global de minas).
+Campo que exigiria adivinhação é descartado; até 6000 sorteios ou 450ms, e aí segue o último.
+Taxa medida: **Brisa e Na Medida 100%**, Suor Frio ~87%, Sem Volta ~75% (densidade de 32% é
+dura demais). Campos crus sem esse filtro: só 28% são justos.
+⚠️ `gerar()` **precisa limpar `m`/`n` no início** — é chamado centenas de vezes seguidas.
+
+**Vida extra**: 3 fases seguidas sem pisar em bomba dão +1 ❤️ (`P().limpas`, zera ao pisar).
+
+**Partida em andamento** (`CHAVE_P`): `salvarPartida()` roda dentro de `atualizarHud()` e no
+`visibilitychange`; o mapa mostra o botão "Continuar de onde parou". `vencer()`/`perder()` limpam.
+
+**Regras de cenário** (`FASES[i].regra` + `aviso`, mostrado num banner na entrada):
+`mare` (Praia, 45s, abre as casas seguras da coluna mais à esquerda), `gelo` (Geleira, 13s,
+casa vazia volta a parecer fechada — só visual, `c.ab` continua true e o toque só descongela),
+`orbita` (bordas ligadas: `viz()` faz wrap — o solver herda isso de graça) e `rei` (Covil:
+uma mina custa 2 ❤️). As outras 7 fases ficam limpas de propósito.
+
+**Ambiente animado** (`tema.amb`): 4-14 partículas em CSS (`cai`/`sobe`/`flutua`/`pisca`),
+opacidade ~.42, com `prefers-reduced-motion` respeitado.
+
+**Estatísticas** (`st.sta` via `S()`): fases, jornadas, bombas, dicas, tempo, vidas ganhas e
+a fase que mais mata. Não zeram com a jornada.
+
 **Tema por fase** (`FASES[i].tema`): `aplicarTema()` troca as variáveis CSS `--tampa/--tampa2/
 --aberta`, o fundo da tela do jogo (`ceu` + `luz`) e enche o `#cenario` com 5 emojis
 (`deco`) a 13% de opacidade nos cantos. O card do mapa herda o mesmo tom. Regra: **levemente**
@@ -85,7 +109,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.4).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.6).
 
 ## Como testar (workflow da suíte)
 

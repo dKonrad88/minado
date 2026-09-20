@@ -69,6 +69,12 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .dif .dv{font-size:8px;font-weight:700;color:var(--ink3);opacity:.65}
 .dif.on{border-color:currentColor;box-shadow:0 0 0 1px currentColor,0 4px 16px rgba(0,0,0,.35)}
 .dif.on .dn,.dif.on .dv{color:currentColor;opacity:1}
+.retomar{margin:0 16px 10px;padding:11px 14px;border-radius:16px;flex-shrink:0;
+  background:linear-gradient(120deg,rgba(61,220,132,.16),rgba(61,220,132,.06));
+  border:1px solid rgba(61,220,132,.45);display:flex;align-items:center;justify-content:space-between;
+  gap:10px;font-size:13px;font-weight:800;color:var(--ok);text-align:left}
+.retomar small{display:block;font-size:10px;font-weight:700;color:var(--ink2);margin-top:2px}
+.retomar:active{transform:scale(.97)}
 .trilha{flex:1;overflow-y:auto;padding:4px 18px 20px;display:grid;grid-template-columns:repeat(3,1fr);
   gap:10px;align-content:start}
 .fase{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 4px 8px;
@@ -112,13 +118,44 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 #tabWrap{flex:1;display:flex;align-items:center;justify-content:center;padding:0 6px;
   overflow:hidden;position:relative}
 #cenario{position:absolute;inset:0;pointer-events:none;overflow:hidden}
-.dc{position:absolute;opacity:.13;filter:saturate(.75);line-height:1}
-.dc.d0{top:1%;left:4%;font-size:34px;transform:rotate(-12deg)}
-.dc.d1{top:5%;right:5%;font-size:26px;transform:rotate(10deg)}
-.dc.d2{bottom:3%;left:7%;font-size:30px;transform:rotate(7deg)}
-.dc.d3{bottom:6%;right:6%;font-size:23px;transform:rotate(-9deg)}
-.dc.d4{top:46%;right:1.5%;font-size:19px;opacity:.08;transform:rotate(14deg)}
+.dc{position:absolute;opacity:.17;filter:saturate(.75);line-height:1;
+  animation:balanca 7s ease-in-out infinite}
+@keyframes balanca{0%,100%{transform:translateY(0) rotate(var(--rot,0deg))}
+  50%{transform:translateY(-6px) rotate(calc(var(--rot,0deg) + 4deg))}}
+#part{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0}
+.pt{position:absolute;opacity:.42;will-change:transform,opacity;line-height:1}
+.pt.cai{top:-8%;animation:amb-cai linear infinite}
+.pt.sobe{bottom:-8%;animation:amb-sobe linear infinite}
+.pt.flutua{animation:amb-flutua ease-in-out infinite}
+.pt.pisca{animation:amb-pisca ease-in-out infinite}
+@keyframes amb-cai{0%{transform:translate(0,0) rotate(0);opacity:0}
+  12%{opacity:.45}88%{opacity:.45}
+  100%{transform:translate(14px,115vh) rotate(260deg);opacity:0}}
+@keyframes amb-sobe{0%{transform:translate(0,0) scale(.65);opacity:0}
+  18%{opacity:.5}100%{transform:translate(-10px,-115vh) scale(1.15);opacity:0}}
+@keyframes amb-flutua{0%{transform:translateX(-12vw);opacity:0}
+  20%{opacity:.4}80%{opacity:.4}100%{transform:translateX(112vw);opacity:0}}
+@keyframes amb-pisca{0%,100%{opacity:.1;transform:scale(.8)}50%{opacity:.65;transform:scale(1.15)}}
+@media (prefers-reduced-motion:reduce){
+  .pt,.dc{animation:none!important}
+  .pt{opacity:.16}
+}
+.dc.d0{--rot:-12deg;top:1%;left:4%;font-size:34px;}
+.dc.d1{--rot:10deg;top:5%;right:5%;font-size:26px;}
+.dc.d2{--rot:7deg;bottom:3%;left:7%;font-size:30px;}
+.dc.d3{--rot:-9deg;bottom:6%;right:6%;font-size:23px;}
+.dc.d4{--rot:14deg;top:46%;right:1.5%;font-size:19px;opacity:.08;}
 #board{position:relative;z-index:1}
+.banner{position:absolute;top:6px;left:50%;transform:translate(-50%,-14px);z-index:6;
+  background:rgba(11,15,26,.92);border:1px solid var(--line);border-radius:14px;
+  padding:8px 14px;font-size:11px;font-weight:700;color:var(--ink2);text-align:center;
+  max-width:92%;opacity:0;pointer-events:none}
+.banner.on{animation:fala 4.2s ease-out forwards}
+@keyframes fala{0%{opacity:0;transform:translate(-50%,-14px)}
+  10%{opacity:1;transform:translate(-50%,0)}80%{opacity:1;transform:translate(-50%,0)}
+  100%{opacity:0;transform:translate(-50%,-10px)}}
+.c.gelo{background:linear-gradient(160deg,#4A6C86,#3A5A72)!important;color:#CFE9FF!important;
+  font-size:calc(var(--cell)*.42)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)!important}
 #board{display:grid;grid-template-columns:var(--reg) auto;grid-template-rows:var(--reg) auto;
   gap:2px;padding:6px;border-radius:16px;background:rgba(255,255,255,.035);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
@@ -216,6 +253,11 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .bt:disabled{opacity:.35}
 
 /* ---------- modal ---------- */
+.ests{text-align:left;margin-top:6px}
+.est{display:flex;justify-content:space-between;gap:10px;padding:7px 2px;border-bottom:1px solid var(--line);
+  font-size:12.5px;font-weight:700;color:var(--ink2)}
+.est:last-child{border:0}
+.est b{color:var(--ink);text-align:right}
 .lista{display:flex;flex-direction:column;gap:8px;margin-top:16px;text-align:left}
 .linha{display:flex;align-items:center;justify-content:space-between;gap:10px;
   background:rgba(255,255,255,.05);border:1px solid var(--line);border-radius:14px;
@@ -262,6 +304,7 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
       <p>ONZE FASES · NENHUMA PISADA EM FALSO</p>
     </div>
     <div class="difs" id="difs"></div>
+    <button class="retomar" id="btRetomar" hidden></button>
     <div class="trilha" id="trilha"></div>
     <div class="rodape">
       <div class="tot" id="tot">0 / 33 ⭐</div>
@@ -285,6 +328,8 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
     <div class="metas" id="metas"></div>
     <div id="tabWrap">
       <div id="cenario"></div>
+      <div id="part"></div>
+      <div class="banner" id="banner"></div>
       <div id="board">
         <div></div>
         <div id="regC"></div>
@@ -306,6 +351,7 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
       <div class="lista">
         <button class="linha" id="lnSom"><span>🔊 Som e vibração</span><b id="vSom">ligado</b></button>
         <button class="linha" id="lnUp"><span>🔄 Atualizar o jogo</span><b id="vUp">v1.0</b></button>
+        <button class="linha" id="lnStats"><span>📊 Suas estatísticas</span><b id="vStats">—</b></button>
         <button class="linha" id="lnRecomecar"><span>↩️ Recomeçar a jornada</span><b id="vRec">fase 1</b></button>
         <button class="linha ruim" id="lnZerar"><span>🗑️ Apagar tudo e começar do zero</span><b id="vZerar">0 ⭐</b></button>
       </div>
@@ -323,37 +369,37 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 const FASES=[
  {ic:'🌱',nm:'Quintal de casa',   cols:5, rows:5,  minas:3,  dicas:1, par:15,
   tema:{ceu:'#0C1710', luz:'rgba(120,220,140,.09)', t1:'#33513A', t2:'#2A4431', ab:'#16241A',
-        deco:['🌿','🌼','🐝','🌱','🍃']}},
+        deco:['🌿','🌼','🐝','🌱','🍃'], amb:{t:'cai',e:'🍃',n:6}}},
  {ic:'🐔',nm:'Galinheiro',        cols:6, rows:6,  minas:4,  dicas:1, par:25,
   tema:{ceu:'#16120B', luz:'rgba(240,200,110,.09)', t1:'#4A4029', t2:'#3E3622', ab:'#221C11',
-        deco:['🌾','🥚','🐓','🪵','🌾']}},
+        deco:['🌾','🥚','🐓','🪵','🌾'], amb:{t:'cai',e:'🪶',n:6}}},
  {ic:'🌳',nm:'Bosque',            cols:7, rows:7,  minas:6,  dicas:1, par:40,
   tema:{ceu:'#0A1410', luz:'rgba(90,200,150,.08)',  t1:'#2B4438', t2:'#233A2F', ab:'#13211B',
-        deco:['🌲','🍄','🦌','🍂','🌲']}},
+        deco:['🌲','🍄','🦌','🍂','🌲'], amb:{t:'cai',e:'🍂',n:7}}},
  {ic:'🏖️',nm:'Praia minada',      cols:8, rows:8,  minas:9,  dicas:1, par:55,
   tema:{ceu:'#0B1520', luz:'rgba(120,200,255,.09)', t1:'#4E4530', t2:'#443C29', ab:'#241F14',
-        deco:['🐚','🌊','⛱️','🦀','🌴']}},
+        deco:['🐚','🌊','⛱️','🦀','🌴'], amb:{t:'sobe',e:'🫧',n:7}}, regra:'mare', aviso:'🌊 A maré sobe: de tempos em tempos ela molha uma faixa do campo e abre o que é seguro'},
  {ic:'🏚️',nm:'Vila fantasma',     cols:8, rows:9,  minas:11, dicas:2, par:70,
   tema:{ceu:'#100E17', luz:'rgba(170,140,255,.09)', t1:'#3A3548', t2:'#302C3D', ab:'#1B1826',
-        deco:['🕯️','🕸️','🦇','🏚️','🌫️']}},
+        deco:['🕯️','🕸️','🦇','🏚️','🌫️'], amb:{t:'flutua',e:'👻',n:4}}},
  {ic:'⛏️',nm:'Mina velha',        cols:9, rows:9,  minas:14, dicas:2, par:90,
   tema:{ceu:'#120D09', luz:'rgba(255,190,110,.08)', t1:'#453528', t2:'#3A2C21', ab:'#201812',
-        deco:['⛏️','💎','🪨','🔦','🕳️']}},
+        deco:['⛏️','💎','🪨','🔦','🕳️'], amb:{t:'sobe',e:'✨',n:6}}},
  {ic:'🌋',nm:'Cratera',           cols:9, rows:11, minas:18, dicas:2, par:110,
   tema:{ceu:'#170A08', luz:'rgba(255,120,60,.11)',  t1:'#4C2E26', t2:'#402620', ab:'#241310',
-        deco:['🌋','🔥','🪨','💨','🔥']}},
+        deco:['🌋','🔥','🪨','💨','🔥'], amb:{t:'sobe',e:'🔥',n:8}}},
  {ic:'❄️',nm:'Geleira',           cols:10,rows:11, minas:22, dicas:2, par:135,
   tema:{ceu:'#0A141C', luz:'rgba(140,215,255,.10)', t1:'#2E4457', t2:'#273A4A', ab:'#14212B',
-        deco:['❄️','🧊','🐧','🌨️','❄️']}},
+        deco:['❄️','🧊','🐧','🌨️','❄️'], amb:{t:'cai',e:'❄️',n:10}}, regra:'gelo', aviso:'❄️ O gelo volta: casas vazias congelam de novo — toque pra limpar, o número não muda'},
  {ic:'🏜️',nm:'Deserto',           cols:10,rows:12, minas:26, dicas:3, par:165,
   tema:{ceu:'#150F08', luz:'rgba(255,200,90,.09)',  t1:'#4F4229', t2:'#443922', ab:'#241D11',
-        deco:['🌵','☀️','🦂','🏜️','🌵']}},
+        deco:['🌵','☀️','🦂','🏜️','🌵'], amb:{t:'flutua',e:'🌫️',n:5}}},
  {ic:'🌌',nm:'Órbita',            cols:11,rows:13, minas:32, dicas:3, par:200,
   tema:{ceu:'#0A0917', luz:'rgba(150,130,255,.11)', t1:'#322F55', t2:'#2A2848', ab:'#17162B',
-        deco:['🚀','⭐','🛰️','🌙','✨']}},
+        deco:['🚀','⭐','🛰️','🌙','✨'], amb:{t:'pisca',e:'✦',n:14}}, regra:'orbita', aviso:'🌌 Gravidade zero: as bordas se ligam — a coluna A é vizinha da última, e o topo do fundo'},
  {ic:'👹',nm:'Covil do Bomba-Rei',cols:11,rows:14, minas:38, dicas:3, par:250,
   tema:{ceu:'#160709', luz:'rgba(255,80,80,.11)',   t1:'#4A2430', t2:'#3E1E28', ab:'#230F16',
-        deco:['👹','💀','🔥','⚔️','💀']}},
+        deco:['👹','💀','🔥','⚔️','💀'], amb:{t:'sobe',e:'🔥',n:7}}, regra:'rei', aviso:'👹 O Bomba-Rei está no campo: pisar nele custa 2 ❤️ de uma vez'},
 ];
 /* dificuldade: muda as vidas, quantas minas cabem no campo, as dicas e o tempo dos ⭐ */
 const DIFS=[
@@ -380,9 +426,10 @@ const FLAGICO='<svg viewBox="0 0 24 24" width="100%" height="100%">'+
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='1.4';
+const VERSAO='1.6';
 const CHAVE='minado11.v1';
-let st={dif:1,som:true,prog:{}};
+const CHAVE_P='minado11.partida';
+let st={dif:1,som:true,prog:{},sta:{}};
 try{
   const s=JSON.parse(localStorage.getItem(CHAVE));
   if(s){
@@ -396,10 +443,30 @@ function P(){
   if(p.vidas===undefined)p.vidas=DIFS[st.dif].vidas;
   return p;
 }
+/* estatísticas de sempre (não zeram com a jornada) */
+function S(){
+  if(!st.sta)st.sta={};
+  const d={fases:0,jornadas:0,bombas:0,dicas:0,tempo:0,vidasGanhas:0,mortes:{},melhor:0};
+  for(const k in d)if(st.sta[k]===undefined)st.sta[k]=d[k];
+  return st.sta;
+}
 function novaJornada(){                       // recomeça do Quintal com o coração cheio
-  const p=P(); p.max=0; p.vidas=DIFS[st.dif].vidas; salvar(); return p;
+  const p=P(); p.max=0; p.vidas=DIFS[st.dif].vidas; p.limpas=0; salvar(); return p;
 }
 const salvar=()=>{try{localStorage.setItem(CHAVE,JSON.stringify(st))}catch(e){}};
+
+/* ---- partida em andamento: sobrevive a fechar o app ---- */
+function salvarPartida(){
+  if(!vivo||!gerado)return;
+  try{
+    localStorage.setItem(CHAVE_P,JSON.stringify({
+      d:st.dif, f:fase, t:tempo, h:dicas, lp:limpa, rk:rei,
+      c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.dica?8:0)|(c.fl<<4)|(c.rev?64:0))
+    }));
+  }catch(e){}
+}
+function lerPartida(){try{return JSON.parse(localStorage.getItem(CHAVE_P))}catch(e){return null}}
+function limparPartida(){try{localStorage.removeItem(CHAVE_P)}catch(e){}}
 
 /* ============ SOM ============ */
 let ac=null;
@@ -445,6 +512,15 @@ function pintarDifs(){
 }
 function pintarMapa(){
   pintarDifs();
+  const sv=lerPartida(), bt=$('#btRetomar');
+  if(sv&&FASES[sv.f]){
+    const f=FASES[sv.f], abertas0=sv.c.filter(v=>v&2).length;
+    bt.hidden=false;
+    bt.innerHTML='<div>▶︎ Continuar de onde parou'+
+      '<small>'+f.ic+' '+f.nm+' · '+DIFS[sv.d].nm+' · '+fmt(sv.t)+' · '+
+      Math.round(abertas0/(f.cols*f.rows)*100)+'% do campo aberto</small></div><span>›</span>';
+    bt.onclick=()=>retomar(sv);
+  }else bt.hidden=true;
   const t=$('#trilha'); t.innerHTML='';
   const p=P(); let total=0;
   FASES.forEach((f,i)=>{
@@ -458,7 +534,8 @@ function pintarMapa(){
     if(liberada)b.onclick=()=>abrirFase(i);
     t.appendChild(b);
   });
-  $('#tot').textContent=total+' / 33 ⭐ · ❤️ '+p.vidas+'/'+DIFS[st.dif].vidas;
+  $('#tot').innerHTML=total+' / 33 ⭐ · ❤️ '+p.vidas+'/'+DIFS[st.dif].vidas+
+    (p.limpas?' · <span style="color:var(--ok)">'+p.limpas+'/3 limpas</span>':'');
 }
 /* ---- ajustes ---- */
 const cfg=$('#cfg');
@@ -467,6 +544,7 @@ function abrirCfg(){
   $('#vUp').textContent='v'+VERSAO;
   $('#vZerar').textContent=Object.values(st.prog).reduce((a,p)=>a+Object.values(p.est||{}).reduce((x,y)=>x+y,0),0)+' ⭐';
   $('#vRec').textContent='fase '+(P().max+1)+' · ❤️ '+P().vidas;
+  $('#vStats').textContent=S().fases+' fases';
   $('#pRodape').textContent='Minado 11 · v'+VERSAO;
   cfg.classList.add('on');
 }
@@ -484,6 +562,23 @@ function confirmar(h2,txt,rotulo,acao){
     ['Deixa quieto',()=>{modal.classList.remove('on');abrirCfg()},'sec']
   ]});
 }
+$('#lnStats').onclick=()=>{
+  const a=S();
+  const pior=Object.keys(a.mortes).sort((x,y)=>a.mortes[y]-a.mortes[x])[0];
+  const linhas=[
+    ['Fases vencidas',a.fases],
+    ['Jornadas completas',a.jornadas],
+    ['Bombas pisadas',a.bombas],
+    ['Vidas ganhas de volta',a.vidasGanhas],
+    ['Dicas usadas',a.dicas],
+    ['Tempo jogando',fmt(a.tempo)],
+    ['Fase que mais te pega',pior!==undefined?FASES[pior].ic+' '+FASES[pior].nm+' ('+a.mortes[pior]+'×)':'nenhuma ainda'],
+    ['Melhor jornada (11ª fase)',a.melhor?fmt(a.melhor):'—'],
+  ].map(l=>'<div class="est"><span>'+l[0]+'</span><b>'+l[1]+'</b></div>').join('');
+  cfg.classList.remove('on');
+  caixa({big:'📊',h2:'Suas estatísticas',p:'<div class="ests">'+linhas+'</div>',
+    bts:[['Voltar',()=>{modal.classList.remove('on');abrirCfg()},'pri']]});
+};
 /* volta pro Quintal com o coração cheio, mas guarda as estrelas */
 $('#lnRecomecar').onclick=()=>{
   const d=DIFS[st.dif];
@@ -491,7 +586,7 @@ $('#lnRecomecar').onclick=()=>{
     'As 11 fases do '+d.nm+' voltam a ficar trancadas e você joga de novo do Quintal, '+
     'com as '+d.vidas+' vidas cheias.<br>Suas estrelas e recordes continuam guardados.',
     'Recomeçar do Quintal',
-    ()=>{novaJornada(); pintarMapa(); irPara(telaMapa); bip(660,.1,'triangle',.06)});
+    ()=>{novaJornada(); limparPartida(); pintarMapa(); irPara(telaMapa); bip(660,.1,'triangle',.06)});
 };
 /* apaga tudo mesmo: as 4 dificuldades, estrelas, recordes e vidas */
 $('#lnZerar').onclick=()=>{
@@ -500,7 +595,7 @@ $('#lnZerar').onclick=()=>{
     'O jogo fica igual à primeira vez que você abriu. Não dá pra desfazer.',
     'Apagar tudo',
     ()=>{
-      try{localStorage.removeItem(CHAVE)}catch(e){}
+      try{localStorage.removeItem(CHAVE);localStorage.removeItem(CHAVE_P)}catch(e){}
       st={dif:1,som:st.som,prog:{}}; salvar();
       pintarMapa(); irPara(telaMapa); bip(300,.2,'sawtooth',.06);
     });
@@ -527,7 +622,7 @@ $('#lnUp').onclick=async function(){
   setTimeout(()=>location.replace(u.toString()),350);
 };
 function irPara(tela){
-  if(tela!==telaJogo){clearInterval(tick);tick=null}
+  if(tela!==telaJogo){clearInterval(tick);tick=null;clearInterval(tickRegra);tickRegra=null}
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
   tela.classList.add('on');
 }
@@ -535,23 +630,29 @@ function irPara(tela){
 /* ============ JOGO ============ */
 let fase=0,cols=0,rows=0,minas=0,cel=[],gerado=false,vivo=false,modo=0;
 let bandeiras=0,abertas=0,dicas=0,t0=0,tick=null,tempo=0,fatal=-1,espiando=false,pularAtivo=false,vidas=0;
-let acabou=false,faseMorte=0;
+let acabou=false,faseMorte=0,limpa=true;
+let regra='',rei=-1,tickRegra=null;
 
 function abrirFase(i){
   limparAgenda(); pararPular(); limparAviso();
   flash.classList.remove('on'); app.classList.remove('treme');
   if(acabou){i=0; acabou=false}            // depois do fim de jogo só se entra pela fase 1
+  clearInterval(tickRegra); tickRegra=null; rei=-1;
   fase=i; const f=FASES[i], d=DIFS[st.dif];
+  regra=f.regra||'';
   cols=f.cols; rows=f.rows; minas=minasDe(i,st.dif); dicas=dicasDe(i,st.dif); vidas=P().vidas;
   aplicarTema(f.tema);
-  cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,fl:0,rev:false,boom:false,dica:false}));
-  gerado=false; vivo=true; bandeiras=0; abertas=0; tempo=0; fatal=-1; espiando=false;
+  cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,fl:0,rev:false,boom:false,dica:false,gelo:false}));
+  gerado=false; vivo=true; bandeiras=0; abertas=0; tempo=0; fatal=-1; espiando=false; limpa=true;
   clearInterval(tick); tick=null;
   $('#tituloFase').innerHTML=f.ic+' '+f.nm+
     '<small>FASE '+(i+1)+' DE 11 · '+d.nm.toUpperCase()+'</small>';
   modal.classList.remove('on');
   irPara(telaJogo);
   desenhar(); atualizarHud(); setModo(0); sairModoDica(); atualizarMetas();
+  if(f.aviso)banner(f.aviso);
+  if(regra==='mare')tickRegra=setInterval(mare,45000);
+  if(regra==='gelo')tickRegra=setInterval(congelar,13000);
   ajustar(); requestAnimationFrame(ajustar);   // já nasce no tamanho certo, sem piscar grande
 }
 function aplicarTema(t){
@@ -559,6 +660,21 @@ function aplicarTema(t){
   r.setProperty('--tampa',t.t1); r.setProperty('--tampa2',t.t2); r.setProperty('--aberta',t.ab);
   telaJogo.style.background='radial-gradient(75% 45% at 50% 6%,'+t.luz+',transparent 72%),'+t.ceu;
   $('#cenario').innerHTML=t.deco.map((e,k)=>'<span class="dc d'+k+'">'+e+'</span>').join('');
+  ambiente(t.amb);
+}
+/* poeira/neve/brasa de fundo: poucas partículas, bem discretas */
+function ambiente(a){
+  const p=$('#part'); p.innerHTML=''; if(!a)return;
+  for(let i=0;i<a.n;i++){
+    const d=document.createElement('span');
+    d.className='pt '+a.t; d.textContent=a.e;
+    d.style.left=(Math.random()*95)+'%';
+    if(a.t==='pisca'||a.t==='flutua')d.style.top=(Math.random()*90)+'%';
+    d.style.fontSize=(10+Math.random()*12)+'px';
+    d.style.animationDuration=((a.t==='pisca'?2:8)+Math.random()*(a.t==='pisca'?3:10))+'s';
+    d.style.animationDelay=(-Math.random()*12)+'s';
+    p.appendChild(d);
+  }
 }
 function ajustar(){
   const g=3, fixo=12+15+2+6;
@@ -584,10 +700,11 @@ function desenhar(){
 function pintar(i){
   const c=cel[i], d=tab.children[i]; if(!d)return;
   d.className='c'; d.style.removeProperty('--d');
-  if(c.boom){d.textContent='💥';d.classList.add('ab','boom');return}
+  if(c.boom){d.textContent=i===rei?'👹':'💥';d.classList.add('ab','boom');return}
+  if(c.gelo&&c.ab&&!c.rev){d.classList.add('gelo');d.textContent='❄';return}
   if(c.rev){
     if(c.m&&c.fl===1){d.innerHTML=BAND;d.classList.add('bnd','certa');return}
-    if(c.m){d.textContent='💣';d.classList.add('ab',c.fl===2?'quase':'mina');if(i===fatal)d.classList.add('bum');return}
+    if(c.m){d.textContent=i===rei?'👹':'💣';d.classList.add('ab',c.fl===2?'quase':'mina');if(i===fatal)d.classList.add('bum');return}
     if(c.fl===1){d.textContent='❌';d.classList.add('erro');return}
   }
   if(c.ab){
@@ -618,6 +735,7 @@ function corDoTempo(){
   ch.classList.toggle('bronze',tempo>par*2);
 }
 function atualizarHud(){
+  salvarPartida();
   $('#cVidas').textContent=vidas;
   $('#cVidas').parentElement.classList.toggle('pouco',vidas<=1);
   $('#cVidas').parentElement.title = vidas? '' : 'a próxima bomba encerra a jornada';
@@ -630,20 +748,23 @@ const fmt=s=>Math.floor(s/60)+':'+String(s%60).padStart(2,'0');
 const coord=i=>LETRAS[i%cols]+(((i/cols)|0)+1);
 const cheb=(a,b)=>Math.max(Math.abs(a%cols-b%cols),Math.abs(((a/cols)|0)-((b/cols)|0)));
 function relogio(){
-  if(tick)return;
-  t0=Date.now();
+  if(tick||!vivo)return;
+  t0=Date.now()-tempo*1000;
   tick=setInterval(()=>{tempo=Math.floor((Date.now()-t0)/1000);$('#cTempo').textContent=fmt(tempo);corDoTempo()},250);
 }
 const viz=i=>{
-  const x=i%cols,y=(i/cols)|0,r=[];
+  const x=i%cols,y=(i/cols)|0,r=[],volta=(regra==='orbita');
   for(let dy=-1;dy<=1;dy++)for(let dx=-1;dx<=1;dx++){
     if(!dx&&!dy)continue;
-    const nx=x+dx,ny=y+dy;
-    if(nx>=0&&nx<cols&&ny>=0&&ny<rows)r.push(ny*cols+nx);
+    let nx=x+dx,ny=y+dy;
+    if(volta){ nx=(nx+cols)%cols; ny=(ny+rows)%rows; }
+    else if(nx<0||nx>=cols||ny<0||ny>=rows)continue;
+    r.push(ny*cols+nx);
   }
   return r;
 };
 function gerar(seguro){
+  for(let i=0;i<cel.length;i++){cel[i].m=false;cel[i].n=0}   // limpa: gerarJusto chama isto várias vezes
   const proibido=new Set([seguro,...viz(seguro)]);
   const livres=[];
   for(let i=0;i<cel.length;i++)if(!proibido.has(i))livres.push(i);
@@ -654,6 +775,8 @@ function gerar(seguro){
   for(let i=livres.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[livres[i],livres[j]]=[livres[j],livres[i]]}
   livres.slice(0,minas).forEach(i=>cel[i].m=true);
   for(let i=0;i<cel.length;i++)cel[i].n=viz(i).filter(v=>cel[v].m).length;
+  if(regra==='rei'){const ms=[];for(let i=0;i<cel.length;i++)if(cel[i].m)ms.push(i);
+    rei=ms[(Math.random()*ms.length)|0];}
   gerado=true;
 }
 function anima(k,origem,classe){
@@ -661,6 +784,72 @@ function anima(k,origem,classe){
   el.style.setProperty('--d',Math.min(430,cheb(k,origem)*26)+'ms');
   el.classList.add(classe||'novo');
 }
+/* ---------- campo sem chute ----------
+   Simula um jogador que só usa dedução. Se ele consegue limpar o campo inteiro
+   a partir da 1ª casa, o tabuleiro é justo. Senão, sorteia outro. */
+function resolvivel(inicio){
+  const N=cel.length, ab=new Uint8Array(N), mina=new Uint8Array(N);
+  const pilha=[];
+  const abrir=k=>{
+    if(ab[k])return; pilha.push(k);
+    while(pilha.length){
+      const x=pilha.pop(); if(ab[x])continue; ab[x]=1;
+      if(cel[x].n===0)for(const v of viz(x))if(!ab[v])pilha.push(v);
+    }
+  };
+  abrir(inicio);
+  const frente=()=>{                       // números abertos que ainda tocam casa fechada
+    const r=[];
+    for(let i=0;i<N;i++){
+      if(!ab[i]||!cel[i].n)continue;
+      const f=[]; let m=0;
+      for(const v of viz(i)){ if(ab[v])continue; if(mina[v])m++; else f.push(v) }
+      if(f.length)r.push({i:i,f:f,n:cel[i].n-m});
+    }
+    return r;
+  };
+  for(let volta=0; volta<400; volta++){
+    let mudou=false;
+    const fr=frente();
+    for(const a of fr){                    // regras diretas
+      if(a.n===0){ a.f.forEach(abrir); mudou=true }
+      else if(a.n===a.f.length){ a.f.forEach(k=>mina[k]=1); mudou=true }
+    }
+    if(mudou)continue;
+    for(const a of fr){                    // subconjunto: resolve o 1-2-1 e companhia
+      for(const b of fr){
+        if(a.i===b.i||cheb(a.i,b.i)>2||b.f.length<=a.f.length)continue;
+        if(!a.f.every(k=>b.f.includes(k)))continue;
+        const sobra=b.f.filter(k=>!a.f.includes(k));
+        if(b.n===a.n){ sobra.forEach(abrir); mudou=true }
+        else if(b.n-a.n===sobra.length){ sobra.forEach(k=>mina[k]=1); mudou=true }
+      }
+      if(mudou)break;
+    }
+    if(mudou)continue;
+    // contagem global: o jogador vê quantas minas faltam no placar
+    const fech=[]; let marc=0;
+    for(let i=0;i<N;i++){ if(ab[i])continue; if(mina[i])marc++; else fech.push(i) }
+    const restam=minas-marc;
+    if(fech.length){
+      if(restam===0){ fech.forEach(abrir); mudou=true }
+      else if(restam===fech.length){ fech.forEach(k=>mina[k]=1); mudou=true }
+    }
+    if(!mudou)break;
+  }
+  for(let i=0;i<N;i++)if(!cel[i].m&&!ab[i])return false;
+  return true;
+}
+function gerarJusto(seguro){
+  const t0=Date.now();
+  for(let t=0;t<6000;t++){
+    gerar(seguro);
+    if(resolvivel(seguro))return t+1;
+    if(!(t&31)&&Date.now()-t0>450)break;   // no pior caso, segue com o último sorteio
+  }
+  return 0;
+}
+
 function revelar(i,origem){
   const o=origem===undefined?i:origem, fila=[i]; let n=0;
   while(fila.length){
@@ -674,7 +863,9 @@ function revelar(i,origem){
 function cavar(i){
   const c=cel[i];
   if(!vivo||c.fl===1)return;
-  if(!gerado){gerar(i);relogio()}
+  if(c.gelo){c.gelo=false;pintar(i);tab.children[i].classList.add('novo');bip(900,.06,'sine',.04);return}
+  if(!gerado)gerarJusto(i);
+  relogio();
   if(c.ab){chord(i);return}
   if(c.m)return pisar(i);
   sAbrir(revelar(i,i)); checar();
@@ -693,6 +884,7 @@ function chord(i){
 function marcarComo(i,tipo){        // toca de novo na mesma marca = tira
   const c=cel[i];
   if(!vivo||c.ab||c.boom)return;
+  if(gerado)relogio();
   c.fl = c.fl===tipo ? 0 : tipo;
   bandeiras=cel.reduce((s,x)=>s+(x.fl===1?1:0),0);
   pintar(i); if(c.fl)tab.children[i].classList.add('fincou');
@@ -736,8 +928,9 @@ function usarDica(i){
   const c=cel[i];
   if(!vivo||dicas<=0)return sairModoDica();
   if(c.ab){bip(220,.06,'sine',.04);return}          // casa já aberta: não gasta
-  if(!gerado){gerar(i);relogio()}                    // 1ª jogada: a escolhida nasce segura
-  dicas--;
+  if(!gerado)gerarJusto(i);
+  relogio();                                         // 1ª jogada: a escolhida nasce segura
+  dicas--; S().dicas++;
   if(c.m){
     c.fl=1; c.dica=true;
     bandeiras=cel.reduce((a,x)=>a+(x.fl===1?1:0),0);
@@ -751,6 +944,21 @@ function usarDica(i){
 }
 $('#btVoltar').onclick=()=>{limparAgenda();pararPular();limparAviso();pintarMapa();irPara(telaMapa);modal.classList.remove('on')};
 $('#btReiniciar').onclick=()=>abrirFase(fase);
+
+function retomar(sv){
+  st.dif=sv.d; abrirFase(sv.f); limparAgenda();
+  cel.forEach((c,i)=>{
+    const v=sv.c[i];
+    c.m=!!(v&1); c.ab=!!(v&2); c.boom=!!(v&4); c.dica=!!(v&8); c.fl=(v>>4)&3; c.rev=!!(v&64);
+  });
+  for(let i=0;i<cel.length;i++)cel[i].n=viz(i).filter(v=>cel[v].m).length;
+  gerado=true; limpa=sv.lp!==false; dicas=sv.h; tempo=sv.t; rei=sv.rk!==undefined?sv.rk:-1;
+  abertas=cel.reduce((a,c)=>a+(c.ab?1:0),0);
+  bandeiras=cel.reduce((a,c)=>a+(c.fl===1?1:0),0);
+  cel.forEach((_,i)=>pintar(i));
+  $('#cTempo').textContent=fmt(tempo);
+  atualizarHud(); atualizarMetas();
+}
 
 /* ---- toques ---- */
 let alvo=null,longo=null,usouLongo=false;
@@ -781,9 +989,11 @@ tab.addEventListener('contextmenu',e=>e.preventDefault());
 
 /* pisou numa mina: custa uma vida. A mina fica aberta e travada (já vale como marcada). */
 function pisar(i){
-  const p=P();
+  const p=P(); S().bombas++; limpa=false;
   if(p.vidas<=0)return perder(i);        // sem vida pra pagar essa: fim de jogo
-  p.vidas--; vidas=p.vidas; salvar();    // chega a 0 e ainda joga — no fio do bigode
+  const custo=(i===rei)?2:1;             // o Bomba-Rei leva duas
+  p.vidas=Math.max(0,p.vidas-custo); vidas=p.vidas; salvar();
+  if(custo>1)banner('👹 O Bomba-Rei! −2 ❤️');
   const c=cel[i];
   c.rev=true; c.boom=true; c.fl=1;
   bandeiras=cel.reduce((a,x)=>a+(x.fl===1?1:0),0);
@@ -792,13 +1002,42 @@ function pisar(i){
   sBum(); vib([25,45,70]); atualizarHud(); checar();
 }
 
+/* ---- regras de cenário ---- */
+function banner(txt){
+  const b=$('#banner'); b.innerHTML=txt; b.classList.remove('on'); void b.offsetWidth; b.classList.add('on');
+}
+function mare(){                                   // Praia: molha a faixa mais à esquerda
+  if(!vivo||!gerado)return;
+  for(let x=0;x<cols;x++){
+    const col=[];
+    for(let y=0;y<rows;y++){const i=y*cols+x; if(!cel[i].ab&&cel[i].fl!==1&&!cel[i].boom)col.push(i)}
+    if(!col.length)continue;
+    const seguras=col.filter(i=>!cel[i].m);
+    if(seguras.length){
+      seguras.forEach(i=>revelar(i,i));
+      banner('🌊 A maré molhou a coluna '+LETRAS[x]);
+      bip(420,.25,'sine',.05); checar();
+    }
+    return;
+  }
+}
+function congelar(){                               // Geleira: casa vazia volta a parecer fechada
+  if(!vivo)return;
+  const cand=[];
+  for(let i=0;i<cel.length;i++)if(cel[i].ab&&!cel[i].n&&!cel[i].gelo&&!cel[i].m)cand.push(i);
+  if(!cand.length)return;
+  const i=cand[(Math.random()*cand.length)|0];
+  cel[i].gelo=true; pintar(i); tab.children[i].classList.add('surge');
+  bip(1500,.08,'sine',.03);
+}
+
 /* ---- fim: vitória ---- */
 function checar(){
   atualizarHud();
   if(abertas===cel.length-minas)vencer();
 }
 function vencer(){
-  vivo=false; clearInterval(tick); tick=null;
+  vivo=false; clearInterval(tick); tick=null; clearInterval(tickRegra); limparPartida();
   const centro=((rows/2)|0)*cols+((cols/2)|0);
   cel.forEach((c,k)=>{if(c.m&&c.fl!==1){c.fl=1;pintar(k);anima(k,centro,'fincou')}});
   bandeiras=minas;
@@ -816,7 +1055,22 @@ function vencer(){
   const linhas=[fmt(tempo)+(novoRec?' · novo recorde 🏅':' · seu recorde: '+fmt(p.rec[fase]))];
   linhas.push(zerou ? 'jornada completa · coração cheio de novo'
                     : 'restam '+vidas+' ❤️ de '+d.vidas+' até o fim das 11');
+  if(limpa){
+    p.limpas=(p.limpas||0)+1;
+    if(p.limpas>=3){                                   // 3 fases seguidas sem um arranhão
+      p.limpas=0; p.vidas++; vidas=p.vidas; S().vidasGanhas++; atualizarHud();
+      linhas.push('🎁 <b>+1 ❤️</b> por 3 fases sem pisar em bomba · agora '+p.vidas);
+    }else{
+      linhas.push('fase limpa · <b>'+p.limpas+'/3</b> para ganhar 1 ❤️');
+    }
+  }else{
+    p.limpas=0;
+    linhas.push('pisou em bomba · a conta das 3 fases limpas recomeça');
+  }
   if(zerou){p.vidas=DIFS[st.dif].vidas; salvar()}            // jornada fechada: coração cheio de novo
+  const sa=S(); sa.fases++; sa.tempo+=tempo;
+  if(zerou){sa.jornadas++; if(!sa.melhor||tempo<sa.melhor)sa.melhor=tempo}
+  salvar();
   if(usouDica)linhas.push('usou dica → teto de 2 ⭐');
   else if(e<3)linhas.push('⭐⭐⭐ até '+fmt(par)+' · ⭐⭐ até '+fmt(par*2));
   ag(()=>caixa({
@@ -830,8 +1084,9 @@ function vencer(){
 
 /* ---- fim: derrota em 3 tempos ---- */
 function perder(i){
-  vivo=false; clearInterval(tick); tick=null; fatal=i;
-  acabou=true; faseMorte=fase; novaJornada();   // a jornada já volta pro começo aqui
+  vivo=false; clearInterval(tick); tick=null; clearInterval(tickRegra); fatal=i;
+  const sa=S(); sa.mortes[fase]=(sa.mortes[fase]||0)+1;
+  acabou=true; faseMorte=fase; novaJornada(); limparPartida();   // a jornada já volta pro começo aqui
   atualizarHud(); sBum(); vib([40,50,110]);
   cel[i].rev=true; pintar(i); tab.children[i].classList.add('surge');
   // 1) as minas e as bandeiras erradas aparecem em ondas
@@ -935,6 +1190,9 @@ function confete(){
     setTimeout(()=>d.remove(),2800);
   }
 }
+
+addEventListener('visibilitychange',()=>{if(document.hidden)salvarPartida()});
+addEventListener('pagehide',salvarPartida);
 
 /* ============ INÍCIO ============ */
 pintarMapa();
