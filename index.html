@@ -112,7 +112,6 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
   letter-spacing:.2px;padding:0 12px 7px;min-height:15px}
 .metas b{color:var(--ink2)}
 #board.dicando{box-shadow:inset 0 0 0 1px rgba(255,212,59,.5),0 0 22px rgba(255,212,59,.18)}
-.c.conf{box-shadow:inset 0 0 0 1px rgba(61,220,132,.6)!important}
 .chip.pouco span{animation:bater 1.1s ease-in-out infinite}
 @keyframes bater{0%,100%{transform:scale(1)}30%{transform:scale(1.22)}}
 #tabWrap{flex:1;display:flex;align-items:center;justify-content:center;padding:0 6px;
@@ -425,7 +424,7 @@ const FLAGICO='<svg viewBox="0 0 24 24" width="100%" height="100%">'+
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='1.7';
+const VERSAO='1.8';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,som:true,prog:{},sta:{}};
@@ -460,7 +459,7 @@ function salvarPartida(){
   try{
     localStorage.setItem(CHAVE_P,JSON.stringify({
       d:st.dif, f:fase, t:tempo, h:dicas, lp:limpa, rk:rei,
-      c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.dica?8:0)|(c.fl<<4)|(c.rev?64:0)|(c.show?128:0))
+      c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.fl<<4)|(c.rev?64:0)|(c.show?128:0))
     }));
   }catch(e){}
 }
@@ -643,7 +642,7 @@ function abrirFase(i){
   regra=f.regra||'';
   cols=f.cols; rows=f.rows; minas=minasDe(i,st.dif); dicas=dicasDe(i,st.dif); vidas=P().vidas;
   aplicarTema(f.tema);
-  cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,fl:0,rev:false,boom:false,dica:false,gelo:false,show:false}));
+  cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,fl:0,rev:false,boom:false,gelo:false,show:false}));
   gerado=false; vivo=true; bandeiras=0; abertas=0; tempo=0; fatal=-1; espiando=false; limpa=true;
   clearInterval(tick); tick=null;
   $('#tituloFase').innerHTML=f.ic+' '+f.nm+
@@ -716,7 +715,7 @@ function pintar(i){
   }else if(espiando&&c.n){
     d.classList.add('ab','espia'); d.textContent=c.n; d.classList.add('n'+c.n);
   }else if(c.fl===1){
-    d.innerHTML=BAND; d.classList.add('bnd'); if(c.dica)d.classList.add('conf');
+    d.innerHTML=BAND; d.classList.add('bnd');
   }else{
     d.textContent='';
   }
@@ -962,10 +961,11 @@ function usarDica(i){
   relogio();                                         // 1ª jogada: a escolhida nasce segura
   dicas--; S().dicas++;
   if(c.m){
-    c.fl=1; c.dica=true;
+    c.show=true; c.fl=1; c.rev=true;                 // a bomba aparece, como no Revelar
     bandeiras=cel.reduce((a,x)=>a+(x.fl===1?1:0),0);
-    pintar(i); tab.children[i].classList.add('fincou');
-    bip(300,.2,'square',.06); vib([20,40,20]);       // grave = tem mina aí
+    pintar(i); tab.children[i].classList.add('surge');
+    banner('💣 Tinha bomba em '+coord(i)+' · achada de graça');
+    bip(300,.2,'square',.06); vib([20,40,20]);
   }else{
     const n=revelar(i,i); tab.children[i].classList.add('dica');
     bip(1180,.12,'sine',.06); sAbrir(n); vib(15);    // agudo = pode pisar
@@ -979,7 +979,7 @@ function retomar(sv){
   st.dif=sv.d; abrirFase(sv.f); limparAgenda();
   cel.forEach((c,i)=>{
     const v=sv.c[i];
-    c.m=!!(v&1); c.ab=!!(v&2); c.boom=!!(v&4); c.dica=!!(v&8); c.rev=!!(v&64); c.show=!!(v&128);
+    c.m=!!(v&1); c.ab=!!(v&2); c.boom=!!(v&4); c.rev=!!(v&64); c.show=!!(v&128);
     c.fl=((v>>4)&3)===1?1:0;                       // marca amarela antiga vira nada
   });
   for(let i=0;i<cel.length;i++)cel[i].n=viz(i).filter(v=>cel[v].m).length;

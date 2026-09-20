@@ -79,10 +79,11 @@ Regras que fogem do campo minado clássico:
 
 - **A primeira jogada nunca explode:** as minas só são sorteadas depois do 1º toque,
   excluindo a casa tocada e as 8 vizinhas (`gerar(seguro)`), então sempre abre uma clareira.
-- **Dicas** (1 a 3 por fase) são um **detector apontado pelo jogador**: toca no chip 💡, o
-  tabuleiro entra em modo dica e a casa que você escolher conta a verdade — abre se for segura,
-  ou vira bandeira 🚩 com borda verde (`c.dica`) se for mina. **Nunca explode nem custa vida.**
-  Casa já aberta não gasta. Usar dica limita a 2 ⭐.
+- **Dicas** (1 a 3 por fase) são um **detector apontado pelo jogador**: toca no chip 💡 e a casa
+  que você escolher conta a verdade — abre se for segura, ou **expõe a bomba** (mesmo `c.show` do
+  Revelar) se for mina. **Nunca explode nem custa vida.** Casa já aberta não gasta. Teto de 2 ⭐.
+  ⚠️ Nunca usar a classe CSS `.conf` numa célula: ela é do **confete** (`position:absolute;top:-20px`)
+  e joga a casa pra fora do tabuleiro. Esse bug chegou a ser publicado (v1.7).
 - **Marca** (`cel[i].fl`): `0` nada · `1` 🚩 certeza (desconta do contador, protege do toque,
   conta no chord). A marca amarela de "dúvida" **foi removida** em 20/09/2026 — o botão dela
   virou o Revelar. Partida salva com `fl===2` é normalizada para `0` ao retomar.
@@ -113,7 +114,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.7).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.8).
 
 ## Como testar (workflow da suíte)
 
