@@ -69,10 +69,16 @@ Regras que fogem do campo minado clássico:
 
 ## Ajustes dentro do jogo
 
-Rodapé do mapa → **⚙️ Ajustes**: som/vibração, **🔄 Atualizar o jogo** e zerar progresso.
+Rodapé do mapa → **⚙️ Ajustes**: som/vibração, **🔄 Atualizar o jogo**, **↩️ Recomeçar a
+jornada** (volta pro Quintal com o coração cheio, guardando estrelas) e **🗑️ Apagar tudo**
+(as 4 dificuldades, como na primeira vez que abriu).
+
+⚠️ As confirmações são um modal do próprio app (`confirmar()`), **nunca `confirm()`** —
+o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso que o Diego
+não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.2).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.3).
 
 ## Como testar (workflow da suíte)
 

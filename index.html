@@ -294,7 +294,8 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
       <div class="lista">
         <button class="linha" id="lnSom"><span>🔊 Som e vibração</span><b id="vSom">ligado</b></button>
         <button class="linha" id="lnUp"><span>🔄 Atualizar o jogo</span><b id="vUp">v1.0</b></button>
-        <button class="linha ruim" id="lnZerar"><span>🗑️ Zerar progresso</span><b id="vZerar">0 ⭐</b></button>
+        <button class="linha" id="lnRecomecar"><span>↩️ Recomeçar a jornada</span><b id="vRec">fase 1</b></button>
+        <button class="linha ruim" id="lnZerar"><span>🗑️ Apagar tudo e começar do zero</span><b id="vZerar">0 ⭐</b></button>
       </div>
       <p class="rodapinho" id="pRodape">Minado 11 · toque em Atualizar depois de mudar o jogo</p>
       <div class="acoes"><button class="pri" id="lnFechar">Fechar</button></div>
@@ -367,7 +368,7 @@ const FLAGICO='<svg viewBox="0 0 24 24" width="100%" height="100%">'+
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='1.2';
+const VERSAO='1.3';
 const CHAVE='minado11.v1';
 let st={dif:1,som:true,prog:{}};
 try{
@@ -452,7 +453,8 @@ const cfg=$('#cfg');
 function abrirCfg(){
   $('#vSom').textContent=st.som?'ligado':'desligado';
   $('#vUp').textContent='v'+VERSAO;
-  $('#vZerar').textContent=Object.values(P().est).reduce((a,b)=>a+b,0)+' ⭐';
+  $('#vZerar').textContent=Object.values(st.prog).reduce((a,p)=>a+Object.values(p.est||{}).reduce((x,y)=>x+y,0),0)+' ⭐';
+  $('#vRec').textContent='fase '+(P().max+1)+' · ❤️ '+P().vidas;
   $('#pRodape').textContent='Minado 11 · v'+VERSAO;
   cfg.classList.add('on');
 }
@@ -463,11 +465,33 @@ $('#lnSom').onclick=()=>{
   st.som=!st.som; salvar(); $('#vSom').textContent=st.som?'ligado':'desligado';
   if(st.som){sFlag();vib(15)}
 };
+function confirmar(h2,txt,rotulo,acao){
+  cfg.classList.remove('on');
+  caixa({big:'⚠️',h2:h2,p:txt,bts:[
+    [rotulo,()=>{modal.classList.remove('on');acao()},'pri'],
+    ['Deixa quieto',()=>{modal.classList.remove('on');abrirCfg()},'sec']
+  ]});
+}
+/* volta pro Quintal com o coração cheio, mas guarda as estrelas */
+$('#lnRecomecar').onclick=()=>{
+  const d=DIFS[st.dif];
+  confirmar('Recomeçar a jornada?',
+    'As 11 fases do '+d.nm+' voltam a ficar trancadas e você joga de novo do Quintal, '+
+    'com as '+d.vidas+' vidas cheias.<br>Suas estrelas e recordes continuam guardados.',
+    'Recomeçar do Quintal',
+    ()=>{novaJornada(); pintarMapa(); irPara(telaMapa); bip(660,.1,'triangle',.06)});
+};
+/* apaga tudo mesmo: as 4 dificuldades, estrelas, recordes e vidas */
 $('#lnZerar').onclick=()=>{
-  const d=DIFS[st.dif].nm;
-  if(!confirm('Zerar o progresso de '+d+'? As 11 fases voltam a ficar trancadas nessa dificuldade.'))return;
-  st.prog[st.dif]={max:0,est:{},rec:{},vidas:DIFS[st.dif].vidas}; salvar(); pintarMapa();
-  $('#vZerar').textContent='0 ⭐'; cfg.classList.remove('on');
+  confirmar('Apagar tudo?',
+    'Some com o progresso das <b>4 dificuldades</b>: fases destravadas, estrelas, recordes e vidas.<br>'+
+    'O jogo fica igual à primeira vez que você abriu. Não dá pra desfazer.',
+    'Apagar tudo',
+    ()=>{
+      try{localStorage.removeItem(CHAVE)}catch(e){}
+      st={dif:1,som:st.som,prog:{}}; salvar();
+      pintarMapa(); irPara(telaMapa); bip(300,.2,'sawtooth',.06);
+    });
 };
 /* pega a versão nova do jogo: limpa o cache do app e recarrega sem cache */
 $('#lnUp').onclick=async function(){
