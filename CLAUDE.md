@@ -11,8 +11,32 @@ Jogo **single-file** (`index.html`) da suíte pessoal. PWA instalável, **100% o
 
 ## O jogo
 
-11 fases em dificuldade crescente (5×5 com 3 minas → 11×14 com 38), cada uma vale até
-3 ⭐ pelo tempo. Desbloqueio sequencial, 33 ⭐ no total.
+11 fases em dificuldade crescente (5×5 → 11×14), cada uma vale até 3 ⭐ pelo tempo.
+Desbloqueio sequencial, 33 ⭐ por dificuldade.
+
+**4 dificuldades** (`DIFS`), escolhidas na faixa no topo do mapa. Cada uma tem **vidas**,
+multiplicador de minas, ajuste de dicas e de tempo-par — e **progresso próprio**
+(`st.prog[dif] = {max, est, rec}`; `P()` devolve o da atual):
+
+| | vidas | minas | dicas | par |
+|---|---|---|---|---|
+| 🍃 Brisa | 7 | ×0,75 | +1 | ×1,6 |
+| 🎯 Na Medida | 5 | ×1,00 | — | ×1,0 |
+| 🥶 Suor Frio | 4 | ×1,20 | — | ×0,8 |
+| 💀 Sem Volta | 3 | ×1,40 | −1 | ×0,65 |
+
+`minasDe()` põe um teto de **33% do campo** e nunca passa de `total-9` (senão a 1ª jogada
+segura fica impossível). Na fase 11 isso dá 29 / 38 / 46 / 50 minas.
+
+**Vidas são por fase**, não pela jornada — recomeçam cheias a cada fase. Pisar numa mina
+custa 1 ❤️ e **não acaba o jogo**: a casa vira 💥 travada (`c.boom`, com `fl=1`, então já
+conta como marcada no contador e no chord) e a partida segue. A sequência de derrota só
+roda quando as vidas zeram.
+
+**Tema por fase** (`FASES[i].tema`): `aplicarTema()` troca as variáveis CSS `--tampa/--tampa2/
+--aberta`, o fundo da tela do jogo (`ceu` + `luz`) e enche o `#cenario` com 5 emojis
+(`deco`) a 13% de opacidade nos cantos. O card do mapa herda o mesmo tom. Regra: **levemente**
+temático — `ab` (casa aberta) tem que continuar escuro ou os números perdem contraste.
 
 Regras que fogem do campo minado clássico:
 
@@ -39,7 +63,7 @@ Regras que fogem do campo minado clássico:
 Rodapé do mapa → **⚙️ Ajustes**: som/vibração, **🔄 Atualizar o jogo** e zerar progresso.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada.
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.1).
 
 ## Como testar (workflow da suíte)
 

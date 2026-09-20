@@ -60,6 +60,15 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .cab h1{font-size:30px;font-weight:800;letter-spacing:-1px;line-height:1}
 .cab h1 em{font-style:normal;color:var(--acc)}
 .cab p{font-size:12px;color:var(--ink3);margin-top:6px;font-weight:600;letter-spacing:.3px}
+.difs{display:flex;gap:6px;padding:0 16px 10px;flex-shrink:0}
+.dif{flex:1;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:7px 2px 6px;
+  display:flex;flex-direction:column;align-items:center;gap:1px;transition:transform .1s}
+.dif:active{transform:scale(.94)}
+.dif .di{font-size:15px;line-height:1.15}
+.dif .dn{font-size:8.5px;font-weight:800;color:var(--ink3);white-space:nowrap;letter-spacing:.2px}
+.dif .dv{font-size:8px;font-weight:700;color:var(--ink3);opacity:.65}
+.dif.on{border-color:currentColor;box-shadow:0 0 0 1px currentColor,0 4px 16px rgba(0,0,0,.35)}
+.dif.on .dn,.dif.on .dv{color:currentColor;opacity:1}
 .trilha{flex:1;overflow-y:auto;padding:4px 18px 20px;display:grid;grid-template-columns:repeat(3,1fr);
   gap:10px;align-content:start}
 .fase{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:10px 4px 8px;
@@ -88,7 +97,19 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .chip{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:5px 10px;
   font-size:14px;font-weight:800;font-variant-numeric:tabular-nums;display:flex;align-items:center;gap:5px}
 .chip span{font-size:13px}
-#tabWrap{flex:1;display:flex;align-items:center;justify-content:center;padding:0 6px;overflow:hidden}
+.chip.pouco{border-color:rgba(255,92,92,.5);color:#FF9B9B}
+.chip.pouco span{animation:bater 1.1s ease-in-out infinite}
+@keyframes bater{0%,100%{transform:scale(1)}30%{transform:scale(1.22)}}
+#tabWrap{flex:1;display:flex;align-items:center;justify-content:center;padding:0 6px;
+  overflow:hidden;position:relative}
+#cenario{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.dc{position:absolute;opacity:.13;filter:saturate(.75);line-height:1}
+.dc.d0{top:1%;left:4%;font-size:34px;transform:rotate(-12deg)}
+.dc.d1{top:5%;right:5%;font-size:26px;transform:rotate(10deg)}
+.dc.d2{bottom:3%;left:7%;font-size:30px;transform:rotate(7deg)}
+.dc.d3{bottom:6%;right:6%;font-size:23px;transform:rotate(-9deg)}
+.dc.d4{top:46%;right:1.5%;font-size:19px;opacity:.08;transform:rotate(14deg)}
+#board{position:relative;z-index:1}
 #board{display:grid;grid-template-columns:var(--reg) auto;grid-template-rows:var(--reg) auto;
   gap:2px;padding:6px;border-radius:16px;background:rgba(255,255,255,.035);
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
@@ -108,6 +129,13 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .c.bnd{background:linear-gradient(160deg,#3A3050,#2C2440)}
 .c.certa{background:linear-gradient(160deg,#1E4A32,#17381F);box-shadow:inset 0 0 0 1px rgba(61,220,132,.5)}
 .c.mina{background:#2A1622;box-shadow:inset 0 0 0 1px rgba(255,92,92,.35)}
+.c.boom{background:#3A1216!important;box-shadow:inset 0 0 0 1px rgba(255,92,92,.45)!important}
+.c.estourou{animation:estouro .5s ease-out}
+@keyframes estouro{0%{transform:scale(1);background:#FFE9A8}30%{transform:scale(1.35);background:var(--bad)}
+  100%{transform:scale(1)}}
+@keyframes chacoalha{0%,100%{transform:translate(0,0)}25%{transform:translate(-4px,2px)}
+  60%{transform:translate(3px,-2px)}}
+#board.chacoalha{animation:chacoalha .32s ease-out}
 .c.bum{background:var(--bad)!important;box-shadow:0 0 22px rgba(255,92,92,.7)!important}
 .c.erro{background:rgba(255,92,92,.18);box-shadow:inset 0 0 0 1px rgba(255,92,92,.45)}
 .c.espia{opacity:.5;background:rgba(255,255,255,.05)}
@@ -222,6 +250,7 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
       <h1>Minado <em>11</em></h1>
       <p>ONZE FASES · NENHUMA PISADA EM FALSO</p>
     </div>
+    <div class="difs" id="difs"></div>
     <div class="trilha" id="trilha"></div>
     <div class="rodape">
       <div class="tot" id="tot">0 / 33 ⭐</div>
@@ -237,11 +266,13 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
       <button class="voltar" id="btReiniciar">↻</button>
     </div>
     <div class="placar">
+      <div class="chip"><span>❤️</span><b id="cVidas">5</b></div>
       <div class="chip"><span>💣</span><b id="cMinas">0</b></div>
       <div class="chip"><span>⏱</span><b id="cTempo">0:00</b></div>
       <button class="chip dica" id="chipDica"><span>💡</span><b id="cDicas">0</b></button>
     </div>
     <div id="tabWrap">
+      <div id="cenario"></div>
       <div id="board">
         <div></div>
         <div id="regC"></div>
@@ -277,18 +308,54 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 <script>
 /* ============ FASES ============ */
 const FASES=[
- {ic:'🌱',nm:'Quintal de casa',  cols:5, rows:5,  minas:3,  dicas:1, par:15},
- {ic:'🐔',nm:'Galinheiro',       cols:6, rows:6,  minas:4,  dicas:1, par:25},
- {ic:'🌳',nm:'Bosque',           cols:7, rows:7,  minas:6,  dicas:1, par:40},
- {ic:'🏖️',nm:'Praia minada',     cols:8, rows:8,  minas:9,  dicas:1, par:55},
- {ic:'🏚️',nm:'Vila fantasma',    cols:8, rows:9,  minas:11, dicas:2, par:70},
- {ic:'⛏️',nm:'Mina velha',       cols:9, rows:9,  minas:14, dicas:2, par:90},
- {ic:'🌋',nm:'Cratera',          cols:9, rows:11, minas:18, dicas:2, par:110},
- {ic:'❄️',nm:'Geleira',          cols:10,rows:11, minas:22, dicas:2, par:135},
- {ic:'🏜️',nm:'Deserto',          cols:10,rows:12, minas:26, dicas:3, par:165},
- {ic:'🌌',nm:'Órbita',           cols:11,rows:13, minas:32, dicas:3, par:200},
- {ic:'👹',nm:'Covil do Bomba-Rei',cols:11,rows:14,minas:38, dicas:3, par:250},
+ {ic:'🌱',nm:'Quintal de casa',   cols:5, rows:5,  minas:3,  dicas:1, par:15,
+  tema:{ceu:'#0C1710', luz:'rgba(120,220,140,.09)', t1:'#33513A', t2:'#2A4431', ab:'#16241A',
+        deco:['🌿','🌼','🐝','🌱','🍃']}},
+ {ic:'🐔',nm:'Galinheiro',        cols:6, rows:6,  minas:4,  dicas:1, par:25,
+  tema:{ceu:'#16120B', luz:'rgba(240,200,110,.09)', t1:'#4A4029', t2:'#3E3622', ab:'#221C11',
+        deco:['🌾','🥚','🐓','🪵','🌾']}},
+ {ic:'🌳',nm:'Bosque',            cols:7, rows:7,  minas:6,  dicas:1, par:40,
+  tema:{ceu:'#0A1410', luz:'rgba(90,200,150,.08)',  t1:'#2B4438', t2:'#233A2F', ab:'#13211B',
+        deco:['🌲','🍄','🦌','🍂','🌲']}},
+ {ic:'🏖️',nm:'Praia minada',      cols:8, rows:8,  minas:9,  dicas:1, par:55,
+  tema:{ceu:'#0B1520', luz:'rgba(120,200,255,.09)', t1:'#4E4530', t2:'#443C29', ab:'#241F14',
+        deco:['🐚','🌊','⛱️','🦀','🌴']}},
+ {ic:'🏚️',nm:'Vila fantasma',     cols:8, rows:9,  minas:11, dicas:2, par:70,
+  tema:{ceu:'#100E17', luz:'rgba(170,140,255,.09)', t1:'#3A3548', t2:'#302C3D', ab:'#1B1826',
+        deco:['🕯️','🕸️','🦇','🏚️','🌫️']}},
+ {ic:'⛏️',nm:'Mina velha',        cols:9, rows:9,  minas:14, dicas:2, par:90,
+  tema:{ceu:'#120D09', luz:'rgba(255,190,110,.08)', t1:'#453528', t2:'#3A2C21', ab:'#201812',
+        deco:['⛏️','💎','🪨','🔦','🕳️']}},
+ {ic:'🌋',nm:'Cratera',           cols:9, rows:11, minas:18, dicas:2, par:110,
+  tema:{ceu:'#170A08', luz:'rgba(255,120,60,.11)',  t1:'#4C2E26', t2:'#402620', ab:'#241310',
+        deco:['🌋','🔥','🪨','💨','🔥']}},
+ {ic:'❄️',nm:'Geleira',           cols:10,rows:11, minas:22, dicas:2, par:135,
+  tema:{ceu:'#0A141C', luz:'rgba(140,215,255,.10)', t1:'#2E4457', t2:'#273A4A', ab:'#14212B',
+        deco:['❄️','🧊','🐧','🌨️','❄️']}},
+ {ic:'🏜️',nm:'Deserto',           cols:10,rows:12, minas:26, dicas:3, par:165,
+  tema:{ceu:'#150F08', luz:'rgba(255,200,90,.09)',  t1:'#4F4229', t2:'#443922', ab:'#241D11',
+        deco:['🌵','☀️','🦂','🏜️','🌵']}},
+ {ic:'🌌',nm:'Órbita',            cols:11,rows:13, minas:32, dicas:3, par:200,
+  tema:{ceu:'#0A0917', luz:'rgba(150,130,255,.11)', t1:'#322F55', t2:'#2A2848', ab:'#17162B',
+        deco:['🚀','⭐','🛰️','🌙','✨']}},
+ {ic:'👹',nm:'Covil do Bomba-Rei',cols:11,rows:14, minas:38, dicas:3, par:250,
+  tema:{ceu:'#160709', luz:'rgba(255,80,80,.11)',   t1:'#4A2430', t2:'#3E1E28', ab:'#230F16',
+        deco:['👹','💀','🔥','⚔️','💀']}},
 ];
+/* dificuldade: muda as vidas, quantas minas cabem no campo, as dicas e o tempo dos ⭐ */
+const DIFS=[
+ {ic:'🍃',nm:'Brisa',     vidas:7, mult:0.75, dica: 1, par:1.6,  cor:'#3DDC84'},
+ {ic:'🎯',nm:'Na Medida', vidas:5, mult:1.00, dica: 0, par:1.0,  cor:'#FFD43B'},
+ {ic:'🥶',nm:'Suor Frio', vidas:4, mult:1.20, dica: 0, par:0.8,  cor:'#5AA9FF'},
+ {ic:'💀',nm:'Sem Volta', vidas:3, mult:1.40, dica:-1, par:0.65, cor:'#FF5C5C'},
+];
+/* nº de minas da fase na dificuldade escolhida (com teto de 33% do campo) */
+function minasDe(i,d){
+  const f=FASES[i], total=f.cols*f.rows;
+  return Math.max(1,Math.min(Math.round(f.minas*DIFS[d].mult),Math.floor(total*0.33),total-9));
+}
+const dicasDe=(i,d)=>Math.max(1,FASES[i].dicas+DIFS[d].dica);
+const parDe=(i,d)=>Math.round(FASES[i].par*DIFS[d].par);
 const LETRAS='ABCDEFGHIJK';
 const FLAG=c=>'<svg viewBox="0 0 24 24" width="72%" height="72%">'+
   '<path d="M7 3.4v17.2" stroke="#C7D0E0" stroke-width="2.2" stroke-linecap="round" fill="none"/>'+
@@ -300,10 +367,18 @@ const FLAGICO='<svg viewBox="0 0 24 24" width="100%" height="100%">'+
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='1.0';
+const VERSAO='1.1';
 const CHAVE='minado11.v1';
-let st={max:0,est:{},rec:{},som:true};
-try{const s=JSON.parse(localStorage.getItem(CHAVE));if(s)st={...st,...s};}catch(e){}
+let st={dif:1,som:true,prog:{}};
+try{
+  const s=JSON.parse(localStorage.getItem(CHAVE));
+  if(s){
+    if(s.prog)st={...st,...s};
+    else st={dif:1,som:s.som!==false,prog:{1:{max:s.max||0,est:s.est||{},rec:s.rec||{}}}};  // save v1
+  }
+}catch(e){}
+/* progresso da dificuldade atual */
+function P(){ return st.prog[st.dif] || (st.prog[st.dif]={max:0,est:{},rec:{}}) }
 const salvar=()=>{try{localStorage.setItem(CHAVE,JSON.stringify(st))}catch(e){}};
 
 /* ============ SOM ============ */
@@ -336,27 +411,40 @@ const ag=(fn,ms)=>{const id=setTimeout(fn,ms);agenda.push(id);return id};
 const limparAgenda=()=>{agenda.forEach(clearTimeout);agenda=[]};
 
 /* ============ MAPA ============ */
-function pintarMapa(){
-  const t=$('#trilha'); t.innerHTML='';
-  let total=0;
-  FASES.forEach((f,i)=>{
-    const liberada=i<=st.max, e=st.est[i]||0; total+=e;
+function pintarDifs(){
+  const c=$('#difs'); c.innerHTML='';
+  DIFS.forEach((d,i)=>{
     const b=document.createElement('button');
-    b.className='fase '+(liberada?(e?'ok':(i===st.max?'prox':'')):'trv');
+    b.className='dif'+(i===st.dif?' on':''); b.style.color=d.cor;
+    b.innerHTML='<div class="di">'+d.ic+'</div><div class="dn">'+d.nm+'</div>'+
+                '<div class="dv">❤ '+d.vidas+'</div>';
+    b.onclick=()=>{st.dif=i;salvar();pintarMapa();bip(480+i*110,.06,'sine',.05);vib(12)};
+    c.appendChild(b);
+  });
+}
+function pintarMapa(){
+  pintarDifs();
+  const t=$('#trilha'); t.innerHTML='';
+  const p=P(); let total=0;
+  FASES.forEach((f,i)=>{
+    const liberada=i<=p.max, e=p.est[i]||0; total+=e;
+    const b=document.createElement('button');
+    b.className='fase '+(liberada?(e?'ok':(i===p.max?'prox':'')):'trv');
+    if(liberada)b.style.background='linear-gradient(160deg,'+f.tema.ab+',var(--card))';
     b.innerHTML='<div class="ic">'+(liberada?f.ic:'🔒')+'</div>'+
                 '<div class="nm">'+f.nm+'</div>'+
-                '<div class="st">'+(e?'⭐'.repeat(e):(liberada?'· · ·':''))+'</div>';
+                '<div class="st">'+(e?'⭐'.repeat(e):(liberada?minasDe(i,st.dif)+' 💣':''))+'</div>';
     if(liberada)b.onclick=()=>abrirFase(i);
     t.appendChild(b);
   });
-  $('#tot').textContent=total+' / 33 ⭐';
+  $('#tot').textContent=total+' / 33 ⭐ · '+DIFS[st.dif].nm;
 }
 /* ---- ajustes ---- */
 const cfg=$('#cfg');
 function abrirCfg(){
   $('#vSom').textContent=st.som?'ligado':'desligado';
   $('#vUp').textContent='v'+VERSAO;
-  $('#vZerar').textContent=Object.values(st.est).reduce((a,b)=>a+b,0)+' ⭐';
+  $('#vZerar').textContent=Object.values(P().est).reduce((a,b)=>a+b,0)+' ⭐';
   $('#pRodape').textContent='Minado 11 · v'+VERSAO;
   cfg.classList.add('on');
 }
@@ -368,8 +456,9 @@ $('#lnSom').onclick=()=>{
   if(st.som){sFlag();vib(15)}
 };
 $('#lnZerar').onclick=()=>{
-  if(!confirm('Zerar todo o progresso? As 11 fases voltam a ficar trancadas.'))return;
-  st={max:0,est:{},rec:{},som:st.som}; salvar(); pintarMapa();
+  const d=DIFS[st.dif].nm;
+  if(!confirm('Zerar o progresso de '+d+'? As 11 fases voltam a ficar trancadas nessa dificuldade.'))return;
+  st.prog[st.dif]={max:0,est:{},rec:{}}; salvar(); pintarMapa();
   $('#vZerar').textContent='0 ⭐'; cfg.classList.remove('on');
 };
 /* pega a versão nova do jogo: limpa o cache do app e recarrega sem cache */
@@ -401,21 +490,29 @@ function irPara(tela){
 
 /* ============ JOGO ============ */
 let fase=0,cols=0,rows=0,minas=0,cel=[],gerado=false,vivo=false,modo=0;
-let bandeiras=0,abertas=0,dicas=0,t0=0,tick=null,tempo=0,fatal=-1,espiando=false,pularAtivo=false;
+let bandeiras=0,abertas=0,dicas=0,t0=0,tick=null,tempo=0,fatal=-1,espiando=false,pularAtivo=false,vidas=0;
 
 function abrirFase(i){
   limparAgenda(); pararPular(); limparAviso();
   flash.classList.remove('on'); app.classList.remove('treme');
-  fase=i; const f=FASES[i];
-  cols=f.cols; rows=f.rows; minas=f.minas; dicas=f.dicas;
-  cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,fl:0,rev:false}));
+  fase=i; const f=FASES[i], d=DIFS[st.dif];
+  cols=f.cols; rows=f.rows; minas=minasDe(i,st.dif); dicas=dicasDe(i,st.dif); vidas=d.vidas;
+  aplicarTema(f.tema);
+  cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,fl:0,rev:false,boom:false}));
   gerado=false; vivo=true; bandeiras=0; abertas=0; tempo=0; fatal=-1; espiando=false;
   clearInterval(tick); tick=null;
-  $('#tituloFase').innerHTML=f.ic+' '+f.nm+'<small>FASE '+(i+1)+' DE 11</small>';
+  $('#tituloFase').innerHTML=f.ic+' '+f.nm+
+    '<small>FASE '+(i+1)+' DE 11 · '+d.nm.toUpperCase()+'</small>';
   modal.classList.remove('on');
   irPara(telaJogo);
   desenhar(); atualizarHud(); setModo(0);
   ajustar(); requestAnimationFrame(ajustar);   // já nasce no tamanho certo, sem piscar grande
+}
+function aplicarTema(t){
+  const r=document.documentElement.style;
+  r.setProperty('--tampa',t.t1); r.setProperty('--tampa2',t.t2); r.setProperty('--aberta',t.ab);
+  telaJogo.style.background='radial-gradient(75% 45% at 50% 6%,'+t.luz+',transparent 72%),'+t.ceu;
+  $('#cenario').innerHTML=t.deco.map((e,k)=>'<span class="dc d'+k+'">'+e+'</span>').join('');
 }
 function ajustar(){
   const g=3, fixo=12+15+2+6;
@@ -441,6 +538,7 @@ function desenhar(){
 function pintar(i){
   const c=cel[i], d=tab.children[i]; if(!d)return;
   d.className='c'; d.style.removeProperty('--d');
+  if(c.boom){d.textContent='💥';d.classList.add('ab','boom');return}
   if(c.rev){
     if(c.m&&c.fl===1){d.innerHTML=BAND;d.classList.add('bnd','certa');return}
     if(c.m){d.textContent='💣';d.classList.add('ab',c.fl===2?'quase':'mina');if(i===fatal)d.classList.add('bum');return}
@@ -461,6 +559,8 @@ function pintar(i){
   }
 }
 function atualizarHud(){
+  $('#cVidas').textContent=vidas;
+  $('#cVidas').parentElement.classList.toggle('pouco',vidas<=1);
   $('#cMinas').textContent=Math.max(0,minas-bandeiras);
   $('#cDicas').textContent=dicas;
   $('#cTempo').textContent=fmt(tempo);
@@ -516,7 +616,7 @@ function cavar(i){
   if(!vivo||c.fl===1)return;
   if(!gerado){gerar(i);relogio()}
   if(c.ab){chord(i);return}
-  if(c.m)return perder(i);
+  if(c.m)return pisar(i);
   sAbrir(revelar(i,i)); checar();
 }
 function chord(i){
@@ -526,13 +626,13 @@ function chord(i){
   const abrir=v.filter(k=>cel[k].fl!==1&&!cel[k].ab);
   if(!abrir.length)return;
   const bomba=abrir.find(k=>cel[k].m);
-  if(bomba!==undefined)return perder(bomba);
+  if(bomba!==undefined)return pisar(bomba);
   let n=0; abrir.forEach(k=>{n+=revelar(k,i)});
   sAbrir(n); checar();
 }
 function marcarComo(i,tipo){        // toca de novo na mesma marca = tira
   const c=cel[i];
-  if(!vivo||c.ab)return;
+  if(!vivo||c.ab||c.boom)return;
   c.fl = c.fl===tipo ? 0 : tipo;
   bandeiras=cel.reduce((s,x)=>s+(x.fl===1?1:0),0);
   pintar(i); if(c.fl)tab.children[i].classList.add('fincou');
@@ -540,7 +640,7 @@ function marcarComo(i,tipo){        // toca de novo na mesma marca = tira
 }
 function bandeira(i){
   const c=cel[i];
-  if(!vivo||c.ab)return;
+  if(!vivo||c.ab||c.boom)return;
   c.fl=(c.fl+1)%3;                       // nada -> bandeira -> talvez -> nada
   bandeiras=cel.reduce((s,x)=>s+(x.fl===1?1:0),0);
   pintar(i); if(c.fl)tab.children[i].classList.add('fincou');
@@ -595,6 +695,18 @@ tab.addEventListener('pointercancel',cancelar);
 tab.addEventListener('pointerleave',cancelar);
 tab.addEventListener('contextmenu',e=>e.preventDefault());
 
+/* pisou numa mina: custa uma vida. A mina fica aberta e travada (já vale como marcada). */
+function pisar(i){
+  vidas--;
+  if(vidas<=0)return perder(i);
+  const c=cel[i];
+  c.rev=true; c.boom=true; c.fl=1;
+  bandeiras=cel.reduce((a,x)=>a+(x.fl===1?1:0),0);
+  pintar(i); tab.children[i].classList.add('estourou');
+  const b=$('#board'); b.classList.remove('chacoalha'); void b.offsetWidth; b.classList.add('chacoalha');
+  sBum(); vib([25,45,70]); atualizarHud(); checar();
+}
+
 /* ---- fim: vitória ---- */
 function checar(){
   atualizarHud();
@@ -606,21 +718,24 @@ function vencer(){
   cel.forEach((c,k)=>{if(c.m&&c.fl!==1){c.fl=1;pintar(k);anima(k,centro,'fincou')}});
   bandeiras=minas;
   atualizarHud(); sWin(); vib([30,40,30]); confete();
-  const f=FASES[fase], usouDica=f.dicas-dicas>0;
-  let e = tempo<=f.par?3 : (tempo<=f.par*2?2:1);
+  const d=DIFS[st.dif], p=P(), par=parDe(fase,st.dif);
+  const usouDica=dicasDe(fase,st.dif)-dicas>0;
+  let e = tempo<=par?3 : (tempo<=par*2?2:1);
   if(usouDica)e=Math.min(e,2);
-  const rec=st.rec[fase], novoRec=!rec||tempo<rec;
-  if(novoRec)st.rec[fase]=tempo;
-  st.est[fase]=Math.max(st.est[fase]||0,e);
-  if(fase+1>st.max)st.max=Math.min(fase+1,FASES.length-1);
+  const rec=p.rec[fase], novoRec=!rec||tempo<rec;
+  if(novoRec)p.rec[fase]=tempo;
+  p.est[fase]=Math.max(p.est[fase]||0,e);
+  if(fase+1>p.max)p.max=Math.min(fase+1,FASES.length-1);
   salvar();
   const zerou=fase===FASES.length-1;
-  const linhas=[fmt(tempo)+(novoRec?' · novo recorde 🏅':' · seu recorde: '+fmt(st.rec[fase]))];
+  const perdeu=d.vidas-vidas;
+  const linhas=[fmt(tempo)+(novoRec?' · novo recorde 🏅':' · seu recorde: '+fmt(p.rec[fase]))];
+  linhas.push(perdeu? 'sobrou '+vidas+' ❤️ de '+d.vidas : 'inteiro, sem perder ❤️');
   if(usouDica)linhas.push('usou dica → máximo de 2 ⭐');
-  else if(e<3)linhas.push('abaixo de '+fmt(f.par)+' vale 3 ⭐');
+  else if(e<3)linhas.push('abaixo de '+fmt(par)+' vale 3 ⭐');
   ag(()=>caixa({
     big: zerou?'👑':'🎉',
-    h2: zerou?'Você limpou as 11!':ZAP[(Math.random()*ZAP.length)|0],
+    h2: zerou?'Você limpou as 11 no '+d.nm+'!':ZAP[(Math.random()*ZAP.length)|0],
     p: linhas.join('<br>'), est:e,
     bts: zerou?[['Voltar ao mapa',()=>{pintarMapa();irPara(telaMapa)},'pri'],['Repetir fase',()=>abrirFase(fase),'sec']]
               :[['Próxima fase →',()=>abrirFase(fase+1),'pri'],['Repetir fase',()=>abrirFase(fase),'sec']]
@@ -667,14 +782,15 @@ function explodirTudo(i){
 }
 function fimDerrota(){
   pararPular(); limparAviso();
-  const certas=cel.filter(c=>c.m&&c.fl===1).length;
+  const certas=cel.filter(c=>c.m&&c.fl===1&&!c.boom).length;
   const erradas=cel.filter(c=>!c.m&&c.fl===1).length;
-  let p='Faltou um passo. A fase é a mesma — o campo é novo.';
+  const d=DIFS[st.dif];
+  let p='As '+d.vidas+' vidas acabaram. A fase é a mesma — o campo é novo.';
   if(certas||erradas){
-    p='Você tinha '+certas+' de '+minas+' minas marcadas certo'+
-      (erradas?' e '+erradas+' bandeira'+(erradas>1?'s':'')+' no lugar errado':'')+'.';
+    p+='<br>Você tinha '+certas+' de '+minas+' minas marcadas certo'+
+       (erradas?' e '+erradas+' bandeira'+(erradas>1?'s':'')+' no lugar errado':'')+'.';
   }
-  caixa({big:'💥',h2:'Bum!',p:p,bts:[
+  caixa({big:'💥',h2:'Fim da linha!',p:p,bts:[
     ['Tentar de novo',()=>abrirFase(fase),'pri'],
     ['👀 Ver o campo',verCampo,'sec'],
     ['Voltar ao mapa',()=>{pintarMapa();irPara(telaMapa)},'sec']
