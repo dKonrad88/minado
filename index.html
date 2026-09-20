@@ -367,7 +367,7 @@ const FLAGICO='<svg viewBox="0 0 24 24" width="100%" height="100%">'+
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='1.1';
+const VERSAO='1.2';
 const CHAVE='minado11.v1';
 let st={dif:1,som:true,prog:{}};
 try{
@@ -377,8 +377,15 @@ try{
     else st={dif:1,som:s.som!==false,prog:{1:{max:s.max||0,est:s.est||{},rec:s.rec||{}}}};  // save v1
   }
 }catch(e){}
-/* progresso da dificuldade atual */
-function P(){ return st.prog[st.dif] || (st.prog[st.dif]={max:0,est:{},rec:{}}) }
+/* progresso da dificuldade atual — as vidas são da JORNADA, não da fase */
+function P(){
+  const p = st.prog[st.dif] || (st.prog[st.dif]={max:0,est:{},rec:{},vidas:DIFS[st.dif].vidas});
+  if(p.vidas===undefined)p.vidas=DIFS[st.dif].vidas;
+  return p;
+}
+function novaJornada(){                       // recomeça do Quintal com o coração cheio
+  const p=P(); p.max=0; p.vidas=DIFS[st.dif].vidas; salvar(); return p;
+}
 const salvar=()=>{try{localStorage.setItem(CHAVE,JSON.stringify(st))}catch(e){}};
 
 /* ============ SOM ============ */
@@ -416,8 +423,9 @@ function pintarDifs(){
   DIFS.forEach((d,i)=>{
     const b=document.createElement('button');
     b.className='dif'+(i===st.dif?' on':''); b.style.color=d.cor;
+    const v = st.prog[i] && st.prog[i].vidas!==undefined ? st.prog[i].vidas : d.vidas;
     b.innerHTML='<div class="di">'+d.ic+'</div><div class="dn">'+d.nm+'</div>'+
-                '<div class="dv">❤ '+d.vidas+'</div>';
+                '<div class="dv">❤ '+(i===st.dif?v+'/'+d.vidas:d.vidas)+'</div>';
     b.onclick=()=>{st.dif=i;salvar();pintarMapa();bip(480+i*110,.06,'sine',.05);vib(12)};
     c.appendChild(b);
   });
@@ -437,7 +445,7 @@ function pintarMapa(){
     if(liberada)b.onclick=()=>abrirFase(i);
     t.appendChild(b);
   });
-  $('#tot').textContent=total+' / 33 ⭐ · '+DIFS[st.dif].nm;
+  $('#tot').textContent=total+' / 33 ⭐ · ❤️ '+p.vidas+'/'+DIFS[st.dif].vidas;
 }
 /* ---- ajustes ---- */
 const cfg=$('#cfg');
@@ -458,7 +466,7 @@ $('#lnSom').onclick=()=>{
 $('#lnZerar').onclick=()=>{
   const d=DIFS[st.dif].nm;
   if(!confirm('Zerar o progresso de '+d+'? As 11 fases voltam a ficar trancadas nessa dificuldade.'))return;
-  st.prog[st.dif]={max:0,est:{},rec:{}}; salvar(); pintarMapa();
+  st.prog[st.dif]={max:0,est:{},rec:{},vidas:DIFS[st.dif].vidas}; salvar(); pintarMapa();
   $('#vZerar').textContent='0 ⭐'; cfg.classList.remove('on');
 };
 /* pega a versão nova do jogo: limpa o cache do app e recarrega sem cache */
@@ -491,12 +499,14 @@ function irPara(tela){
 /* ============ JOGO ============ */
 let fase=0,cols=0,rows=0,minas=0,cel=[],gerado=false,vivo=false,modo=0;
 let bandeiras=0,abertas=0,dicas=0,t0=0,tick=null,tempo=0,fatal=-1,espiando=false,pularAtivo=false,vidas=0;
+let acabou=false,faseMorte=0;
 
 function abrirFase(i){
   limparAgenda(); pararPular(); limparAviso();
   flash.classList.remove('on'); app.classList.remove('treme');
+  if(acabou){i=0; acabou=false}            // depois do fim de jogo só se entra pela fase 1
   fase=i; const f=FASES[i], d=DIFS[st.dif];
-  cols=f.cols; rows=f.rows; minas=minasDe(i,st.dif); dicas=dicasDe(i,st.dif); vidas=d.vidas;
+  cols=f.cols; rows=f.rows; minas=minasDe(i,st.dif); dicas=dicasDe(i,st.dif); vidas=P().vidas;
   aplicarTema(f.tema);
   cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,fl:0,rev:false,boom:false}));
   gerado=false; vivo=true; bandeiras=0; abertas=0; tempo=0; fatal=-1; espiando=false;
@@ -561,6 +571,7 @@ function pintar(i){
 function atualizarHud(){
   $('#cVidas').textContent=vidas;
   $('#cVidas').parentElement.classList.toggle('pouco',vidas<=1);
+  $('#cVidas').parentElement.title = vidas? '' : 'a próxima bomba encerra a jornada';
   $('#cMinas').textContent=Math.max(0,minas-bandeiras);
   $('#cDicas').textContent=dicas;
   $('#cTempo').textContent=fmt(tempo);
@@ -697,8 +708,9 @@ tab.addEventListener('contextmenu',e=>e.preventDefault());
 
 /* pisou numa mina: custa uma vida. A mina fica aberta e travada (já vale como marcada). */
 function pisar(i){
-  vidas--;
-  if(vidas<=0)return perder(i);
+  const p=P();
+  if(p.vidas<=0)return perder(i);        // sem vida pra pagar essa: fim de jogo
+  p.vidas--; vidas=p.vidas; salvar();    // chega a 0 e ainda joga — no fio do bigode
   const c=cel[i];
   c.rev=true; c.boom=true; c.fl=1;
   bandeiras=cel.reduce((a,x)=>a+(x.fl===1?1:0),0);
@@ -728,9 +740,10 @@ function vencer(){
   if(fase+1>p.max)p.max=Math.min(fase+1,FASES.length-1);
   salvar();
   const zerou=fase===FASES.length-1;
-  const perdeu=d.vidas-vidas;
   const linhas=[fmt(tempo)+(novoRec?' · novo recorde 🏅':' · seu recorde: '+fmt(p.rec[fase]))];
-  linhas.push(perdeu? 'sobrou '+vidas+' ❤️ de '+d.vidas : 'inteiro, sem perder ❤️');
+  linhas.push(zerou ? 'jornada completa · coração cheio de novo'
+                    : 'restam '+vidas+' ❤️ de '+d.vidas+' até o fim das 11');
+  if(zerou){p.vidas=DIFS[st.dif].vidas; salvar()}            // jornada fechada: coração cheio de novo
   if(usouDica)linhas.push('usou dica → máximo de 2 ⭐');
   else if(e<3)linhas.push('abaixo de '+fmt(par)+' vale 3 ⭐');
   ag(()=>caixa({
@@ -745,6 +758,7 @@ function vencer(){
 /* ---- fim: derrota em 3 tempos ---- */
 function perder(i){
   vivo=false; clearInterval(tick); tick=null; fatal=i;
+  acabou=true; faseMorte=fase; novaJornada();   // a jornada já volta pro começo aqui
   atualizarHud(); sBum(); vib([40,50,110]);
   cel[i].rev=true; pintar(i); tab.children[i].classList.add('surge');
   // 1) as minas e as bandeiras erradas aparecem em ondas
@@ -784,14 +798,15 @@ function fimDerrota(){
   pararPular(); limparAviso();
   const certas=cel.filter(c=>c.m&&c.fl===1&&!c.boom).length;
   const erradas=cel.filter(c=>!c.m&&c.fl===1).length;
-  const d=DIFS[st.dif];
-  let p='As '+d.vidas+' vidas acabaram. A fase é a mesma — o campo é novo.';
+  const d=DIFS[st.dif], ate=faseMorte+1;
+  let p='Suas '+d.vidas+' vidas do '+d.nm+' acabaram na fase '+ate+'.'+
+        '<br>A jornada recomeça do Quintal, com o coração cheio.';
   if(certas||erradas){
-    p+='<br>Você tinha '+certas+' de '+minas+' minas marcadas certo'+
+    p+='<br><br>Nesta fase você tinha '+certas+' de '+minas+' minas marcadas certo'+
        (erradas?' e '+erradas+' bandeira'+(erradas>1?'s':'')+' no lugar errado':'')+'.';
   }
-  caixa({big:'💥',h2:'Fim da linha!',p:p,bts:[
-    ['Tentar de novo',()=>abrirFase(fase),'pri'],
+  caixa({big:'💀',h2:'Fim de jogo',p:p,bts:[
+    ['Recomeçar da fase 1',()=>abrirFase(0),'pri'],
     ['👀 Ver o campo',verCampo,'sec'],
     ['Voltar ao mapa',()=>{pintarMapa();irPara(telaMapa)},'sec']
   ]});

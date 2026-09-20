@@ -28,10 +28,19 @@ multiplicador de minas, ajuste de dicas e de tempo-par — e **progresso própri
 `minasDe()` põe um teto de **33% do campo** e nunca passa de `total-9` (senão a 1ª jogada
 segura fica impossível). Na fase 11 isso dá 29 / 38 / 46 / 50 minas.
 
-**Vidas são por fase**, não pela jornada — recomeçam cheias a cada fase. Pisar numa mina
-custa 1 ❤️ e **não acaba o jogo**: a casa vira 💥 travada (`c.boom`, com `fl=1`, então já
-conta como marcada no contador e no chord) e a partida segue. A sequência de derrota só
-roda quando as vidas zeram.
+**Vidas são da JORNADA inteira**, não da fase (regra dada pelo Diego em 20/09/2026 —
+não voltar a recarregar por fase). Ficam em `P().vidas`, salvas a cada bomba.
+
+- Pisar numa mina custa 1 ❤️ e **não acaba o jogo**: a casa vira 💥 travada (`c.boom`, com
+  `fl=1`, então já conta como marcada no contador e no chord) e a partida segue.
+- Vencer uma fase **não devolve vida**. Chegar a 0 ❤️ ainda deixa jogar — é a última chance.
+- **A bomba seguinte a 0 ❤️ encerra**: com 5 vidas, o fim vem na 6ª bomba (`pisar()` testa
+  `p.vidas<=0` ANTES de descontar; mexer nessa ordem quebra a regra que ele pediu).
+- Fim de jogo = `perder()` marca `acabou=true`, guarda `faseMorte` e chama `novaJornada()`
+  na hora: `max=0` (as 11 trancam) e coração cheio. `abrirFase` força a fase 1 enquanto
+  `acabou` estiver ligado, senão o ↻ durante a animação escaparia do castigo.
+  **As estrelas e os recordes ficam** — são a marca pessoal, não o avanço.
+- Zerar as 11 fecha a jornada: devolve as vidas e **mantém tudo destravado** (pra poder rejogar).
 
 **Tema por fase** (`FASES[i].tema`): `aplicarTema()` troca as variáveis CSS `--tampa/--tampa2/
 --aberta`, o fundo da tela do jogo (`ceu` + `luz`) e enche o `#cenario` com 5 emojis
@@ -63,7 +72,7 @@ Regras que fogem do campo minado clássico:
 Rodapé do mapa → **⚙️ Ajustes**: som/vibração, **🔄 Atualizar o jogo** e zerar progresso.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.1).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.2).
 
 ## Como testar (workflow da suíte)
 
