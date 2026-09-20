@@ -42,6 +42,10 @@ não voltar a recarregar por fase). Ficam em `P().vidas`, salvas a cada bomba.
   **As estrelas e os recordes ficam** — são a marca pessoal, não o avanço.
 - Zerar as 11 fecha a jornada: devolve as vidas e **mantém tudo destravado** (pra poder rejogar).
 
+**Metas de ⭐ sempre à vista**: a linha `#metas` abaixo do placar mostra `⭐⭐⭐ até 1:50 ·
+⭐⭐ até 3:40 · depois ⭐` (ou o teto de 2 ⭐ quando gastou dica), e o chip do relógio muda de
+cor conforme a estrela vigente — ouro dentro do par, prata até o dobro, bronze depois.
+
 **Tema por fase** (`FASES[i].tema`): `aplicarTema()` troca as variáveis CSS `--tampa/--tampa2/
 --aberta`, o fundo da tela do jogo (`ceu` + `luz`) e enche o `#cenario` com 5 emojis
 (`deco`) a 13% de opacidade nos cantos. O card do mapa herda o mesmo tom. Regra: **levemente**
@@ -51,7 +55,10 @@ Regras que fogem do campo minado clássico:
 
 - **A primeira jogada nunca explode:** as minas só são sorteadas depois do 1º toque,
   excluindo a casa tocada e as 8 vizinhas (`gerar(seguro)`), então sempre abre uma clareira.
-- **Dicas** (1 a 3 por fase) revelam uma casa segura; usar dica limita a 2 ⭐.
+- **Dicas** (1 a 3 por fase) são um **detector apontado pelo jogador**: toca no chip 💡, o
+  tabuleiro entra em modo dica e a casa que você escolher conta a verdade — abre se for segura,
+  ou vira bandeira 🚩 com borda verde (`c.dica`) se for mina. **Nunca explode nem custa vida.**
+  Casa já aberta não gasta. Usar dica limita a 2 ⭐.
 - **Três estados de marca** (`cel[i].fl`): `0` nada · `1` 🚩 certeza · `2` 🟡 dúvida.
   Só a `1` desconta do contador, protege do toque e conta no chord. A `2` é anotação.
 - **Chord:** tocar num número que já tem todas as bandeiras abre a vizinhança.
@@ -78,7 +85,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.3).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.4).
 
 ## Como testar (workflow da suíte)
 
