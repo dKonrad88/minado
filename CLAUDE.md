@@ -68,6 +68,10 @@ dura demais). Campos crus sem esse filtro: só 28% são justos.
 a fase em andamento ganha a classe `.curso` no próprio card do mapa, com `▸ tempo`, e tocar nela
 retoma. `vencer()`/`perder()` limpam.
 
+**Mapa (v2.3)**: 11 cards em 3 colunas deixavam uma célula vazia na última linha — o card da
+fase 11 leva `.chefe` (`grid-column:span 2`) e fecha a grade (10×1 + 1×2 = 12 = 4 linhas cheias).
+O que sobra abaixo do rodapé é só a safe area do aparelho (34pt) mais 12 de respiro.
+
 ⚠️ **Safe area só no `#app`** (v2.2): no celular ele é `position:fixed; inset:0` — não depende do
 `100dvh`, que no PWA do iPhone reportava menos do que a tela — e o `padding: env(...)` fica só nele.
 Nenhum filho pode somar `env(safe-area-inset-bottom)` de novo, senão a margem de baixo entra duas
@@ -141,7 +145,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 2.2).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 2.3).
 
 ## Como testar (workflow da suíte)
 
