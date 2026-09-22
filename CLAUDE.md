@@ -64,7 +64,16 @@ dura demais). Campos crus sem esse filtro: só 28% são justos.
 **Vida extra**: 3 fases seguidas sem pisar em bomba dão +1 ❤️ (`P().limpas`, zera ao pisar).
 
 **Partida em andamento** (`CHAVE_P`): `salvarPartida()` roda dentro de `atualizarHud()` e no
-`visibilitychange`; o mapa mostra o botão "Continuar de onde parou". `vencer()`/`perder()` limpam.
+`visibilitychange`. O card grande de "Continuar" foi removido em 22/09/2026 (ocupava espaço):
+a fase em andamento ganha a classe `.curso` no próprio card do mapa, com `▸ tempo`, e tocar nela
+retoma. `vencer()`/`perder()` limpam.
+
+**Visual (v2.1, "liquid glass")**: a classe `.vidro` (blur + saturate + brilho na borda via `::after`)
+vai **só onde a Apple põe vidro** — segmented de dificuldade, chips do placar, barra de ações,
+rodapé do mapa, banner e sheets. **Nunca nas células nem nos cards de fase**, que são conteúdo.
+A barra de ações e o rodapé do mapa são `position:absolute` e o conteúdo rola por baixo deles.
+⚠️ Por isso `ajustar()` **subtrai os paddings** de `wrap` (clientHeight os inclui, e o de baixo é
+o espaço reservado da barra) — sem isso a fase 11 fica escondida atrás dos botões.
 
 **Regras de cenário** (`FASES[i].regra` + `aviso`, mostrado num banner na entrada):
 `mare` (Praia, 45s, abre as casas seguras da coluna mais à esquerda), `gelo` (Geleira, 13s,
@@ -127,7 +136,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 2.0).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 2.1).
 
 ## Como testar (workflow da suíte)
 
