@@ -20,6 +20,15 @@ tempo e, quando tem, `forma`, `rochas`, `mel` e `regra`. `dicas` sai do tamanho 
 seta, tijolo e trevo. `viz()` **ignora buraco e rocha**, então contagem, flood, chord e solver
 herdam a forma de graça. A área real fica em `dentro` (não use `cel.length`).
 
+**As regras entram em cena** (v3.1): `bicho(emoji,casa,aoChegar)` faz o personagem voar até a casa,
+agir e sair; `ondaColuna(x,aoPassar)` varre uma coluna. A galinha cisca, o fantasma leva o número,
+o vulcão jorra lava e abre uma poça, o floco recongela, a maré passa como onda. Nada de banner seco.
+
+**Obstáculos** são **temáticos e pontuais** — 10 fases das 31 têm, e o emoji vem do bioma
+(`BIOMAS[b].bloco` / `.grude`): tronco na mata, coral no mar, porta no casarão, coluna nas ruínas,
+engrenagem na fábrica… ⚠️ **A dificuldade não inventa obstáculo**: ela só engrossa o que a fase
+já tem (`rochas: -1` no Brisa chega a zerar).
+
 **Obstáculos**: `c.rocha` (sólida, não abre, não tem mina), `c.mel` (o 1º toque só limpa o mel)
 e `c.premio` (presente: +1 💡 ao abrir). `espalharObstaculos()` sorteia e testa `conexo()` —
 rocha nunca pode partir o campo em dois, senão o pedaço isolado exigiria adivinhação.
@@ -73,7 +82,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.0).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.1).
 
 ## Como testar (workflow da suíte)
 

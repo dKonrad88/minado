@@ -150,6 +150,24 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 #tabWrap{flex:1;display:flex;align-items:center;justify-content:center;
   padding:0 6px 66px;overflow:hidden;position:relative}
 #cenario{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.bicho{position:absolute;z-index:7;pointer-events:none;line-height:1;
+  font-size:calc(var(--cell)*1.05);filter:drop-shadow(0 4px 10px rgba(0,0,0,.55));
+  animation:bichoEntra .85s cubic-bezier(.25,1.1,.4,1)}
+@keyframes bichoEntra{
+  0%{transform:translate(calc(-50% + var(--de,-70px)),-50%) scale(.5) rotate(-12deg);opacity:0}
+  35%{opacity:1}
+  62%{transform:translate(-50%,-62%) scale(1.12) rotate(4deg)}
+  76%{transform:translate(-50%,-44%) scale(1)}
+  88%{transform:translate(-50%,-58%) scale(1.04)}
+  100%{transform:translate(-50%,-50%) scale(1)}
+}
+.bicho.sai{animation:bichoSai .55s ease-in forwards}
+@keyframes bichoSai{to{transform:translate(calc(-50% - var(--de,-70px)),-70%) scale(.45) rotate(14deg);opacity:0}}
+.ondaCol{position:absolute;z-index:4;pointer-events:none;overflow:hidden;border-radius:10px}
+.ondaCol i{display:block;width:100%;height:60%;border-radius:12px;
+  background:linear-gradient(180deg,transparent,rgba(130,205,255,.45),rgba(190,235,255,.75),transparent);
+  animation:varre 1.25s ease-in-out forwards}
+@keyframes varre{from{transform:translateY(-110%)}to{transform:translateY(180%)}}
 .dc{position:absolute;opacity:.17;filter:saturate(.75);line-height:1;
   animation:balanca 7s ease-in-out infinite}
 @keyframes balanca{0%,100%{transform:translateY(0) rotate(var(--rot,0deg))}
@@ -194,6 +212,9 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .c.mel{background:linear-gradient(160deg,#6B5218,#4E3B10)!important;
   box-shadow:inset 0 1px 0 rgba(255,220,120,.25)!important;font-size:calc(var(--cell)*.5)!important}
 .c.oculto{color:var(--ink3)!important;opacity:.8}
+.c.lava{animation:lavaJorra .9s ease-out}
+@keyframes lavaJorra{0%{background:#FFB020!important;box-shadow:0 0 22px rgba(255,140,20,.9)}
+  60%{background:#C2410C!important}100%{box-shadow:none}}
 .c.brasa{animation:brasaPisca 2.4s ease-out}
 @keyframes brasaPisca{0%,100%{box-shadow:none}
   10%,30%,50%{box-shadow:inset 0 0 0 2px rgba(255,140,40,.9),0 0 18px rgba(255,120,20,.7)}
@@ -428,31 +449,31 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 /* ---------- biomas: paleta, cenário e trilha compartilhados ---------- */
 const BIOMAS={
  jardim:{ceu:'#0C1710',luz:'rgba(120,220,140,.09)',t1:'#33513A',t2:'#2A4431',ab:'#16241A',
-   deco:['🌿','🌼','🐝','🌱','🍃'],amb:{t:'cai',e:'🍃',n:6},som:{t:'vento',f:900,q:.7,lfo:.07,v:.05}},
+   deco:['🌿','🌼','🐝','🌱','🍃'],amb:{t:'cai',e:'🍃',n:6},som:{t:'vento',f:900,q:.7,lfo:.07,v:.05},bloco:'🪵',grude:'🌿'},
  mata:{ceu:'#0A1410',luz:'rgba(90,200,150,.08)',t1:'#2B4438',t2:'#233A2F',ab:'#13211B',
-   deco:['🌲','🍄','🦌','🍂','🌲'],amb:{t:'cai',e:'🍂',n:7},som:{t:'vento',f:1500,q:.6,lfo:.05,v:.055}},
+   deco:['🌲','🍄','🦌','🍂','🌲'],amb:{t:'cai',e:'🍂',n:7},som:{t:'vento',f:1500,q:.6,lfo:.05,v:.055},bloco:'🪵',grude:'🌿'},
  mar:{ceu:'#0B1520',luz:'rgba(120,200,255,.09)',t1:'#3A4A5E',t2:'#31404F',ab:'#16202B',
-   deco:['🐚','🌊','⛱️','🦀','🌴'],amb:{t:'sobe',e:'🫧',n:7},som:{t:'vento',f:480,q:.5,lfo:.13,v:.085}},
+   deco:['🐚','🌊','⛱️','🦀','🌴'],amb:{t:'sobe',e:'🫧',n:7},som:{t:'vento',f:480,q:.5,lfo:.13,v:.085},bloco:'🪸',grude:'🌊'},
  assombro:{ceu:'#100E17',luz:'rgba(170,140,255,.09)',t1:'#3A3548',t2:'#302C3D',ab:'#1B1826',
-   deco:['🕯️','🕸️','🦇','🏚️','🌫️'],amb:{t:'flutua',e:'👻',n:4},som:{t:'caverna',f:260,q:1,lfo:.05,v:.06}},
+   deco:['🕯️','🕸️','🦇','🏚️','🌫️'],amb:{t:'flutua',e:'👻',n:4},som:{t:'caverna',f:260,q:1,lfo:.05,v:.06},bloco:'🚪',grude:'🕸️'},
  subsolo:{ceu:'#120D09',luz:'rgba(255,190,110,.08)',t1:'#453528',t2:'#3A2C21',ab:'#201812',
-   deco:['⛏️','💎','🪨','🔦','🕳️'],amb:{t:'sobe',e:'✨',n:6},som:{t:'caverna',f:190,q:1,lfo:.04,v:.065}},
+   deco:['⛏️','💎','🪨','🔦','🕳️'],amb:{t:'sobe',e:'✨',n:6},som:{t:'caverna',f:190,q:1,lfo:.04,v:.065},bloco:'🪨',grude:'💧'},
  lava:{ceu:'#170A08',luz:'rgba(255,120,60,.11)',t1:'#4C2E26',t2:'#402620',ab:'#241310',
-   deco:['🌋','🔥','🪨','💨','🔥'],amb:{t:'sobe',e:'🔥',n:8},som:{t:'caverna',f:140,q:1.4,lfo:.22,v:.075}},
+   deco:['🌋','🔥','🪨','💨','🔥'],amb:{t:'sobe',e:'🔥',n:8},som:{t:'caverna',f:140,q:1.4,lfo:.22,v:.075},bloco:'🪨',grude:'🔥'},
  gelo:{ceu:'#0A141C',luz:'rgba(140,215,255,.10)',t1:'#2E4457',t2:'#273A4A',ab:'#14212B',
-   deco:['❄️','🧊','🐧','🌨️','❄️'],amb:{t:'cai',e:'❄️',n:10},som:{t:'vento',f:2300,q:1.2,lfo:.09,v:.05}},
+   deco:['❄️','🧊','🐧','🌨️','❄️'],amb:{t:'cai',e:'❄️',n:10},som:{t:'vento',f:2300,q:1.2,lfo:.09,v:.05},bloco:'🧊',grude:'❄️'},
  areia:{ceu:'#150F08',luz:'rgba(255,200,90,.09)',t1:'#4F4229',t2:'#443922',ab:'#241D11',
-   deco:['🌵','☀️','🦂','🏜️','🌵'],amb:{t:'flutua',e:'🌫️',n:5},som:{t:'vento',f:1050,q:.9,lfo:.06,v:.06}},
+   deco:['🌵','☀️','🦂','🏜️','🌵'],amb:{t:'flutua',e:'🌫️',n:5},som:{t:'vento',f:1050,q:.9,lfo:.06,v:.06},bloco:'🌵',grude:'💨'},
  ruina:{ceu:'#131110',luz:'rgba(220,200,160,.08)',t1:'#4A4438',t2:'#3E392F',ab:'#211E19',
-   deco:['🏛️','🗿','🌾','🪶','🧭'],amb:{t:'flutua',e:'🍃',n:5},som:{t:'vento',f:760,q:.8,lfo:.05,v:.055}},
+   deco:['🏛️','🗿','🌾','🪶','🧭'],amb:{t:'flutua',e:'🍃',n:5},som:{t:'vento',f:760,q:.8,lfo:.05,v:.055},bloco:'🏛️',grude:'🌾'},
  fabrica:{ceu:'#0D1116',luz:'rgba(150,200,255,.08)',t1:'#3A424E',t2:'#313843',ab:'#191D23',
-   deco:['⚙️','🔧','🏭','🚂','🔩'],amb:{t:'sobe',e:'💨',n:6},som:{t:'caverna',f:320,q:1.2,lfo:.3,v:.06}},
+   deco:['⚙️','🔧','🏭','🚂','🔩'],amb:{t:'sobe',e:'💨',n:6},som:{t:'caverna',f:320,q:1.2,lfo:.3,v:.06},bloco:'⚙️',grude:'🛢️'},
  festa:{ceu:'#150C1E',luz:'rgba(255,160,220,.10)',t1:'#4A3155',t2:'#3E2947',ab:'#221630',
-   deco:['🎪','🎡','🎈','🍭','🎠'],amb:{t:'sobe',e:'🎈',n:7},som:{t:'vento',f:1300,q:.7,lfo:.16,v:.055}},
+   deco:['🎪','🎡','🎈','🍭','🎠'],amb:{t:'sobe',e:'🎈',n:7},som:{t:'vento',f:1300,q:.7,lfo:.16,v:.055},bloco:'🎠',grude:'🍭'},
  espaco:{ceu:'#0A0917',luz:'rgba(150,130,255,.11)',t1:'#322F55',t2:'#2A2848',ab:'#17162B',
-   deco:['🚀','⭐','🛰️','🌙','✨'],amb:{t:'pisca',e:'✦',n:14},som:{t:'espaco',hz:98,v:.05}},
+   deco:['🚀','⭐','🛰️','🌙','✨'],amb:{t:'pisca',e:'✦',n:14},som:{t:'espaco',hz:98,v:.05},bloco:'☄️',grude:'🌫️'},
  final:{ceu:'#120A1C',luz:'rgba(200,140,255,.13)',t1:'#3C2C57',t2:'#322549',ab:'#1B1330',
-   deco:['🎆','🎇','🏆','⭐','🎊'],amb:{t:'sobe',e:'🎇',n:8},som:{t:'espaco',hz:146,v:.055}},
+   deco:['🎆','🎇','🏆','⭐','🎊'],amb:{t:'sobe',e:'🎇',n:8},som:{t:'espaco',hz:146,v:.055},bloco:'🎁',grude:'🎊'},
 };
 
 /* ---------- formas do campo: quem responde false vira buraco ---------- */
@@ -489,11 +510,11 @@ const FASES=[
  {ic:'💎',nm:'Veio profundo',    b:'subsolo', c:9, r:11, m:17, par:100, forma:'ampulheta', regra:'veio'},
  {ic:'🕳️',nm:'Poço sem fundo',   b:'subsolo', c:9, r:12, m:19, par:110, forma:'anel', rochas:5},
  {ic:'🌋',nm:'Cratera',          b:'lava',    c:9, r:11, m:18, par:110, regra:'brasa'},
- {ic:'🔥',nm:'Rio de lava',      b:'lava',    c:10,r:11, m:20, par:120, forma:'onda', regra:'brasa', mel:5},
+ {ic:'🔥',nm:'Rio de lava',      b:'lava',    c:10,r:11, m:20, par:120, forma:'onda', regra:'brasa'},
  {ic:'🪨',nm:'Campo de rochas',  b:'lava',    c:10,r:11, m:19, par:125, rochas:12},
  {ic:'❄️',nm:'Geleira',          b:'gelo',    c:10,r:11, m:22, par:135, regra:'gelo'},
  {ic:'🐧',nm:'Baía congelada',   b:'gelo',    c:10,r:12, m:24, par:145, forma:'circulo', regra:'gelo'},
- {ic:'🏔️',nm:'Pico nevado',      b:'gelo',    c:10,r:12, m:25, par:150, forma:'seta', rochas:6},
+ {ic:'🏔️',nm:'Pico nevado',      b:'gelo',    c:10,r:12, m:25, par:150, forma:'seta', mel:5},
  {ic:'🏜️',nm:'Deserto',          b:'areia',   c:10,r:12, m:26, par:165, regra:'miragem'},
  {ic:'🐪',nm:'Duna alta',        b:'areia',   c:11,r:12, m:28, par:172, forma:'onda', mel:6},
  {ic:'🏛️',nm:'Ruínas',           b:'ruina',   c:11,r:12, m:29, par:178, forma:'cruz', rochas:6},
@@ -512,16 +533,16 @@ const CHEFES=[15,30];                          // fases que ocupam dois lugares 
 const TOTAL_ESTRELAS=FASES.length*3;
 
 const DIFS=[
- {ic:'🍃',nm:'Brisa',    vidas:7, mult:0.75, dica: 1, par:1.6,  cor:'#3DDC84', rochas:0, mel:0, presente:2},
- {ic:'🎯',nm:'Na Medida',vidas:5, mult:1.00, dica: 0, par:1.0,  cor:'#FFD43B', rochas:0, mel:0, presente:1},
- {ic:'🥶',nm:'Suor Frio',vidas:4, mult:1.20, dica: 0, par:0.8,  cor:'#5AA9FF', rochas:4, mel:3, presente:0},
- {ic:'⚡',nm:'Relâmpago',vidas:3, mult:1.40, dica:-1, par:0.65, cor:'#C08CFF', rochas:8, mel:6, presente:0},
+ {ic:'🍃',nm:'Brisa',    vidas:7, mult:0.75, dica: 1, par:1.6,  cor:'#3DDC84', rochas:-1, mel:-1, presente:2},
+ {ic:'🎯',nm:'Na Medida',vidas:5, mult:1.00, dica: 0, par:1.0,  cor:'#FFD43B', rochas: 0, mel: 0, presente:1},
+ {ic:'🥶',nm:'Suor Frio',vidas:4, mult:1.20, dica: 0, par:0.8,  cor:'#5AA9FF', rochas: 2, mel: 2, presente:0},
+ {ic:'⚡',nm:'Relâmpago',vidas:3, mult:1.40, dica:-1, par:0.65, cor:'#C08CFF', rochas: 4, mel: 4, presente:0},
 ];
 /* casas que existem de verdade: dentro da forma e sem rocha */
 function areaDe(i,d){
   const f=FASES[i], fn=FORMAS[f.forma]; let n=0;
   for(let y=0;y<f.rows;y++)for(let x=0;x<f.cols;x++)if(fn(x,y,f.cols,f.rows))n++;
-  return n-(f.rochas||0)-(DIFS[d].rochas||0);
+  return n-((f.rochas||0)?f.rochas+(DIFS[d].rochas||0):0);
 }
 function minasDe(i,d){
   const a=areaDe(i,d);
@@ -552,7 +573,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='3.0';
+const VERSAO='3.1';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -909,7 +930,10 @@ function ambiente(a){
 }
 /* rochas, mel e presentes — sem trancar nenhum pedaço do campo */
 function espalharObstaculos(f,d){
-  const nR=(f.rochas||0)+(d.rochas||0), nM=(f.mel||0)+(d.mel||0), nP=(d.presente||0);
+  // a dificuldade não inventa obstáculo: ela só engrossa o que a fase já tem
+  const nR=(f.rochas||0) ? (f.rochas+(d.rochas||0)) : 0,
+        nM=(f.mel||0)    ? (f.mel+(d.mel||0))       : 0,
+        nP=(d.presente||0);
   for(let tent=0;tent<30;tent++){
     cel.forEach(c=>{c.rocha=false;c.mel=0;c.premio=false});
     const livres=[];
@@ -960,8 +984,8 @@ function pintar(i){
   const c=cel[i], d=tab.children[i]; if(!d)return;
   d.className='c'; d.style.removeProperty('--d');
   if(c.fora){d.classList.add('fora');d.textContent='';return}
-  if(c.rocha){d.classList.add('rocha');d.textContent='🪨';return}
-  if(c.mel){d.classList.add('mel');d.textContent='🍯';return}
+  if(c.rocha){d.classList.add('rocha');d.textContent=FASES[fase].tema.bloco||'🪨';return}
+  if(c.mel){d.classList.add('mel');d.textContent=FASES[fase].tema.grude||'🍯';return}
   if(c.boom){d.textContent=i===rei?'🧨':'💥';d.classList.add('ab','boom');return}
   if(c.show&&!c.rev2){d.textContent=i===rei?'🧨':'💣';d.classList.add('ab','achou');return}
   if(c.gelo&&c.ab&&!c.rev){d.classList.add('gelo');d.textContent='❄';return}
@@ -1329,6 +1353,33 @@ function pisar(i){
   sBum(); vib([25,45,70]); atualizarHud(); checar();
 }
 
+/* ---- personagens: o bicho entra, faz o serviço e sai ---- */
+function bicho(emoji,alvo,aoChegar,ms){
+  const el=tab.children[alvo];
+  if(!el)return aoChegar&&aoChegar();
+  const r=el.getBoundingClientRect(), w=wrap.getBoundingClientRect();
+  const b=document.createElement('div');
+  b.className='bicho'; b.textContent=emoji;
+  b.style.left=(r.left-w.left+r.width/2)+'px';
+  b.style.top=(r.top-w.top+r.height/2)+'px';
+  b.style.setProperty('--de', (r.left-w.left<w.width/2?-1:1)*70+'px');
+  wrap.appendChild(b);
+  ag(()=>{ aoChegar&&aoChegar(); b.classList.add('sai'); ag(()=>b.remove(),600) }, ms||820);
+}
+function ondaColuna(x,aoPassar){
+  const prim=tab.children[x];
+  if(!prim)return aoPassar&&aoPassar();
+  const r=prim.getBoundingClientRect(), t=tab.getBoundingClientRect(), w=wrap.getBoundingClientRect();
+  const o=document.createElement('div');
+  o.className='ondaCol';
+  o.style.left=(r.left-w.left-2)+'px'; o.style.width=(r.width+4)+'px';
+  o.style.top=(t.top-w.top)+'px'; o.style.height=t.height+'px';
+  o.innerHTML='<i></i>';
+  wrap.appendChild(o);
+  ag(()=>aoPassar&&aoPassar(),700);
+  ag(()=>o.remove(),1500);
+}
+
 /* ---- regras de cenário ---- */
 function banner(txt){
   const b=$('#banner'); b.innerHTML=txt; b.classList.remove('on'); void b.offsetWidth; b.classList.add('on');
@@ -1341,49 +1392,69 @@ function mare(){                                   // Praia: molha a faixa mais 
     if(!col.length)continue;
     const seguras=col.filter(i=>!cel[i].m);
     if(seguras.length){
-      seguras.forEach(i=>revelar(i,i));
-      banner('🌊 A maré molhou a coluna '+LETRAS[x]);
-      bip(420,.25,'sine',.05); checar();
+      bip(300,.5,'sine',.05);
+      ondaColuna(x,()=>{
+        seguras.forEach((i,n)=>ag(()=>{ revelar(i,i); tab.children[i].classList.add('novo');
+          if(n===seguras.length-1)checar() }, n*40));
+        banner('🌊 A maré molhou a coluna '+LETRAS[x]);
+      });
     }
     return;
   }
 }
-function ciscar(){                                 // Galinheiro: abre uma casa segura sozinha
+function ciscar(){                                 // Galinheiro: a galinha entra e cisca
   if(!vivo||!gerado)return;
   const cand=[];
   for(let i=0;i<cel.length;i++)if(!cel[i].ab&&!cel[i].m&&!cel[i].show&&!cel[i].fora&&!cel[i].rocha&&!cel[i].mel)cand.push(i);
   if(!cand.length)return;
   const i=cand[(Math.random()*cand.length)|0];
-  revelar(i,i); tab.children[i].classList.add('dica');
-  banner('🐔 Uma galinha ciscou em '+coord(i)); bip(700,.12,'triangle',.05); checar();
+  bip(880,.07,'square',.04); ag(()=>bip(740,.07,'square',.04),150);
+  bicho('🐔',i,()=>{
+    tab.children[i].classList.add('chacoalha');
+    revelar(i,i); tab.children[i].classList.add('dica');
+    bip(1180,.12,'triangle',.05); checar();
+  });
 }
-function brasa(){                                  // Cratera: uma mina pisca por um instante
+function brasa(){                                  // Cratera: a lava jorra e abre uma poça
   if(!vivo||!gerado)return;
   const cand=[];
-  for(let i=0;i<cel.length;i++)if(cel[i].m&&!cel[i].show&&!cel[i].boom)cand.push(i);
+  for(let i=0;i<cel.length;i++)if(!cel[i].ab&&!cel[i].m&&!cel[i].fora&&!cel[i].rocha&&!cel[i].mel)cand.push(i);
   if(!cand.length)return;
-  const i=cand[(Math.random()*cand.length)|0], el=tab.children[i];
-  el.classList.add('brasa'); banner('🔥 Uma brasa acendeu em algum lugar');
-  bip(240,.2,'sawtooth',.05);
-  ag(()=>el.classList.remove('brasa'),2400);
+  const i=cand[(Math.random()*cand.length)|0];
+  bip(90,.4,'sawtooth',.06);
+  bicho('🌋',i,()=>{
+    const poca=[i,...viz(i).filter(k=>!cel[k].m&&!cel[k].ab)];
+    poca.forEach((k,n)=>ag(()=>{
+      tab.children[k].classList.add('lava');
+      revelar(k,i); bip(200+n*40,.1,'sawtooth',.04);
+      ag(()=>tab.children[k]&&tab.children[k].classList.remove('lava'),900);
+      if(n===poca.length-1)checar();
+    },n*90));
+  });
 }
-function assombrar(){                              // Vila fantasma: um número some por 8s
+function assombrar(){                              // Vila: o fantasma vem e leva o número
   if(!vivo||!gerado)return;
   const cand=[];
   for(let i=0;i<cel.length;i++)if(cel[i].ab&&cel[i].n&&!cel[i].oculto)cand.push(i);
   if(!cand.length)return;
   const i=cand[(Math.random()*cand.length)|0];
-  cel[i].oculto=true; pintar(i); bip(420,.25,'sine',.04);
-  ag(()=>{cel[i].oculto=false;pintar(i);tab.children[i].classList.add('novo')},8000);
+  [520,440,360].forEach((h,k)=>ag(()=>bip(h,.3,'sine',.035),k*220));
+  bicho('👻',i,()=>{
+    cel[i].oculto=true; pintar(i); tab.children[i].classList.add('surge');
+    ag(()=>{ if(!cel[i])return; cel[i].oculto=false; pintar(i);
+             tab.children[i]&&tab.children[i].classList.add('novo'); bip(900,.1,'sine',.04) },8000);
+  },1000);
 }
-function congelar(){                               // Geleira: casa vazia volta a parecer fechada
+function congelar(){                               // Geleira: o floco desce e refaz o gelo
   if(!vivo)return;
   const cand=[];
   for(let i=0;i<cel.length;i++)if(cel[i].ab&&!cel[i].n&&!cel[i].gelo&&!cel[i].m&&!cel[i].fora)cand.push(i);
   if(!cand.length)return;
   const i=cand[(Math.random()*cand.length)|0];
-  cel[i].gelo=true; pintar(i); tab.children[i].classList.add('surge');
-  bip(1500,.08,'sine',.03);
+  bicho('❄️',i,()=>{
+    cel[i].gelo=true; pintar(i); tab.children[i].classList.add('surge');
+    bip(1500,.14,'sine',.04);
+  },700);
 }
 
 /* ---- fim: vitória ---- */
