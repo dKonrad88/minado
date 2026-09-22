@@ -84,11 +84,32 @@ A barra de ações e o rodapé do mapa são `position:absolute` e o conteúdo ro
 ⚠️ Por isso `ajustar()` **subtrai os paddings** de `wrap` (clientHeight os inclui, e o de baixo é
 o espaço reservado da barra) — sem isso a fase 11 fica escondida atrás dos botões.
 
+**Patente** (`PATENTES`/`pontos()`): soma fases×2 + bombas achadas + jornadas×20 + vidas ganhas×3
++ bônus×2, atravessa as 4 dificuldades. Fica no topo do mapa com barrinha de progresso.
+
+**Prêmios**: a partir da 3ª fase limpa seguida, **cada** fase limpa dá +1 ❤️ (`P().limpas` não
+zera mais no prêmio, só ao pisar). Fechar a fase com poucas jogadas (alvo = 45% das casas seguras
++ nº de minas) dá +1 💡 para a fase seguinte (`P().bonus`).
+
+**Trilha do cenário** (`tema.som` + `tocarAmbiente`): ruído filtrado com LFO (`vento`/`caverna`) ou
+drone de 3 osciladores (`espaco`), tudo sintetizado. Para no mapa e quando o app vai pro fundo.
+Liga/desliga em Ajustes (`st.amb`).
+
+**Ajustes → 📖 Como funciona**: lista o básico e a regra de cada uma das 11 fases, montada a partir
+de `FASES[i].aviso`.
+
+⚠️ **Nada de caveira/diabo** (pedido dele em 22/09/2026): a dificuldade máxima é **⚡ Relâmpago**
+(era 💀 Sem Volta) e a fase 11 é **🎆 Grande Final** com o **🧨 Bombão** (era 👹 Covil do Bomba-Rei).
+
 **Regras de cenário** (`FASES[i].regra` + `aviso`, mostrado num banner na entrada):
 `mare` (Praia, 45s, abre as casas seguras da coluna mais à esquerda), `gelo` (Geleira, 13s,
 casa vazia volta a parecer fechada — só visual, `c.ab` continua true e o toque só descongela),
-`orbita` (bordas ligadas: `viz()` faz wrap — o solver herda isso de graça) e `rei` (Covil:
-uma mina custa 2 ❤️). As outras 7 fases ficam limpas de propósito.
+`orbita` (bordas ligadas: `viz()` faz wrap — o solver herda isso de graça), `rei` (uma mina custa
+2 ❤️), `cisca` (Galinheiro, abre uma casa segura), `cogumelo` (Bosque, 3 pistas que contam as minas
+da coluna), `fantasma` (Vila, some com um número por 8s), `veio` (Mina velha, 2 diamantes que
+expõem as minas vizinhas), `brasa` (Cratera, uma mina pisca) e `miragem` (Deserto, um número
+mostra ±1 — o solver usa o valor real). Só o Quintal fica sem regra, de propósito.
+⚠️ `gerar()` precisa zerar **também** `pista` e `mente` — ele roda milhares de vezes por campo.
 
 **Ambiente animado** (`tema.amb`): 4-14 partículas em CSS (`cai`/`sobe`/`flutua`/`pisca`),
 opacidade ~.42, com `prefers-reduced-motion` respeitado.
@@ -145,7 +166,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 2.3).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 2.5).
 
 ## Como testar (workflow da suíte)
 
