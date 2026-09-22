@@ -171,8 +171,6 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .c:active{transform:scale(.88)}
 .c.ab{background:var(--aberta);box-shadow:inset 0 0 0 1px rgba(255,255,255,.05)}
 .c.ab:active{transform:none}
-.c.bnd{background:linear-gradient(160deg,#3A3050,#2C2440)}
-.c.certa{background:linear-gradient(160deg,#1E4A32,#17381F);box-shadow:inset 0 0 0 1px rgba(61,220,132,.5)}
 .c.mina{background:#2A1622;box-shadow:inset 0 0 0 1px rgba(255,92,92,.35)}
 .c.achou{background:#12301F!important;box-shadow:inset 0 0 0 1px rgba(61,220,132,.65)!important}
 .c.boom{background:#3A1216!important;box-shadow:inset 0 0 0 1px rgba(255,92,92,.45)!important}
@@ -238,12 +236,8 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
   font-size:12px;font-weight:800;color:var(--ink2);display:flex;align-items:center;justify-content:center;gap:6px}
 .bt:active{transform:scale(.96)}
 .bt.m0.on{background:var(--ok);color:#06210F;border-color:var(--ok)}
-.bt.m1.on{background:var(--bad);color:#2B0A0A;border-color:var(--bad)}
 .bt.m2.on{background:#FF8A3D;color:#2B1200;border-color:#FF8A3D}
 .bt em{font-style:normal;font-size:15px}
-.bt .ico{width:15px;height:15px;display:block;flex-shrink:0}
-.bt .ico svg{width:100%;height:100%}
-.bt.m1 .ico{color:var(--bad)} .bt.m1.on .ico{color:#2B0A0A}
 
 .chip.dica{cursor:pointer;transition:transform .1s}
 .chip.dica:active{transform:scale(.94)}
@@ -321,6 +315,7 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
       <div class="chip"><span>❤️</span><b id="cVidas">5</b></div>
       <div class="chip"><span>💣</span><b id="cMinas">0</b></div>
       <div class="chip"><span>⏱</span><b id="cTempo">0:00</b></div>
+      <div class="chip"><span>👆</span><b id="cJog">0</b></div>
       <button class="chip dica" id="chipDica"><span>💡</span><b id="cDicas">0</b></button>
     </div>
     <div class="metas" id="metas"></div>
@@ -337,7 +332,6 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
     </div>
     <div class="barra">
       <button class="bt m0 on" data-modo="0"><em>⛏️</em> Cavar</button>
-      <button class="bt m1" data-modo="1"><em class="ico"></em> Certeza</button>
       <button class="bt m2" data-modo="2"><em>💣</em> Revelar</button>
     </div>
   </section>
@@ -347,7 +341,7 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
       <div class="big">⚙️</div>
       <h2>Ajustes</h2>
       <div class="lista">
-        <button class="linha" id="lnSom"><span>🔊 Som e vibração</span><b id="vSom">ligado</b></button>
+        <button class="linha" id="lnSom"><span>🔊 Volume</span><b id="vSom">normal</b></button>
         <button class="linha" id="lnUp"><span>🔄 Atualizar o jogo</span><b id="vUp">v1.0</b></button>
         <button class="linha" id="lnStats"><span>📊 Suas estatísticas</span><b id="vStats">—</b></button>
         <button class="linha" id="lnRecomecar"><span>↩️ Recomeçar a jornada</span><b id="vRec">fase 1</b></button>
@@ -414,25 +408,20 @@ function minasDe(i,d){
 const dicasDe=(i,d)=>Math.max(1,FASES[i].dicas+DIFS[d].dica);
 const parDe=(i,d)=>Math.round(FASES[i].par*DIFS[d].par);
 const LETRAS='ABCDEFGHIJK';
-const FLAG=c=>'<svg viewBox="0 0 24 24" width="72%" height="72%">'+
-  '<path d="M7 3.4v17.2" stroke="#C7D0E0" stroke-width="2.2" stroke-linecap="round" fill="none"/>'+
-  '<path d="M8.5 4.5 19.2 8.4 8.5 12.3z" fill="'+c+'"/></svg>';
-const BAND=FLAG('#FF5C5C');
-const FLAGICO='<svg viewBox="0 0 24 24" width="100%" height="100%">'+
-  '<path d="M7 3.4v17.2" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" fill="none" opacity=".6"/>'+
-  '<path d="M8.5 4.5 19.2 8.4 8.5 12.3z" fill="currentColor"/></svg>';
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='1.8';
+const VERSAO='2.0';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
-let st={dif:1,som:true,prog:{},sta:{}};
+let st={dif:1,vol:2,prog:{},sta:{}};
 try{
   const s=JSON.parse(localStorage.getItem(CHAVE));
   if(s){
     if(s.prog)st={...st,...s};
-    else st={dif:1,som:s.som!==false,prog:{1:{max:s.max||0,est:s.est||{},rec:s.rec||{}}}};  // save v1
+    else st={dif:1,vol:2,prog:{1:{max:s.max||0,est:s.est||{},rec:s.rec||{}}}};   // save v1
+    if(st.vol===undefined)st.vol=(st.som===false?0:2);                            // save v2
+    delete st.som;
   }
 }catch(e){}
 /* progresso da dificuldade atual — as vidas são da JORNADA, não da fase */
@@ -459,7 +448,7 @@ function salvarPartida(){
   try{
     localStorage.setItem(CHAVE_P,JSON.stringify({
       d:st.dif, f:fase, t:tempo, h:dicas, lp:limpa, rk:rei,
-      c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.fl<<4)|(c.rev?64:0)|(c.show?128:0))
+      c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.rev?64:0)|(c.show?128:0))
     }));
   }catch(e){}
 }
@@ -468,13 +457,26 @@ function limparPartida(){try{localStorage.removeItem(CHAVE_P)}catch(e){}}
 
 /* ============ SOM ============ */
 let ac=null;
-function bip(f,dur,tipo,vol){
-  if(!st.som)return;
+const VOLS=[{n:'mudo',g:0},{n:'baixo',g:1.3},{n:'normal',g:2.6},{n:'alto',g:4.2}];
+/* o iOS nasce com o áudio suspenso: só um toque de verdade destrava */
+function acordarSom(){
   try{
     ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    if(ac.state==='suspended')ac.resume();
+    const b=ac.createBuffer(1,1,22050), src=ac.createBufferSource();
+    src.buffer=b; src.connect(ac.destination); src.start(0);
+  }catch(e){}
+}
+addEventListener('pointerdown',acordarSom,{capture:true});
+function bip(f,dur,tipo,vol){
+  const mult=(VOLS[st.vol]||VOLS[2]).g;
+  if(!mult)return;
+  try{
+    ac=ac||new (window.AudioContext||window.webkitAudioContext)();
+    if(ac.state==='suspended')ac.resume();
     const o=ac.createOscillator(),g=ac.createGain();
     o.type=tipo||'sine'; o.frequency.value=f;
-    g.gain.setValueAtTime(vol||.06,ac.currentTime);
+    g.gain.setValueAtTime(Math.min(.62,(vol||.06)*mult),ac.currentTime);
     g.gain.exponentialRampToValueAtTime(.0001,ac.currentTime+dur);
     o.connect(g);g.connect(ac.destination);o.start();o.stop(ac.currentTime+dur);
   }catch(e){}
@@ -538,7 +540,7 @@ function pintarMapa(){
 /* ---- ajustes ---- */
 const cfg=$('#cfg');
 function abrirCfg(){
-  $('#vSom').textContent=st.som?'ligado':'desligado';
+  $('#vSom').textContent=(VOLS[st.vol]||VOLS[2]).n;
   $('#vUp').textContent='v'+VERSAO;
   $('#vZerar').textContent=Object.values(st.prog).reduce((a,p)=>a+Object.values(p.est||{}).reduce((x,y)=>x+y,0),0)+' ⭐';
   $('#vRec').textContent='fase '+(P().max+1)+' · ❤️ '+P().vidas;
@@ -550,8 +552,10 @@ $('#btCfg').onclick=abrirCfg;
 $('#lnFechar').onclick=()=>cfg.classList.remove('on');
 cfg.onclick=e=>{if(e.target===cfg)cfg.classList.remove('on')};
 $('#lnSom').onclick=()=>{
-  st.som=!st.som; salvar(); $('#vSom').textContent=st.som?'ligado':'desligado';
-  if(st.som){sFlag();vib(15)}
+  st.vol=((st.vol===undefined?2:st.vol)+1)%VOLS.length; salvar();
+  $('#vSom').textContent=VOLS[st.vol].n;
+  acordarSom();
+  if(st.vol){[660,880,1180].forEach((h,k)=>setTimeout(()=>bip(h,.1,'triangle',.07),k*90)); vib(15)}
 };
 function confirmar(h2,txt,rotulo,acao){
   cfg.classList.remove('on');
@@ -565,6 +569,7 @@ $('#lnStats').onclick=()=>{
   const pior=Object.keys(a.mortes).sort((x,y)=>a.mortes[y]-a.mortes[x])[0];
   const linhas=[
     ['Fases vencidas',a.fases],
+    ['Jogadas no total',a.jogadas||0],
     ['Jornadas completas',a.jornadas],
     ['Bombas pisadas',a.bombas],
     ['Vidas ganhas de volta',a.vidasGanhas],
@@ -596,7 +601,7 @@ $('#lnZerar').onclick=()=>{
     'Apagar tudo',
     ()=>{
       try{localStorage.removeItem(CHAVE);localStorage.removeItem(CHAVE_P)}catch(e){}
-      st={dif:1,som:st.som,prog:{}}; salvar();
+      st={dif:1,vol:st.vol,prog:{},sta:{}}; salvar();
       pintarMapa(); irPara(telaMapa); bip(300,.2,'sawtooth',.06);
     });
 };
@@ -629,7 +634,7 @@ function irPara(tela){
 
 /* ============ JOGO ============ */
 let fase=0,cols=0,rows=0,minas=0,cel=[],gerado=false,vivo=false,modo=0;
-let bandeiras=0,abertas=0,dicas=0,t0=0,tick=null,tempo=0,fatal=-1,espiando=false,pularAtivo=false,vidas=0;
+let jogadas=0,achadas=0,abertas=0,dicas=0,t0=0,tick=null,tempo=0,fatal=-1,espiando=false,pularAtivo=false,vidas=0;
 let acabou=false,faseMorte=0,limpa=true;
 let regra='',rei=-1,tickRegra=null;
 
@@ -642,8 +647,8 @@ function abrirFase(i){
   regra=f.regra||'';
   cols=f.cols; rows=f.rows; minas=minasDe(i,st.dif); dicas=dicasDe(i,st.dif); vidas=P().vidas;
   aplicarTema(f.tema);
-  cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,fl:0,rev:false,boom:false,gelo:false,show:false}));
-  gerado=false; vivo=true; bandeiras=0; abertas=0; tempo=0; fatal=-1; espiando=false; limpa=true;
+  cel=Array.from({length:cols*rows},()=>({m:false,n:0,ab:false,rev:false,boom:false,gelo:false,show:false}));
+  gerado=false; vivo=true; jogadas=0; achadas=0; abertas=0; tempo=0; fatal=-1; espiando=false; limpa=true;
   clearInterval(tick); tick=null;
   $('#tituloFase').innerHTML=f.ic+' '+f.nm+
     '<small>FASE '+(i+1)+' DE 11 · '+d.nm.toUpperCase()+'</small>';
@@ -704,9 +709,7 @@ function pintar(i){
   if(c.show&&!c.rev2){d.textContent=i===rei?'👹':'💣';d.classList.add('ab','achou');return}
   if(c.gelo&&c.ab&&!c.rev){d.classList.add('gelo');d.textContent='❄';return}
   if(c.rev){
-    if(c.m&&c.fl===1){d.innerHTML=BAND;d.classList.add('bnd','certa');return}
     if(c.m){d.textContent=i===rei?'👹':'💣';d.classList.add('ab','mina');if(i===fatal)d.classList.add('bum');return}
-    if(c.fl===1){d.textContent='❌';d.classList.add('erro');return}
   }
   if(c.ab){
     d.classList.add('ab');
@@ -714,8 +717,6 @@ function pintar(i){
     if(c.n)d.classList.add('n'+c.n);
   }else if(espiando&&c.n){
     d.classList.add('ab','espia'); d.textContent=c.n; d.classList.add('n'+c.n);
-  }else if(c.fl===1){
-    d.innerHTML=BAND; d.classList.add('bnd');
   }else{
     d.textContent='';
   }
@@ -733,12 +734,14 @@ function corDoTempo(){
   ch.classList.toggle('prata',tempo>par&&tempo<=par*2);
   ch.classList.toggle('bronze',tempo>par*2);
 }
+const contaAchadas=()=>cel.reduce((a,c)=>a+((c.m&&(c.show||c.boom))?1:0),0);
 function atualizarHud(){
   salvarPartida();
   $('#cVidas').textContent=vidas;
   $('#cVidas').parentElement.classList.toggle('pouco',vidas<=1);
   $('#cVidas').parentElement.title = vidas? '' : 'a próxima bomba encerra a jornada';
-  $('#cMinas').textContent=Math.max(0,minas-bandeiras);
+  $('#cMinas').textContent=Math.max(0,minas-achadas);
+  $('#cJog').textContent=jogadas;
   $('#cDicas').textContent=dicas;
   $('#cTempo').textContent=fmt(tempo);
   $('#chipDica').disabled=dicas<=0||!vivo;
@@ -853,16 +856,17 @@ function revelar(i,origem){
   const o=origem===undefined?i:origem, fila=[i]; let n=0;
   while(fila.length){
     const k=fila.pop(), c=cel[k];
-    if(c.ab||c.fl===1)continue;
+    if(c.ab||c.show)continue;
     c.ab=true; abertas++; n++; pintar(k); anima(k,o);
-    if(c.n===0&&!c.m)viz(k).forEach(v=>{if(!cel[v].ab&&cel[v].fl!==1)fila.push(v)});
+    if(c.n===0&&!c.m)viz(k).forEach(v=>{if(!cel[v].ab&&!cel[v].show)fila.push(v)});
   }
   return n;
 }
 function cavar(i){
   const c=cel[i];
-  if(!vivo||c.fl===1)return;
+  if(!vivo||c.show)return;
   if(c.show)return;
+  jogadas++;
   if(c.gelo){c.gelo=false;pintar(i);tab.children[i].classList.add('novo');bip(900,.06,'sine',.04);return}
   if(!gerado)gerarJusto(i);
   relogio();
@@ -872,24 +876,28 @@ function cavar(i){
 }
 function chord(i){
   const c=cel[i]; if(!c.n)return;
-  const v=viz(i), fl=v.filter(k=>cel[k].fl===1).length;
+  const v=viz(i), fl=v.filter(k=>cel[k].show||cel[k].boom).length;   // conta só mina já achada
   if(fl!==c.n)return;
-  const abrir=v.filter(k=>cel[k].fl!==1&&!cel[k].ab);
+  const abrir=v.filter(k=>!cel[k].show&&!cel[k].boom&&!cel[k].ab);
   if(!abrir.length)return;
   const bomba=abrir.find(k=>cel[k].m);
   if(bomba!==undefined)return pisar(bomba);
   let n=0; abrir.forEach(k=>{n+=revelar(k,i)});
   sAbrir(n); checar();
 }
+/* toque longo (ou botão direito) faz o contrário do modo ligado */
+function oposto(i){ modo===2 ? cavar(i) : apostar(i) }
+
 /* aposta: "tenho certeza que aqui tem bomba". Acertou, ela fica exposta. Errou, -1 vida. */
 function apostar(i){
   const c=cel[i];
   if(!vivo||c.ab||c.show||c.boom||c.gelo)return;
+  jogadas++;
   if(!gerado){banner('💣 Cave a primeira casa antes de apostar');return}
   relogio();
   if(c.m){
-    c.show=true; c.fl=1; c.rev=true;
-    bandeiras=cel.reduce((a,x)=>a+(x.fl===1?1:0),0);
+    c.show=true; c.rev=true;
+    achadas=contaAchadas();
     pintar(i); tab.children[i].classList.add('surge');
     S().achou=(S().achou||0)+1;
     [880,1180,1480].forEach((hz,k)=>setTimeout(()=>bip(hz,.09,'triangle',.05),k*70));
@@ -907,23 +915,6 @@ function apostar(i){
   }
   realce(i); atualizarHud(); atualizarMetas(); checar();
 }
-function marcarComo(i,tipo){        // toca de novo na mesma marca = tira
-  const c=cel[i];
-  if(!vivo||c.ab||c.boom||c.show)return;
-  if(gerado)relogio();
-  c.fl = c.fl===tipo ? 0 : tipo;
-  bandeiras=cel.reduce((s,x)=>s+(x.fl===1?1:0),0);
-  pintar(i); if(c.fl)tab.children[i].classList.add('fincou');
-  bip(c.fl===1?880:(c.fl===2?640:400),.07,'square',.04); vib(15); atualizarHud();
-}
-function bandeira(i){
-  const c=cel[i];
-  if(!vivo||c.ab||c.boom||c.show)return;
-  c.fl=c.fl?0:1;                         // nada <-> bandeira
-  bandeiras=cel.reduce((s,x)=>s+(x.fl===1?1:0),0);
-  pintar(i); if(c.fl)tab.children[i].classList.add('fincou');
-  bip(c.fl===1?880:(c.fl===2?640:400),.07,'square',.04); vib(15); atualizarHud();
-}
 function setModo(n){
   modo=n;
   document.querySelectorAll('.barra .bt').forEach(b=>b.classList.toggle('on',+b.dataset.modo===n));
@@ -932,7 +923,6 @@ let explicou=false;
 document.querySelectorAll('.barra .bt').forEach(b=>b.onclick=()=>{sairModoDica();setModo(+b.dataset.modo);
   if(+b.dataset.modo===2&&!explicou){explicou=true;
     banner('💣 Revelar: aponte onde tem bomba. Acertou, ela fica exposta e já conta. Errou, −1 ❤️')}bip(520+(+b.dataset.modo)*120,.05,'sine',.04)});
-document.querySelector('.bt.m1 .ico').innerHTML=FLAGICO;
 
 /* dica = detector: você escolhe a casa e ela conta a verdade (abre, ou marca a mina) */
 let modoDica=false;
@@ -959,10 +949,10 @@ function usarDica(i){
   if(c.ab){bip(220,.06,'sine',.04);return}          // casa já aberta: não gasta
   if(!gerado)gerarJusto(i);
   relogio();                                         // 1ª jogada: a escolhida nasce segura
-  dicas--; S().dicas++;
+  dicas--; jogadas++; S().dicas++;
   if(c.m){
-    c.show=true; c.fl=1; c.rev=true;                 // a bomba aparece, como no Revelar
-    bandeiras=cel.reduce((a,x)=>a+(x.fl===1?1:0),0);
+    c.show=true; c.rev=true;                 // a bomba aparece, como no Revelar
+    achadas=contaAchadas();
     pintar(i); tab.children[i].classList.add('surge');
     banner('💣 Tinha bomba em '+coord(i)+' · achada de graça');
     bip(300,.2,'square',.06); vib([20,40,20]);
@@ -980,12 +970,11 @@ function retomar(sv){
   cel.forEach((c,i)=>{
     const v=sv.c[i];
     c.m=!!(v&1); c.ab=!!(v&2); c.boom=!!(v&4); c.rev=!!(v&64); c.show=!!(v&128);
-    c.fl=((v>>4)&3)===1?1:0;                       // marca amarela antiga vira nada
   });
   for(let i=0;i<cel.length;i++)cel[i].n=viz(i).filter(v=>cel[v].m).length;
   gerado=true; limpa=sv.lp!==false; dicas=sv.h; tempo=sv.t; rei=sv.rk!==undefined?sv.rk:-1;
   abertas=cel.reduce((a,c)=>a+(c.ab?1:0),0);
-  bandeiras=cel.reduce((a,c)=>a+(c.fl===1?1:0),0);
+  achadas=contaAchadas();
   cel.forEach((_,i)=>pintar(i));
   $('#cTempo').textContent=fmt(tempo);
   atualizarHud(); atualizarMetas();
@@ -1002,8 +991,8 @@ tab.addEventListener('pointerdown',e=>{
   const d=e.target.closest('.c'); if(!d||!vivo)return;
   alvo=+d.dataset.i; usouLongo=false; realce(alvo);
   if(modoDica)return;                                // no modo dica, só o toque simples conta
-  if(e.button===2){usouLongo=true;bandeira(alvo);return}
-  longo=setTimeout(()=>{usouLongo=true;bandeira(alvo)},420);
+  if(e.button===2){usouLongo=true;oposto(alvo);return}
+  longo=setTimeout(()=>{usouLongo=true;oposto(alvo)},400);
 });
 const cancelar=()=>{clearTimeout(longo);longo=null};
 tab.addEventListener('pointerup',e=>{
@@ -1011,11 +1000,7 @@ tab.addEventListener('pointerup',e=>{
   const d=e.target.closest('.c'); if(!d||alvo===null||!vivo)return;
   if(+d.dataset.i!==alvo){alvo=null;return}
   if(modoDica){ usarDica(alvo); alvo=null; return }
-  if(!usouLongo){
-    if(modo===2)apostar(alvo);
-    else if(modo===1)marcarComo(alvo,1);
-    else cavar(alvo);
-  }
+  if(!usouLongo){ modo===2?apostar(alvo):cavar(alvo) }
   alvo=null;
 });
 tab.addEventListener('pointercancel',cancelar);
@@ -1030,8 +1015,8 @@ function pisar(i){
   p.vidas=Math.max(0,p.vidas-custo); vidas=p.vidas; salvar();
   if(custo>1)banner('👹 O Bomba-Rei! −2 ❤️');
   const c=cel[i];
-  c.rev=true; c.boom=true; c.fl=1;
-  bandeiras=cel.reduce((a,x)=>a+(x.fl===1?1:0),0);
+  c.rev=true; c.boom=true;
+  achadas=contaAchadas();
   pintar(i); tab.children[i].classList.add('estourou');
   const b=$('#board'); b.classList.remove('chacoalha'); void b.offsetWidth; b.classList.add('chacoalha');
   sBum(); vib([25,45,70]); atualizarHud(); checar();
@@ -1045,7 +1030,7 @@ function mare(){                                   // Praia: molha a faixa mais 
   if(!vivo||!gerado)return;
   for(let x=0;x<cols;x++){
     const col=[];
-    for(let y=0;y<rows;y++){const i=y*cols+x; if(!cel[i].ab&&cel[i].fl!==1&&!cel[i].boom)col.push(i)}
+    for(let y=0;y<rows;y++){const i=y*cols+x; if(!cel[i].ab&&!cel[i].show&&!cel[i].boom)col.push(i)}
     if(!col.length)continue;
     const seguras=col.filter(i=>!cel[i].m);
     if(seguras.length){
@@ -1069,13 +1054,14 @@ function congelar(){                               // Geleira: casa vazia volta 
 /* ---- fim: vitória ---- */
 function checar(){
   atualizarHud();
-  if(abertas===cel.length-minas)vencer();
+  // acaba de dois jeitos: limpou tudo que era seguro, OU achou todas as minas
+  if(abertas===cel.length-minas || contaAchadas()===minas)vencer();
 }
 function vencer(){
   vivo=false; clearInterval(tick); tick=null; clearInterval(tickRegra); limparPartida();
   const centro=((rows/2)|0)*cols+((cols/2)|0);
-  cel.forEach((c,k)=>{if(c.m&&c.fl!==1){c.fl=1;pintar(k);anima(k,centro,'fincou')}});
-  bandeiras=minas;
+  cel.forEach((c,k)=>{if(c.m&&!c.show){c.show=true;c.rev=true;pintar(k);anima(k,centro,'surge')}});
+  achadas=minas;
   atualizarHud(); sWin(); vib([30,40,30]); confete();
   const d=DIFS[st.dif], p=P(), par=parDe(fase,st.dif);
   const usouDica=dicasDe(fase,st.dif)-dicas>0;
@@ -1087,7 +1073,7 @@ function vencer(){
   if(fase+1>p.max)p.max=Math.min(fase+1,FASES.length-1);
   salvar();
   const zerou=fase===FASES.length-1;
-  const linhas=[fmt(tempo)+(novoRec?' · novo recorde 🏅':' · seu recorde: '+fmt(p.rec[fase]))];
+  const linhas=[fmt(tempo)+' · '+jogadas+' jogadas'+(novoRec?' · novo recorde 🏅':' · recorde: '+fmt(p.rec[fase]))];
   linhas.push(zerou ? 'jornada completa · coração cheio de novo'
                     : 'restam '+vidas+' ❤️ de '+d.vidas+' até o fim das 11');
   if(limpa){
@@ -1103,7 +1089,7 @@ function vencer(){
     linhas.push('pisou em bomba · a conta das 3 fases limpas recomeça');
   }
   if(zerou){p.vidas=DIFS[st.dif].vidas; salvar()}            // jornada fechada: coração cheio de novo
-  const sa=S(); sa.fases++; sa.tempo+=tempo;
+  const sa=S(); sa.fases++; sa.tempo+=tempo; sa.jogadas=(sa.jogadas||0)+jogadas;
   if(zerou){sa.jornadas++; if(!sa.melhor||tempo<sa.melhor)sa.melhor=tempo}
   salvar();
   if(usouDica)linhas.push('usou dica → teto de 2 ⭐');
@@ -1127,11 +1113,11 @@ function perder(i){
   // 1) as minas e as bandeiras erradas aparecem em ondas
   let tMax=0;
   for(let k=0;k<cel.length;k++){
-    if(k===i||(!cel[k].m&&cel[k].fl!==1))continue;
+    if(k===i||!cel[k].m)continue;
     const d=160+cheb(k,i)*55; if(d>tMax)tMax=d;
     ag(()=>{
       cel[k].rev=true; pintar(k); tab.children[k].classList.add('surge');
-      bip(cel[k].m?(cel[k].fl===1?760:320):210,.06,'sine',.035);
+      bip(cel[k].show?760:320,.06,'sine',.035);
     },d);
   }
   // 2) uma pausa pra você olhar o campo  3) e então o estouro geral
@@ -1159,15 +1145,11 @@ function explodirTudo(i){
 }
 function fimDerrota(){
   pararPular(); limparAviso();
-  const certas=cel.filter(c=>c.m&&c.fl===1&&!c.boom).length;
-  const erradas=cel.filter(c=>!c.m&&c.fl===1).length;
+  const certas=cel.filter(c=>c.m&&c.show).length;
   const d=DIFS[st.dif], ate=faseMorte+1;
   let p='Suas '+d.vidas+' vidas do '+d.nm+' acabaram na fase '+ate+'.'+
-        '<br>A jornada recomeça do Quintal, com o coração cheio.';
-  if(certas||erradas){
-    p+='<br><br>Nesta fase você tinha '+certas+' de '+minas+' minas marcadas certo'+
-       (erradas?' e '+erradas+' bandeira'+(erradas>1?'s':'')+' no lugar errado':'')+'.';
-  }
+        '<br>A jornada recomeça do Quintal, com o coração cheio.'+
+        '<br><br>Nesta fase: '+jogadas+' jogadas e '+certas+' de '+minas+' minas achadas.';
   caixa({big:'💀',h2:'Fim de jogo',p:p,bts:[
     ['Recomeçar da fase 1',()=>abrirFase(0),'pri'],
     ['👀 Ver o campo',verCampo,'sec'],
@@ -1176,7 +1158,7 @@ function fimDerrota(){
 }
 function verCampo(){
   modal.classList.remove('on'); espiando=true;
-  cel.forEach((c,k)=>{if(c.m||c.fl===1)c.rev=true;pintar(k)});
+  cel.forEach((c,k)=>{if(c.m)c.rev=true;pintar(k)});
   avisoPular('toque para voltar');
   ag(()=>{
     const volta=()=>{limparAviso();espiando=false;modal.classList.add('on')};
@@ -1193,7 +1175,7 @@ function pararPular(){pularAtivo=false;app.removeEventListener('pointerdown',pul
 function pularFim(){
   if(!pularAtivo)return;
   pararPular(); limparAgenda();
-  cel.forEach((c,k)=>{if(c.m||c.fl===1){c.rev=true;pintar(k)}});
+  cel.forEach((c,k)=>{if(c.m){c.rev=true;pintar(k)}});
   fimDerrota();
 }
 function avisoPular(txt){

@@ -42,6 +42,14 @@ não voltar a recarregar por fase). Ficam em `P().vidas`, salvas a cada bomba.
   **As estrelas e os recordes ficam** — são a marca pessoal, não o avanço.
 - Zerar as 11 fecha a jornada: devolve as vidas e **mantém tudo destravado** (pra poder rejogar).
 
+**Volume** (`st.vol`, 0-3: mudo/baixo/normal/alto, `VOLS[]`): o ganho de cada bip é multiplicado
+por 1.3–4.2 e limitado a .62. ⚠️ No iOS o AudioContext nasce **suspenso** — `acordarSom()` roda
+em todo `pointerdown` (capture) com `resume()` + buffer silencioso; sem isso o jogo fica mudo no
+iPhone, que foi o que aconteceu.
+
+**Contador de jogadas** (`jogadas`): chip 👆 no placar, contado em `cavar`/`apostar`/dica,
+mostrado no fim da fase e somado nas estatísticas.
+
 **Metas de ⭐ sempre à vista**: a linha `#metas` abaixo do placar mostra `⭐⭐⭐ até 1:50 ·
 ⭐⭐ até 3:40 · depois ⭐` (ou o teto de 2 ⭐ quando gastou dica), e o chip do relógio muda de
 cor conforme a estrela vigente — ouro dentro do par, prata até o dobro, bronze depois.
@@ -84,9 +92,14 @@ Regras que fogem do campo minado clássico:
   Revelar) se for mina. **Nunca explode nem custa vida.** Casa já aberta não gasta. Teto de 2 ⭐.
   ⚠️ Nunca usar a classe CSS `.conf` numa célula: ela é do **confete** (`position:absolute;top:-20px`)
   e joga a casa pra fora do tabuleiro. Esse bug chegou a ser publicado (v1.7).
-- **Marca** (`cel[i].fl`): `0` nada · `1` 🚩 certeza (desconta do contador, protege do toque,
-  conta no chord). A marca amarela de "dúvida" **foi removida** em 20/09/2026 — o botão dela
-  virou o Revelar. Partida salva com `fl===2` é normalizada para `0` ao retomar.
+- **Sem bandeiras.** O modo Certeza 🚩 foi removido em 22/09/2026 a pedido dele (junto com a
+  dúvida amarela, que já tinha saído). Sobraram **dois modos: ⛏️ Cavar e 💣 Revelar**, e
+  `c.fl` saiu do modelo. Mina "achada" = `c.show` (exposta) ou `c.boom` (pisada); é isso que
+  o contador 💣 e o chord usam.
+- **Toque longo (ou botão direito) faz o contrário do modo ligado** (`oposto()`): no Cavar ele
+  aposta, no Revelar ele cava. É o atalho pra não ficar trocando de botão.
+- **A fase acaba de dois jeitos**: abrir tudo que é seguro **ou achar todas as minas**
+  (`contaAchadas()===minas`) — dá pra vencer só apostando, sem limpar o campo.
 - **💣 Revelar** (`apostar()`): você aponta onde acha que tem bomba. Acertou, ela fica **exposta**
   (`c.show`, com `fl=1` — já conta no contador e no chord, e não dá pra mexer). Errou, a casa
   abre e custa **1 ❤️** (e zera a sequência de fases limpas). Antes do 1º toque não deixa apostar.
@@ -114,7 +127,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 1.8).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 2.0).
 
 ## Como testar (workflow da suíte)
 
