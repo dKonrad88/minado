@@ -1,4 +1,4 @@
-# Minado 11 — campo minado em 11 fases
+# Minado — campo minado em 31 fases
 
 Jogo **single-file** (`index.html`) da suíte pessoal. PWA instalável, **100% offline**
 (sem Supabase, sem login) — o progresso fica no `localStorage` do aparelho.
@@ -11,116 +11,23 @@ Jogo **single-file** (`index.html`) da suíte pessoal. PWA instalável, **100% o
 
 ## O jogo
 
-11 fases em dificuldade crescente (5×5 → 11×14), cada uma vale até 3 ⭐ pelo tempo.
-Desbloqueio sequencial, 33 ⭐ por dificuldade.
+**31 fases** (`FASES`) numa jornada que sai do quintal e termina no espaço. A tabela é compacta:
+cada fase aponta um **bioma** (`BIOMAS`: paleta + cenário + trilha), um número de minas, o par de
+tempo e, quando tem, `forma`, `rochas`, `mel` e `regra`. `dicas` sai do tamanho do campo.
 
-**4 dificuldades** (`DIFS`), escolhidas na faixa no topo do mapa. Cada uma tem **vidas**,
-multiplicador de minas, ajuste de dicas e de tempo-par — e **progresso próprio**
-(`st.prog[dif] = {max, est, rec}`; `P()` devolve o da atual):
+**Campos com forma** (`FORMAS`): a função da forma decide quais casas existem — as outras viram
+`c.fora` (buraco invisível). Tem círculo, losango, anel, cruz, ampulheta, taça, onda, escada,
+seta, tijolo e trevo. `viz()` **ignora buraco e rocha**, então contagem, flood, chord e solver
+herdam a forma de graça. A área real fica em `dentro` (não use `cel.length`).
 
-| | vidas | minas | dicas | par |
-|---|---|---|---|---|
-| 🍃 Brisa | 7 | ×0,75 | +1 | ×1,6 |
-| 🎯 Na Medida | 5 | ×1,00 | — | ×1,0 |
-| 🥶 Suor Frio | 4 | ×1,20 | — | ×0,8 |
-| 💀 Sem Volta | 3 | ×1,40 | −1 | ×0,65 |
+**Obstáculos**: `c.rocha` (sólida, não abre, não tem mina), `c.mel` (o 1º toque só limpa o mel)
+e `c.premio` (presente: +1 💡 ao abrir). `espalharObstaculos()` sorteia e testa `conexo()` —
+rocha nunca pode partir o campo em dois, senão o pedaço isolado exigiria adivinhação.
 
-`minasDe()` põe um teto de **33% do campo** e nunca passa de `total-9` (senão a 1ª jogada
-segura fica impossível). Na fase 11 isso dá 29 / 38 / 46 / 50 minas.
+**A dificuldade muda o terreno também**: Brisa dá 2 presentes; Suor Frio joga 4 rochas e 3 mel;
+Relâmpago, 8 rochas e 6 mel. `areaDe()`/`minasDe()` já descontam isso.
 
-**Vidas são da JORNADA inteira**, não da fase (regra dada pelo Diego em 20/09/2026 —
-não voltar a recarregar por fase). Ficam em `P().vidas`, salvas a cada bomba.
-
-- Pisar numa mina custa 1 ❤️ e **não acaba o jogo**: a casa vira 💥 travada (`c.boom`, com
-  `fl=1`, então já conta como marcada no contador e no chord) e a partida segue.
-- Vencer uma fase **não devolve vida**. Chegar a 0 ❤️ ainda deixa jogar — é a última chance.
-- **A bomba seguinte a 0 ❤️ encerra**: com 5 vidas, o fim vem na 6ª bomba (`pisar()` testa
-  `p.vidas<=0` ANTES de descontar; mexer nessa ordem quebra a regra que ele pediu).
-- Fim de jogo = `perder()` marca `acabou=true`, guarda `faseMorte` e chama `novaJornada()`
-  na hora: `max=0` (as 11 trancam) e coração cheio. `abrirFase` força a fase 1 enquanto
-  `acabou` estiver ligado, senão o ↻ durante a animação escaparia do castigo.
-  **As estrelas e os recordes ficam** — são a marca pessoal, não o avanço.
-- Zerar as 11 fecha a jornada: devolve as vidas e **mantém tudo destravado** (pra poder rejogar).
-
-**Volume** (`st.vol`, 0-3: mudo/baixo/normal/alto, `VOLS[]`): o ganho de cada bip é multiplicado
-por 1.3–4.2 e limitado a .62. ⚠️ No iOS o AudioContext nasce **suspenso** — `acordarSom()` roda
-em todo `pointerdown` (capture) com `resume()` + buffer silencioso; sem isso o jogo fica mudo no
-iPhone, que foi o que aconteceu.
-
-**Contador de jogadas** (`jogadas`): chip 👆 no placar, contado em `cavar`/`apostar`/dica,
-mostrado no fim da fase e somado nas estatísticas.
-
-**Metas de ⭐ sempre à vista**: a linha `#metas` abaixo do placar mostra `⭐⭐⭐ até 1:50 ·
-⭐⭐ até 3:40 · depois ⭐` (ou o teto de 2 ⭐ quando gastou dica), e o chip do relógio muda de
-cor conforme a estrela vigente — ouro dentro do par, prata até o dobro, bronze depois.
-
-**Campo sem chute** (`gerarJusto`): sorteia e roda `resolvivel()` — um solver que simula um
-jogador que só deduz (regras diretas + subconjunto para o 1-2-1 + contagem global de minas).
-Campo que exigiria adivinhação é descartado; até 6000 sorteios ou 450ms, e aí segue o último.
-Taxa medida: **Brisa e Na Medida 100%**, Suor Frio ~87%, Sem Volta ~75% (densidade de 32% é
-dura demais). Campos crus sem esse filtro: só 28% são justos.
-⚠️ `gerar()` **precisa limpar `m`/`n` no início** — é chamado centenas de vezes seguidas.
-
-**Vida extra**: 3 fases seguidas sem pisar em bomba dão +1 ❤️ (`P().limpas`, zera ao pisar).
-
-**Partida em andamento** (`CHAVE_P`): `salvarPartida()` roda dentro de `atualizarHud()` e no
-`visibilitychange`. O card grande de "Continuar" foi removido em 22/09/2026 (ocupava espaço):
-a fase em andamento ganha a classe `.curso` no próprio card do mapa, com `▸ tempo`, e tocar nela
-retoma. `vencer()`/`perder()` limpam.
-
-**Mapa (v2.3)**: 11 cards em 3 colunas deixavam uma célula vazia na última linha — o card da
-fase 11 leva `.chefe` (`grid-column:span 2`) e fecha a grade (10×1 + 1×2 = 12 = 4 linhas cheias).
-O que sobra abaixo do rodapé é só a safe area do aparelho (34pt) mais 12 de respiro.
-
-⚠️ **Safe area só no `#app`** (v2.2): no celular ele é `position:fixed; inset:0` — não depende do
-`100dvh`, que no PWA do iPhone reportava menos do que a tela — e o `padding: env(...)` fica só nele.
-Nenhum filho pode somar `env(safe-area-inset-bottom)` de novo, senão a margem de baixo entra duas
-vezes e sobra uma faixa morta embaixo (foi o que aconteceu no iPhone do Diego).
-
-**Visual (v2.1, "liquid glass")**: a classe `.vidro` (blur + saturate + brilho na borda via `::after`)
-vai **só onde a Apple põe vidro** — segmented de dificuldade, chips do placar, barra de ações,
-rodapé do mapa, banner e sheets. **Nunca nas células nem nos cards de fase**, que são conteúdo.
-A barra de ações e o rodapé do mapa são `position:absolute` e o conteúdo rola por baixo deles.
-⚠️ Por isso `ajustar()` **subtrai os paddings** de `wrap` (clientHeight os inclui, e o de baixo é
-o espaço reservado da barra) — sem isso a fase 11 fica escondida atrás dos botões.
-
-**Patente** (`PATENTES`/`pontos()`): soma fases×2 + bombas achadas + jornadas×20 + vidas ganhas×3
-+ bônus×2, atravessa as 4 dificuldades. Fica no topo do mapa com barrinha de progresso.
-
-**Prêmios**: a partir da 3ª fase limpa seguida, **cada** fase limpa dá +1 ❤️ (`P().limpas` não
-zera mais no prêmio, só ao pisar). Fechar a fase com poucas jogadas (alvo = 45% das casas seguras
-+ nº de minas) dá +1 💡 para a fase seguinte (`P().bonus`).
-
-**Trilha do cenário** (`tema.som` + `tocarAmbiente`): ruído filtrado com LFO (`vento`/`caverna`) ou
-drone de 3 osciladores (`espaco`), tudo sintetizado. Para no mapa e quando o app vai pro fundo.
-Liga/desliga em Ajustes (`st.amb`).
-
-**Ajustes → 📖 Como funciona**: lista o básico e a regra de cada uma das 11 fases, montada a partir
-de `FASES[i].aviso`.
-
-⚠️ **Nada de caveira/diabo** (pedido dele em 22/09/2026): a dificuldade máxima é **⚡ Relâmpago**
-(era 💀 Sem Volta) e a fase 11 é **🎆 Grande Final** com o **🧨 Bombão** (era 👹 Covil do Bomba-Rei).
-
-**Regras de cenário** (`FASES[i].regra` + `aviso`, mostrado num banner na entrada):
-`mare` (Praia, 45s, abre as casas seguras da coluna mais à esquerda), `gelo` (Geleira, 13s,
-casa vazia volta a parecer fechada — só visual, `c.ab` continua true e o toque só descongela),
-`orbita` (bordas ligadas: `viz()` faz wrap — o solver herda isso de graça), `rei` (uma mina custa
-2 ❤️), `cisca` (Galinheiro, abre uma casa segura), `cogumelo` (Bosque, 3 pistas que contam as minas
-da coluna), `fantasma` (Vila, some com um número por 8s), `veio` (Mina velha, 2 diamantes que
-expõem as minas vizinhas), `brasa` (Cratera, uma mina pisca) e `miragem` (Deserto, um número
-mostra ±1 — o solver usa o valor real). Só o Quintal fica sem regra, de propósito.
-⚠️ `gerar()` precisa zerar **também** `pista` e `mente` — ele roda milhares de vezes por campo.
-
-**Ambiente animado** (`tema.amb`): 4-14 partículas em CSS (`cai`/`sobe`/`flutua`/`pisca`),
-opacidade ~.42, com `prefers-reduced-motion` respeitado.
-
-**Estatísticas** (`st.sta` via `S()`): fases, jornadas, bombas, dicas, tempo, vidas ganhas e
-a fase que mais mata. Não zeram com a jornada.
-
-**Tema por fase** (`FASES[i].tema`): `aplicarTema()` troca as variáveis CSS `--tampa/--tampa2/
---aberta`, o fundo da tela do jogo (`ceu` + `luz`) e enche o `#cenario` com 5 emojis
-(`deco`) a 13% de opacidade nos cantos. O card do mapa herda o mesmo tom. Regra: **levemente**
-temático — `ab` (casa aberta) tem que continuar escuro ou os números perdem contraste.
+**2 chefes** (`CHEFES=[15,30]`) ocupam duas colunas no mapa e fecham a grade (29×1 + 2×2 = 33).
 
 Regras que fogem do campo minado clássico:
 
@@ -166,7 +73,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 2.5).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.0).
 
 ## Como testar (workflow da suíte)
 
