@@ -68,6 +68,11 @@ dura demais). Campos crus sem esse filtro: só 28% são justos.
 a fase em andamento ganha a classe `.curso` no próprio card do mapa, com `▸ tempo`, e tocar nela
 retoma. `vencer()`/`perder()` limpam.
 
+⚠️ **Safe area só no `#app`** (v2.2): no celular ele é `position:fixed; inset:0` — não depende do
+`100dvh`, que no PWA do iPhone reportava menos do que a tela — e o `padding: env(...)` fica só nele.
+Nenhum filho pode somar `env(safe-area-inset-bottom)` de novo, senão a margem de baixo entra duas
+vezes e sobra uma faixa morta embaixo (foi o que aconteceu no iPhone do Diego).
+
 **Visual (v2.1, "liquid glass")**: a classe `.vidro` (blur + saturate + brilho na borda via `::after`)
 vai **só onde a Apple põe vidro** — segmented de dificuldade, chips do placar, barra de ações,
 rodapé do mapa, banner e sheets. **Nunca nas células nem nos cards de fase**, que são conteúdo.
@@ -136,7 +141,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 2.1).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 2.2).
 
 ## Como testar (workflow da suíte)
 
