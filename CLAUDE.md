@@ -46,8 +46,13 @@ acrescentar informação ali, vira etiqueta, não frase.
 **Os 4 modos são de exército** (v3.5, pedido dele): 🎒 Treinamento · 🧭 Patrulha · 🛡️ Operação ·
 ⚡ Linha de Frente. Além de vida/mina/dica/tempo, cada um tem `abre` (anéis protegidos na 1ª
 cavada: 2/1/1/0) e a dose de surpresas. Medido: a 1ª cavada abre 31 / 19 / 16 / 12 casas.
-⚠️ **Trade-off conhecido**: abertura pequena e campo sem chute brigam — na Linha de Frente o
-justo cai para ~58% (nos outros fica 87-100%). É intencional e está escrito na tela de regras.
+⚠️ **O primeiro toque nunca pode ganhar a fase** (v3.9): em campo pequeno o flood abria TODAS as
+casas seguras de uma vez — 28% das partidas no Quintal/Treinamento. `gerarJusto()` rejeita sorteio
+cujo `floodConta(seguro)` passe do **teto** da dificuldade (`teto:` .75/.60/.45/.35 das seguras,
+piso de 11 e folga mínima de 4 casas); `minasDe()` ganhou **piso de 3 minas ou 9% da área**; e o
+último recurso **mura um canto** (parede de minas em volta) para garantir casa fechada.
+Medido em 960 partidas nas fases pequenas: **0 vitórias no primeiro clique**.
+Medido em 124 partidas (31×4): abre 49/35/29/24% do campo e 100/94/87/74% sem chute.
 
 ⚠️ **Regra é raridade, não relógio** (v3.6): nada de `setInterval`. `talvezRegra()` roda **depois
 de cada jogada sua** — 28% de chance, espera de 3-6 jogadas entre uma e outra, teto de 1-3 por
@@ -125,7 +130,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.8).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.9).
 
 ## Como testar (workflow da suíte)
 
