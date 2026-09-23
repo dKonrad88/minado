@@ -601,10 +601,10 @@ const CHEFES=[15,30];                          // fases que ocupam dois lugares 
 const TOTAL_ESTRELAS=FASES.length*3;
 
 const DIFS=[
- {ic:'🎒',nm:'Treinamento',  vidas:7, mult:0.75, dica: 1, par:1.6,  cor:'#3DDC84', rochas:-1, mel:-1, bons:4, ruins:0, abre:2, min:1},
- {ic:'🧭',nm:'Patrulha',     vidas:5, mult:1.00, dica: 0, par:1.0,  cor:'#FFD43B', rochas: 0, mel: 0, bons:2, ruins:1, abre:1, min:1},
- {ic:'🛡️',nm:'Operação',     vidas:4, mult:1.20, dica:-1, par:0.8,  cor:'#5AA9FF', rochas: 2, mel: 2, bons:1, ruins:3, abre:1, min:0},
- {ic:'⚡',nm:'Linha de Frente',vidas:3, mult:1.45, dica:-2, par:0.65, cor:'#C08CFF', rochas: 4, mel: 4, bons:0, ruins:5, abre:0, min:0},
+ {ic:'🎒',nm:'Treinamento',  vidas:7, mult:0.75, dica: 1, par:1.6,  cor:'#3DDC84', rochas:-1, mel:-1, bons:4, ruins:0, abre:2, min:1, teto:.75},
+ {ic:'🧭',nm:'Patrulha',     vidas:5, mult:1.00, dica: 0, par:1.0,  cor:'#FFD43B', rochas: 0, mel: 0, bons:2, ruins:1, abre:1, min:1, teto:.60},
+ {ic:'🛡️',nm:'Operação',     vidas:4, mult:1.20, dica:-1, par:0.8,  cor:'#5AA9FF', rochas: 2, mel: 2, bons:1, ruins:3, abre:1, min:0, teto:.45},
+ {ic:'⚡',nm:'Linha de Frente',vidas:3, mult:1.45, dica:-2, par:0.65, cor:'#C08CFF', rochas: 4, mel: 4, bons:0, ruins:5, abre:1, min:0, teto:.35},
 ];
 /* casas que existem de verdade: dentro da forma e sem rocha */
 function areaDe(i,d){
@@ -614,7 +614,9 @@ function areaDe(i,d){
 }
 function minasDe(i,d){
   const a=areaDe(i,d);
-  return Math.max(1,Math.min(Math.round(FASES[i].minas*DIFS[d].mult),Math.floor(a*0.33),a-9));
+  // piso: com minas de menos o primeiro toque abre o campo inteiro
+  const piso=Math.max(3,Math.ceil(a*0.09));
+  return Math.max(piso,Math.min(Math.round(FASES[i].minas*DIFS[d].mult),Math.floor(a*0.33),a-9));
 }
 const dicasDe=(i,d)=>Math.max(DIFS[d].min===undefined?1:DIFS[d].min, FASES[i].dicas+DIFS[d].dica);
 const parDe=(i,d)=>Math.round(FASES[i].par*DIFS[d].par);
@@ -641,7 +643,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='3.8';
+const VERSAO='3.9';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -1259,15 +1261,59 @@ function resolvivel(inicio){
   for(let i=0;i<N;i++)if(!cel[i].m&&!cel[i].fora&&!cel[i].rocha&&!ab[i])return false;
   return true;
 }
+/* quantas casas o primeiro toque abriria (flood) — usado pra não entregar a fase de graça */
+function floodConta(i){
+  const vis=new Set([i]), fila=[i];
+  while(fila.length){
+    const k=fila.pop();
+    if(cel[k].n===0&&!cel[k].m)for(const v of viz(k))if(!vis.has(v)){vis.add(v);fila.push(v)}
+  }
+  return vis.size;
+}
 function gerarJusto(seguro){
-  const t0=Date.now(), abre=DIFS[st.dif].abre===undefined?1:DIFS[st.dif].abre;
+  const t0=Date.now();
+  const seguras=dentro-minas;
+  // teto de abertura: aperta conforme a dificuldade, mas SEMPRE deixa casas para o jogador
+  const folga=Math.max(4,Math.round(seguras*.12));
+  const teto=Math.min(seguras-folga, Math.max(11,Math.round(seguras*(DIFS[st.dif].teto||.6))));
   let reserva=null;
   for(let t=0;t<9000;t++){
     gerar(seguro);
-    if(abre===0&&cel[seguro].n>1)continue;        // clareira pequena, mas não uma casa sozinha
+    if(floodConta(seguro)>teto)continue;
+    if(!reserva)reserva=cel.map(c=>c.m);          // já respeita o teto
     if(resolvivel(seguro))return t+1;
-    if(!reserva&&cel[seguro].n<=1)reserva=cel.map(c=>c.m);   // guarda o melhor palpite
     if(!(t&31)&&Date.now()-t0>650)break;
+  }
+  if(!reserva)for(let t=0;t<4000;t++){            // nem justo nem no teto: ao menos deixa folga
+    gerar(seguro);
+    if(floodConta(seguro)<=seguras-folga){reserva=cel.map(c=>c.m);break}
+  }
+  if(!reserva){            // último recurso: murar um canto para sobrar casa fechada
+    const proib=new Set([seguro,...viz(seguro)]);
+    const cantos=[];
+    for(let i=0;i<cel.length;i++){
+      const x=i%cols,y=(i/cols)|0;
+      if(cel[i].fora||cel[i].rocha||proib.has(i))continue;
+      if(x>0&&x<cols-1&&y>0&&y<rows-1)continue;                 // só borda
+      cantos.push(i);
+    }
+    cantos.sort((a,b)=>cheb(b,seguro)-cheb(a,seguro));
+    const alvo=cantos[0];
+    if(alvo!==undefined){
+      const parede=viz(alvo).filter(k=>!proib.has(k)&&k!==alvo);
+      if(parede.length&&parede.length<=minas){
+        cel.forEach(c=>c.m=false);
+        parede.forEach(p=>cel[p].m=true);
+        let faltam=minas-parede.length;
+        const livres=[];
+        for(let i=0;i<cel.length;i++)
+          if(!cel[i].m&&!cel[i].fora&&!cel[i].rocha&&!proib.has(i)&&i!==alvo)livres.push(i);
+        for(let i=livres.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[livres[i],livres[j]]=[livres[j],livres[i]]}
+        for(let k=0;k<faltam&&k<livres.length;k++)cel[livres[k]].m=true;
+        for(let i=0;i<cel.length;i++)cel[i].n=(cel[i].fora||cel[i].rocha)?0:viz(i).filter(v=>cel[v].m).length;
+        reserva=cel.map(c=>c.m);
+      }
+    }
   }
   if(reserva){                                    // desistiu do justo: pelo menos começa bem
     cel.forEach((c,i)=>c.m=reserva[i]);
