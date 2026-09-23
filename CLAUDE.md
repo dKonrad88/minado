@@ -43,6 +43,20 @@ rocha nunca pode partir o campo em dois, senão o pedaço isolado exigiria adivi
 e `tags` (etiquetas `bom`/`ruim`/`ouro`). Era um parágrafo de 4 linhas e virou painel — se for
 acrescentar informação ali, vira etiqueta, não frase.
 
+**Os 4 modos são de exército** (v3.5, pedido dele): 🎒 Treinamento · 🧭 Patrulha · 🛡️ Operação ·
+⚡ Linha de Frente. Além de vida/mina/dica/tempo, cada um tem `abre` (anéis protegidos na 1ª
+cavada: 2/1/1/0) e a dose de surpresas. Medido: a 1ª cavada abre 31 / 19 / 16 / 12 casas.
+⚠️ **Trade-off conhecido**: abertura pequena e campo sem chute brigam — na Linha de Frente o
+justo cai para ~58% (nos outros fica 87-100%). É intencional e está escrito na tela de regras.
+
+**A regra da fase é sorteada a cada partida** (`POOL[bioma]`, a assinatura da fase pesa o dobro),
+e o texto do aviso é montado por `FALA[regra](tema)` — por isso jogar o Quintal duas vezes não dá
+a mesma coisa.
+
+**Cada fase tem um bicho sonoro** (`tema.som.ev`): motivo curto que toca a cada 4-17s — pássaro,
+galinha, abelha, coruja, gota, buzina… É o que faz perceber a diferença entre fases; só mudar a
+frequência do ruído não bastava (reclamação dele).
+
 **Surpresas** (`c.surp`, invisíveis até tocar; `BONS`/`RUINS`): presente (+1 💡), sopro (abre a
 vizinhança), alarme (expõe uma mina) · grude (vira `mel=2`, que quebra **e abre** no toque
 seguinte — `mel=1` é o grude visível, que só limpa), desabamento (a casa vira rocha, `dentro--`,
@@ -99,7 +113,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.4).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.5).
 
 ## Como testar (workflow da suíte)
 

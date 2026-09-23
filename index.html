@@ -462,31 +462,31 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 /* ---------- biomas: paleta, cenário e trilha compartilhados ---------- */
 const BIOMAS={
  jardim:{ceu:'#0C1710',luz:'rgba(120,220,140,.09)',t1:'#33513A',t2:'#2A4431',ab:'#16241A',
-   deco:['🌿','🌼','🐝','🌱','🍃'],amb:{t:'cai',e:'🍃',n:6},som:{t:'vento',f:900,q:.7,lfo:.07,v:.05},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
+   deco:['🌿','🌼','🐝','🌱','🍃'],amb:{t:'cai',e:'🍃',n:6},som:{t:'vento',f:900,q:.7,lfo:.07,v:.05,ev:{n:[2400,3100],d:.07,t:'triangle',v:.05,g:90,cada:[5,12]}},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
  mata:{ceu:'#0A1410',luz:'rgba(90,200,150,.08)',t1:'#2B4438',t2:'#233A2F',ab:'#13211B',
-   deco:['🌲','🍄','🦌','🍂','🌲'],amb:{t:'cai',e:'🍂',n:7},som:{t:'vento',f:1500,q:.6,lfo:.05,v:.055},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
+   deco:['🌲','🍄','🦌','🍂','🌲'],amb:{t:'cai',e:'🍂',n:7},som:{t:'vento',f:1500,q:.6,lfo:.05,v:.055,ev:{n:[420,330],d:.26,t:'sine',v:.055,g:280,cada:[7,15]}},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
  mar:{ceu:'#0B1520',luz:'rgba(120,200,255,.09)',t1:'#3A4A5E',t2:'#31404F',ab:'#16202B',
-   deco:['🐚','🌊','⛱️','🦀','🌴'],amb:{t:'sobe',e:'🫧',n:7},som:{t:'vento',f:480,q:.5,lfo:.13,v:.085},bloco:'🪸',grude:'🌊',grudeNm:'poça'},
+   deco:['🐚','🌊','⛱️','🦀','🌴'],amb:{t:'sobe',e:'🫧',n:7},som:{t:'vento',f:480,q:.5,lfo:.13,v:.085,ev:{n:[1500,1150,880],d:.16,t:'triangle',v:.05,g:130,cada:[6,13]}},bloco:'🪸',grude:'🌊',grudeNm:'poça'},
  assombro:{ceu:'#100E17',luz:'rgba(170,140,255,.09)',t1:'#3A3548',t2:'#302C3D',ab:'#1B1826',
-   deco:['🕯️','🕸️','🦇','🏚️','🌫️'],amb:{t:'flutua',e:'👻',n:4},som:{t:'caverna',f:260,q:1,lfo:.05,v:.06},bloco:'🚪',grude:'🕸️',grudeNm:'teia'},
+   deco:['🕯️','🕸️','🦇','🏚️','🌫️'],amb:{t:'flutua',e:'👻',n:4},som:{t:'caverna',f:260,q:1,lfo:.05,v:.06,ev:{n:[190,150],d:.5,t:'sine',v:.05,g:420,cada:[8,16]}},bloco:'🚪',grude:'🕸️',grudeNm:'teia'},
  subsolo:{ceu:'#120D09',luz:'rgba(255,190,110,.08)',t1:'#453528',t2:'#3A2C21',ab:'#201812',
-   deco:['⛏️','💎','🪨','🔦','🕳️'],amb:{t:'sobe',e:'✨',n:6},som:{t:'caverna',f:190,q:1,lfo:.04,v:.065},bloco:'🪨',grude:'💧',grudeNm:'água'},
+   deco:['⛏️','💎','🪨','🔦','🕳️'],amb:{t:'sobe',e:'✨',n:6},som:{t:'caverna',f:190,q:1,lfo:.04,v:.065,ev:{n:[1900],d:.22,t:'sine',v:.055,g:0,cada:[4,9]}},bloco:'🪨',grude:'💧',grudeNm:'água'},
  lava:{ceu:'#170A08',luz:'rgba(255,120,60,.11)',t1:'#4C2E26',t2:'#402620',ab:'#241310',
-   deco:['🌋','🔥','🪨','💨','🔥'],amb:{t:'sobe',e:'🔥',n:8},som:{t:'caverna',f:140,q:1.4,lfo:.22,v:.075},bloco:'🪨',grude:'🔥',grudeNm:'brasa'},
+   deco:['🌋','🔥','🪨','💨','🔥'],amb:{t:'sobe',e:'🔥',n:8},som:{t:'caverna',f:140,q:1.4,lfo:.22,v:.075,ev:{n:[110,85],d:.3,t:'sawtooth',v:.05,g:160,cada:[5,11]}},bloco:'🪨',grude:'🔥',grudeNm:'brasa'},
  gelo:{ceu:'#0A141C',luz:'rgba(140,215,255,.10)',t1:'#2E4457',t2:'#273A4A',ab:'#14212B',
-   deco:['❄️','🧊','🐧','🌨️','❄️'],amb:{t:'cai',e:'❄️',n:10},som:{t:'vento',f:2300,q:1.2,lfo:.09,v:.05},bloco:'🧊',grude:'❄️',grudeNm:'gelo'},
+   deco:['❄️','🧊','🐧','🌨️','❄️'],amb:{t:'cai',e:'❄️',n:10},som:{t:'vento',f:2300,q:1.2,lfo:.09,v:.05,ev:{n:[3200,2600],d:.13,t:'sine',v:.045,g:150,cada:[6,13]}},bloco:'🧊',grude:'❄️',grudeNm:'gelo'},
  areia:{ceu:'#150F08',luz:'rgba(255,200,90,.09)',t1:'#4F4229',t2:'#443922',ab:'#241D11',
-   deco:['🌵','☀️','🦂','🏜️','🌵'],amb:{t:'flutua',e:'🌫️',n:5},som:{t:'vento',f:1050,q:.9,lfo:.06,v:.06},bloco:'🌵',grude:'💨',grudeNm:'areia'},
+   deco:['🌵','☀️','🦂','🏜️','🌵'],amb:{t:'flutua',e:'🌫️',n:5},som:{t:'vento',f:1050,q:.9,lfo:.06,v:.06,ev:{n:[760,980,700],d:.3,t:'sine',v:.04,g:240,cada:[7,14]}},bloco:'🌵',grude:'💨',grudeNm:'areia'},
  ruina:{ceu:'#131110',luz:'rgba(220,200,160,.08)',t1:'#4A4438',t2:'#3E392F',ab:'#211E19',
-   deco:['🏛️','🗿','🌾','🪶','🧭'],amb:{t:'flutua',e:'🍃',n:5},som:{t:'vento',f:760,q:.8,lfo:.05,v:.055},bloco:'🏛️',grude:'🌾',grudeNm:'mato alto'},
+   deco:['🏛️','🗿','🌾','🪶','🧭'],amb:{t:'flutua',e:'🍃',n:5},som:{t:'vento',f:760,q:.8,lfo:.05,v:.055,ev:{n:[520,390],d:.4,t:'sine',v:.045,g:330,cada:[8,15]}},bloco:'🏛️',grude:'🌾',grudeNm:'mato alto'},
  fabrica:{ceu:'#0D1116',luz:'rgba(150,200,255,.08)',t1:'#3A424E',t2:'#313843',ab:'#191D23',
-   deco:['⚙️','🔧','🏭','🚂','🔩'],amb:{t:'sobe',e:'💨',n:6},som:{t:'caverna',f:320,q:1.2,lfo:.3,v:.06},bloco:'⚙️',grude:'🛢️',grudeNm:'óleo'},
+   deco:['⚙️','🔧','🏭','🚂','🔩'],amb:{t:'sobe',e:'💨',n:6},som:{t:'caverna',f:320,q:1.2,lfo:.3,v:.06,ev:{n:[150,150],d:.09,t:'square',v:.05,g:180,cada:[4,8]}},bloco:'⚙️',grude:'🛢️',grudeNm:'óleo'},
  festa:{ceu:'#150C1E',luz:'rgba(255,160,220,.10)',t1:'#4A3155',t2:'#3E2947',ab:'#221630',
-   deco:['🎪','🎡','🎈','🍭','🎠'],amb:{t:'sobe',e:'🎈',n:7},som:{t:'vento',f:1300,q:.7,lfo:.16,v:.055},bloco:'🎠',grude:'🍭',grudeNm:'algodão-doce'},
+   deco:['🎪','🎡','🎈','🍭','🎠'],amb:{t:'sobe',e:'🎈',n:7},som:{t:'vento',f:1300,q:.7,lfo:.16,v:.055,ev:{n:[1760,2200,1760],d:.11,t:'triangle',v:.045,g:120,cada:[6,12]}},bloco:'🎠',grude:'🍭',grudeNm:'algodão-doce'},
  espaco:{ceu:'#0A0917',luz:'rgba(150,130,255,.11)',t1:'#322F55',t2:'#2A2848',ab:'#17162B',
-   deco:['🚀','⭐','🛰️','🌙','✨'],amb:{t:'pisca',e:'✦',n:14},som:{t:'espaco',hz:98,v:.05},bloco:'☄️',grude:'🌫️',grudeNm:'poeira'},
+   deco:['🚀','⭐','🛰️','🌙','✨'],amb:{t:'pisca',e:'✦',n:14},som:{t:'espaco',hz:98,v:.05,ev:{n:[1250,1600],d:.08,t:'square',v:.04,g:110,cada:[5,11]}},bloco:'☄️',grude:'🌫️',grudeNm:'poeira'},
  final:{ceu:'#120A1C',luz:'rgba(200,140,255,.13)',t1:'#3C2C57',t2:'#322549',ab:'#1B1330',
-   deco:['🎆','🎇','🏆','⭐','🎊'],amb:{t:'sobe',e:'🎇',n:8},som:{t:'espaco',hz:146,v:.055},bloco:'🎁',grude:'🎊',grudeNm:'confete'},
+   deco:['🎆','🎇','🏆','⭐','🎊'],amb:{t:'sobe',e:'🎇',n:8},som:{t:'espaco',hz:146,v:.055,ev:{n:[880,1320,1760],d:.12,t:'triangle',v:.05,g:100,cada:[4,9]}},bloco:'🎁',grude:'🎊',grudeNm:'confete'},
 };
 
 /* ---------- surpresas: parecem casa comum até você tocar ---------- */
@@ -530,14 +530,14 @@ function gira(cor,dh,dl,ds){
 /* ---------- as 31 fases ---------- */
 const FASES=[
  {ic:'🌱',nm:'Quintal de casa',  b:'jardim',  c:5, r:5,  m:3,  par:15, h:0, dl:0, sf:0, deco:['🌿','🌼','🐝','🌱','🍃']},
- {ic:'🐔',nm:'Galinheiro',       b:'jardim',  c:6, r:6,  m:4,  par:25,  regra:'cisca', h:-88, dl:0.02, sf:-0.22, deco:['🌾','🥚','🐓','🪵','🪶']},
- {ic:'🌻',nm:'Horta',            b:'jardim',  c:7, r:6,  m:6,  par:35,  forma:'onda', h:-104, dl:0.03, sf:0.38, deco:['🌻','🥕','🍅','🐞','🌱']},
+ {ic:'🐔',nm:'Galinheiro',       b:'jardim',  c:6, r:6,  m:4,  par:25,  regra:'cisca', h:-88, dl:0.02, sf:-0.22, deco:['🌾','🥚','🐓','🪵','🪶'], ev:{n:[900,760,620],d:.12,t:'square',v:.055,g:110,cada:[5,11]}},
+ {ic:'🌻',nm:'Horta',            b:'jardim',  c:7, r:6,  m:6,  par:35,  forma:'onda', h:-104, dl:0.03, sf:0.38, deco:['🌻','🥕','🍅','🐞','🌱'], ev:{n:[240,250,240],d:.2,t:'sawtooth',v:.04,g:90,cada:[6,12]}},
  {ic:'🌳',nm:'Bosque',           b:'mata',    c:7, r:7,  m:6,  par:40,  regra:'cogumelo', h:-8, dl:-0.01, sf:0, deco:['🌲','🍄','🦌','🍂','🌰']},
- {ic:'🍄',nm:'Clareira',         b:'mata',    c:8, r:7,  m:8,  par:50,  forma:'circulo', rochas:3, h:-42, dl:0.03, sf:0.3, deco:['🍄','🦋','🌸','🐛','🌿']},
- {ic:'🦌',nm:'Trilha dos cervos',b:'mata',    c:8, r:8,  m:9,  par:55,  forma:'escada', h:-64, dl:-0.01, sf:-0.16, deco:['🦌','🐾','🌲','🍁','🪵']},
+ {ic:'🍄',nm:'Clareira',         b:'mata',    c:8, r:7,  m:8,  par:50,  forma:'circulo', rochas:3, h:-42, dl:0.03, sf:0.3, deco:['🍄','🦋','🌸','🐛','🌿'], ev:{n:[2600,3100,2800,3300],d:.06,t:'triangle',v:.05,g:70,cada:[6,12]}},
+ {ic:'🦌',nm:'Trilha dos cervos',b:'mata',    c:8, r:8,  m:9,  par:55,  forma:'escada', h:-64, dl:-0.01, sf:-0.16, deco:['🦌','🐾','🌲','🍁','🪵'], ev:{n:[300,300],d:.1,t:'triangle',v:.045,g:200,cada:[6,13]}},
  {ic:'🏖️',nm:'Praia minada',     b:'mar',     c:8, r:8,  m:9,  par:55,  regra:'mare', h:0, dl:0, sf:0, deco:['🐚','🌊','⛱️','🦀','🌴']},
- {ic:'🐚',nm:'Recife',           b:'mar',     c:9, r:8,  m:11, par:65,  forma:'onda', mel:4, h:-38, dl:0.03, sf:0.42, deco:['🐠','🪸','🐙','🫧','🐡']},
- {ic:'⛵',nm:'Porto velho',      b:'mar',     c:9, r:9,  m:13, par:75,  forma:'taca', h:16, dl:-0.02, sf:-0.26, deco:['⛵','⚓','🪢','🧭','🐟']},
+ {ic:'🐚',nm:'Recife',           b:'mar',     c:9, r:8,  m:11, par:65,  forma:'onda', mel:4, h:-38, dl:0.03, sf:0.42, deco:['🐠','🪸','🐙','🫧','🐡'], ev:{n:[1800,2100],d:.09,t:'sine',v:.04,g:80,cada:[5,10]}},
+ {ic:'⛵',nm:'Porto velho',      b:'mar',     c:9, r:9,  m:13, par:75,  forma:'taca', h:16, dl:-0.02, sf:-0.26, deco:['⛵','⚓','🪢','🧭','🐟'], ev:{n:[180,150],d:.6,t:'sine',v:.05,g:500,cada:[9,17]}},
  {ic:'🏚️',nm:'Vila fantasma',    b:'assombro',c:8, r:9,  m:11, par:70,  regra:'fantasma', h:0, dl:0, sf:0, deco:['🕯️','🕸️','🦇','🏚️','🌫️']},
  {ic:'🕯️',nm:'Casarão',          b:'assombro',c:9, r:9,  m:13, par:80,  forma:'cruz', rochas:4, h:44, dl:0.02, sf:-0.2, deco:['🚪','🪑','🕰️','🔑','🕸️']},
  {ic:'🦇',nm:'Sótão',            b:'assombro',c:9, r:10, m:15, par:88,  forma:'losango', regra:'fantasma', h:-28, dl:-0.01, sf:0.34, deco:['🦇','📦','🕸️','🪞','🧹']},
@@ -549,13 +549,13 @@ const FASES=[
  {ic:'🪨',nm:'Campo de rochas',  b:'lava',    c:10,r:11, m:19, par:125, rochas:12, h:10, dl:-0.03, sf:-0.24, deco:['🪨','🗿','💨','⛰️','🪨']},
  {ic:'❄️',nm:'Geleira',          b:'gelo',    c:10,r:11, m:22, par:135, regra:'gelo', h:0, dl:0, sf:0, deco:['❄️','🧊','🐧','🌨️','❄️']},
  {ic:'🐧',nm:'Baía congelada',   b:'gelo',    c:10,r:12, m:24, par:145, forma:'circulo', regra:'gelo', h:-26, dl:0.02, sf:-0.18, deco:['🐧','🐻‍❄️','🧊','🌊','❄️']},
- {ic:'🏔️',nm:'Pico nevado',      b:'gelo',    c:10,r:12, m:25, par:150, forma:'seta', mel:5, h:10, dl:0.045, sf:0.36, deco:['🏔️','🧗','❄️','🌬️','⛷️']},
+ {ic:'🏔️',nm:'Pico nevado',      b:'gelo',    c:10,r:12, m:25, par:150, forma:'seta', mel:5, h:10, dl:0.045, sf:0.36, deco:['🏔️','🧗','❄️','🌬️','⛷️'], ev:{n:[2800,3400,2600],d:.1,t:'sine',v:.04,g:120,cada:[7,14]}},
  {ic:'🏜️',nm:'Deserto',          b:'areia',   c:10,r:12, m:26, par:165, regra:'miragem', h:0, dl:0, sf:0, deco:['🌵','☀️','🦂','🏜️','🌵']},
  {ic:'🐪',nm:'Duna alta',        b:'areia',   c:11,r:12, m:28, par:172, forma:'onda', mel:6, h:-20, dl:0.03, sf:0.3, deco:['🐪','🏜️','💨','☀️','🦎']},
  {ic:'🏛️',nm:'Ruínas',           b:'ruina',   c:11,r:12, m:29, par:178, forma:'cruz', rochas:6, h:0, dl:0, sf:0, deco:['🏛️','🗿','🌾','🪶','🧭']},
  {ic:'🗿',nm:'Vale das estátuas',b:'ruina',   c:11,r:13, m:30, par:185, forma:'trevo', regra:'miragem', h:46, dl:-0.01, sf:-0.22, deco:['🗿','🏺','🌿','🦅','🏛️']},
  {ic:'🎪',nm:'Parque antigo',    b:'festa',   c:11,r:13, m:30, par:188, forma:'losango', mel:6, h:0, dl:0, sf:0, deco:['🎪','🎡','🎈','🍭','🎠']},
- {ic:'🎢',nm:'Montanha-russa',   b:'festa',   c:11,r:13, m:31, par:192, forma:'escada', regra:'cisca', h:-44, dl:0.03, sf:0.34, deco:['🎢','🎟️','🍿','🎈','🎠']},
+ {ic:'🎢',nm:'Montanha-russa',   b:'festa',   c:11,r:13, m:31, par:192, forma:'escada', regra:'cisca', h:-44, dl:0.03, sf:0.34, deco:['🎢','🎟️','🍿','🎈','🎠'], ev:{n:[600,900,1300,1700],d:.07,t:'triangle',v:.05,g:60,cada:[6,12]}},
  {ic:'🏭',nm:'Fábrica',          b:'fabrica', c:11,r:13, m:32, par:195, forma:'tijolo', h:0, dl:0, sf:0, deco:['⚙️','🔧','🏭','🚂','🔩']},
  {ic:'⚙️',nm:'Engrenagens',      b:'fabrica', c:11,r:13, m:33, par:198, forma:'anel', rochas:8, h:-168, dl:0.02, sf:0.3, deco:['⚙️','🔩','🛠️','⛓️','🔧']},
  {ic:'🌌',nm:'Órbita',           b:'espaco',  c:11,r:13, m:32, par:200, regra:'orbita', h:0, dl:0, sf:0, deco:['🚀','⭐','🛰️','🌙','✨']},
@@ -563,6 +563,7 @@ const FASES=[
 ].map(f=>{
   const t=BIOMAS[f.b], h=f.h||0, dl=f.dl||0, sf=f.sf||0;
   const som={...t.som};
+  if(f.ev)som.ev=f.ev;
   if(som.f)som.f=Math.round(som.f*(1+sf));
   if(som.hz)som.hz=Math.round(som.hz*(1+sf));
   if(som.lfo)som.lfo=+(som.lfo*(1+sf*.6)).toFixed(3);
@@ -573,14 +574,37 @@ const FASES=[
           t2:gira(t.t2,h,dl,sf*.8), ab:gira(t.ab,h,dl,sf*.8),
           deco:f.deco||t.deco, som:som}};
 });
+/* cada fase tem uma assinatura, mas sorteia entre as suas regras possíveis a cada partida */
+const POOL={
+ jardim:['cisca','cogumelo','veio'],      mata:['cogumelo','cisca','fantasma'],
+ mar:['mare','cisca','gelo'],             assombro:['fantasma','miragem','gelo'],
+ subsolo:['veio','brasa','fantasma'],     lava:['brasa','mare','miragem'],
+ gelo:['gelo','cisca','veio'],            areia:['miragem','mare','brasa'],
+ ruina:['miragem','cogumelo','fantasma'], fabrica:['brasa','gelo','cisca'],
+ festa:['cisca','cogumelo','fantasma'],   espaco:['orbita','miragem','gelo'],
+ final:['rei','brasa','miragem'],
+};
+/* o texto do aviso sai da regra + do cenário */
+const FALA={
+ cisca:t=>[t.deco[2]||'🐾',' anda por aqui: de vez em quando abre uma casa segura sozinho'],
+ mare: t=>['🌊','de tempos em tempos uma faixa do campo é varrida e o que é seguro abre'],
+ gelo: t=>[t.grude||'❄️','casas vazias voltam a ficar cobertas — um toque limpa, o número não muda'],
+ brasa:t=>[t.deco[1]||'🔥','de tempos em tempos jorra algo aqui e abre uma poça de casas'],
+ fantasma:t=>['👻','de vez em quando um número some por alguns segundos'],
+ cogumelo:t=>['🍄','há pistas escondidas: abrir uma conta as minas da coluna inteira'],
+ veio: t=>['💎','há pistas escondidas: abrir uma denuncia as minas vizinhas'],
+ miragem:t=>['🌀','um número do campo está mentindo (±1) — ache a contradição'],
+ orbita:t=>['🌌','gravidade zero: as bordas se ligam, a coluna A é vizinha da última'],
+ rei:  t=>['🧨','o Bombão está no campo: pisar nele custa 2 ❤️ de uma vez'],
+};
 const CHEFES=[15,30];                          // fases que ocupam dois lugares no mapa
 const TOTAL_ESTRELAS=FASES.length*3;
 
 const DIFS=[
- {ic:'🍃',nm:'Brisa',    vidas:7, mult:0.75, dica: 1, par:1.6,  cor:'#3DDC84', rochas:-1, mel:-1, bons:4, ruins:0},
- {ic:'🎯',nm:'Na Medida',vidas:5, mult:1.00, dica: 0, par:1.0,  cor:'#FFD43B', rochas: 0, mel: 0, bons:2, ruins:1},
- {ic:'🥶',nm:'Suor Frio',vidas:4, mult:1.20, dica: 0, par:0.8,  cor:'#5AA9FF', rochas: 2, mel: 2, bons:1, ruins:3},
- {ic:'⚡',nm:'Relâmpago',vidas:3, mult:1.40, dica:-1, par:0.65, cor:'#C08CFF', rochas: 4, mel: 4, bons:0, ruins:5},
+ {ic:'🎒',nm:'Treinamento',  vidas:7, mult:0.75, dica: 1, par:1.6,  cor:'#3DDC84', rochas:-1, mel:-1, bons:4, ruins:0, abre:2, min:1},
+ {ic:'🧭',nm:'Patrulha',     vidas:5, mult:1.00, dica: 0, par:1.0,  cor:'#FFD43B', rochas: 0, mel: 0, bons:2, ruins:1, abre:1, min:1},
+ {ic:'🛡️',nm:'Operação',     vidas:4, mult:1.20, dica:-1, par:0.8,  cor:'#5AA9FF', rochas: 2, mel: 2, bons:1, ruins:3, abre:1, min:0},
+ {ic:'⚡',nm:'Linha de Frente',vidas:3, mult:1.45, dica:-2, par:0.65, cor:'#C08CFF', rochas: 4, mel: 4, bons:0, ruins:5, abre:0, min:0},
 ];
 /* casas que existem de verdade: dentro da forma e sem rocha */
 function areaDe(i,d){
@@ -592,7 +616,7 @@ function minasDe(i,d){
   const a=areaDe(i,d);
   return Math.max(1,Math.min(Math.round(FASES[i].minas*DIFS[d].mult),Math.floor(a*0.33),a-9));
 }
-const dicasDe=(i,d)=>Math.max(1,FASES[i].dicas+DIFS[d].dica);
+const dicasDe=(i,d)=>Math.max(DIFS[d].min===undefined?1:DIFS[d].min, FASES[i].dicas+DIFS[d].dica);
 const parDe=(i,d)=>Math.round(FASES[i].par*DIFS[d].par);
 const LETRAS='ABCDEFGHIJK';
 /* patente: soma o que você já fez, em qualquer dificuldade */
@@ -617,7 +641,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='3.4';
+const VERSAO='3.5';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -701,8 +725,21 @@ function ruidoBuf(){
   AMB.buf=b; return b;
 }
 function pararAmbiente(){
+  pararEventos();
   AMB.nos.forEach(n=>{try{n.stop&&n.stop()}catch(e){} try{n.disconnect()}catch(e){}});
   AMB.nos=[];
+}
+let evTimer=null;
+function pararEventos(){ clearTimeout(evTimer); evTimer=null }
+function agendarEvento(){
+  pararEventos();
+  if(!vivo||st.amb===false||!(VOLS[st.vol]||VOLS[2]).g)return;
+  const p=FASES[fase]&&FASES[fase].tema.som.ev; if(!p)return;
+  const t=(p.cada[0]+Math.random()*(p.cada[1]-p.cada[0]))*1000;
+  evTimer=setTimeout(()=>{
+    p.n.forEach((hz,i)=>setTimeout(()=>bip(hz,p.d||.12,p.t||'sine',p.v||.05), i*(p.g||120)));
+    agendarEvento();
+  }, t);
 }
 function tocarAmbiente(p){
   pararAmbiente();
@@ -722,7 +759,7 @@ function tocarAmbiente(p){
     }else{
       const src=ac.createBufferSource(); src.buffer=ruidoBuf(); src.loop=true;
       const filtro=ac.createBiquadFilter();
-      filtro.type = p.t==='caverna' ? 'lowpass' : 'bandpass';
+      filtro.type = p.t==='caverna' ? 'lowpass' : (p.f>1400?'highpass':'bandpass');
       filtro.frequency.value=p.f; filtro.Q.value=p.q||1;
       const lfo=ac.createOscillator(), prof=ac.createGain();
       lfo.frequency.value=p.lfo||.08; prof.gain.value=p.f*.45;
@@ -831,15 +868,20 @@ $('#lnRegras').onclick=()=>{
     ['💡 Dica','você escolhe a casa e ela conta a verdade. Nunca explode nem custa vida, mas limita a fase a 2 ⭐.'],
     ['❤️ Vidas','são da jornada inteira, não da fase. Quando acabam, tudo recomeça da fase 1.'],
     ['🎁 Prêmios','3 fases seguidas sem pisar em bomba dão 1 ❤️ — e cada fase limpa depois disso dá mais um. Fechar a fase com poucas jogadas rende 1 💡 extra.'],
+    ['🎒 Os quatro modos','Treinamento: 7 vidas, campo mais aberto, 4 surpresas boas. Patrulha: o equilíbrio. Operação: 4 vidas, menos dica, surpresas ruins. Linha de Frente: 3 vidas, 45% mais minas, nenhuma dica nas fases pequenas, a primeira cavada abre pouco — e aí o campo nem sempre dá para resolver só deduzindo.'],
     ['🎲 Surpresas','algumas casas escondem coisa. Boas: presente (+1 💡), lufada (abre a vizinhança) e alarme (aponta uma bomba). Ruins: grude (precisa de outro toque), desabamento (a casa vira entulho) e fumaça (some com os números em volta por uns segundos). Quanto mais difícil o modo, mais surpresa ruim e menos boa.'],
     ['🪨 Obstáculos','dez fases têm bloqueio ou grude à vista, com a cara do cenário: tronco, coral, porta, coluna, engrenagem, cacto…'],
     ['⭐ Estrelas','pelo tempo. As metas aparecem embaixo do placar durante a fase.'],
     ['🚩 Sem bandeira','o campo só guarda o que é certeza: bomba exposta ou bomba pisada.'],
   ].map(l=>'<div class="est"><span>'+l[0]+'</span></div><div class="reg">'+l[1]+'</div>').join('');
-  const fases=FASES.map((f,i)=>
-    '<div class="est"><span>'+f.ic+' '+f.nm+'</span><b>'+(i+1)+'</b></div>'+
-    '<div class="reg">'+(f.aviso?f.aviso.replace(/^\S+\s/,''):'campo clássico, sem regra própria')+'</div>'
-  ).join('');
+  const nomeRegra={cisca:'bicho que abre casas',mare:'faixa varrida',gelo:'casas que voltam a cobrir',
+    brasa:'jorro que abre poça',fantasma:'número que some',cogumelo:'pista da coluna',
+    veio:'pista das vizinhas',miragem:'número mentiroso',orbita:'bordas ligadas',rei:'Bombão (−2 ❤️)'};
+  const fases=FASES.map((f,i)=>{
+    const ops=[...new Set([f.regra,...(POOL[f.b]||[])].filter(Boolean))].map(r=>nomeRegra[r]||r);
+    return '<div class="est"><span>'+f.ic+' '+f.nm+'</span><b>'+(i+1)+'</b></div>'+
+      '<div class="reg">'+(ops.length?'sorteia entre: '+ops.join(' · '):'campo clássico')+'</div>';
+  }).join('');
   cfg.classList.remove('on');
   caixa({big:'📖',h2:'Como funciona',
     p:'<div class="ests rolar"><div class="sub">O básico</div>'+basico+
@@ -928,10 +970,13 @@ function abrirFase(i){
   if(acabou){i=0; acabou=false}            // depois do fim de jogo só se entra pela fase 1
   clearInterval(tickRegra); tickRegra=null; rei=-1;
   fase=i; const f=FASES[i], d=DIFS[st.dif];
-  regra=f.regra||'';
+  const pool=POOL[f.b]||[];
+  const opcoes=[f.regra,f.regra,...pool].filter(Boolean);        // a assinatura pesa o dobro
+  regra=opcoes.length?opcoes[(Math.random()*opcoes.length)|0]:'';
+  if(regra==='orbita'&&f.b!=='espaco')regra='miragem';           // wrap só faz sentido no espaço
   cols=f.cols; rows=f.rows; minas=minasDe(i,st.dif); vidas=P().vidas;
   dicas=dicasDe(i,st.dif)+(P().bonus||0); P().bonus=0;
-  aplicarTema(f.tema); tocarAmbiente(f.tema.som);
+  aplicarTema(f.tema); tocarAmbiente(f.tema.som); agendarEvento();
   const molde=FORMAS[f.forma]||FORMAS.cheio;
   cel=Array.from({length:cols*rows},(_,k)=>({m:false,n:0,ab:false,rev:false,boom:false,gelo:false,
     show:false,pista:false,oculto:false,mente:0,rocha:false,mel:0,surp:null,
@@ -945,12 +990,13 @@ function abrirFase(i){
   modal.classList.remove('on');
   irPara(telaJogo);
   desenhar(); atualizarHud(); setModo(0); sairModoDica(); atualizarMetas();
-  if(f.aviso)banner(f.aviso);
+  if(regra&&FALA[regra]){const [e2,tx]=FALA[regra](f.tema); banner(e2+' '+tx)}
+  else if(f.aviso)banner(f.aviso);
   if(regra==='mare')tickRegra=setInterval(mare,45000);
   if(regra==='gelo')tickRegra=setInterval(congelar,13000);
   if(regra==='cisca')tickRegra=setInterval(ciscar,30000);
-  if(regra==='fantasma')tickRegra=setInterval(assombrar,25000);
   if(regra==='brasa')tickRegra=setInterval(brasa,30000);
+  if(regra==='fantasma')tickRegra=setInterval(assombrar,25000);
   ajustar(); requestAnimationFrame(ajustar);   // já nasce no tamanho certo, sem piscar grande
 }
 function aplicarTema(t){
@@ -1100,7 +1146,10 @@ const viz=i=>{
 };
 function gerar(seguro){
   for(let i=0;i<cel.length;i++){const c=cel[i];c.m=false;c.n=0;c.pista=false;c.mente=0}  // gerarJusto chama isto milhares de vezes
-  const proibido=new Set([seguro,...viz(seguro)]);
+  const abre=DIFS[st.dif].abre===undefined?1:DIFS[st.dif].abre;   // tamanho da clareira inicial
+  const proibido=new Set([seguro]);
+  if(abre>=1)viz(seguro).forEach(v=>proibido.add(v));
+  if(abre>=2)viz(seguro).forEach(v=>viz(v).forEach(w=>proibido.add(w)));
   const jog=i=>!cel[i].fora&&!cel[i].rocha;
   const livres=[];
   for(let i=0;i<cel.length;i++)if(jog(i)&&!proibido.has(i))livres.push(i);
@@ -1191,11 +1240,18 @@ function resolvivel(inicio){
   return true;
 }
 function gerarJusto(seguro){
-  const t0=Date.now();
-  for(let t=0;t<6000;t++){
+  const t0=Date.now(), abre=DIFS[st.dif].abre===undefined?1:DIFS[st.dif].abre;
+  let reserva=null;
+  for(let t=0;t<9000;t++){
     gerar(seguro);
+    if(abre===0&&cel[seguro].n>1)continue;        // clareira pequena, mas não uma casa sozinha
     if(resolvivel(seguro))return t+1;
-    if(!(t&31)&&Date.now()-t0>450)break;   // no pior caso, segue com o último sorteio
+    if(!reserva&&cel[seguro].n<=1)reserva=cel.map(c=>c.m);   // guarda o melhor palpite
+    if(!(t&31)&&Date.now()-t0>650)break;
+  }
+  if(reserva){                                    // desistiu do justo: pelo menos começa bem
+    cel.forEach((c,i)=>c.m=reserva[i]);
+    for(let i=0;i<cel.length;i++)cel[i].n=(cel[i].fora||cel[i].rocha)?0:viz(i).filter(v=>cel[v].m).length;
   }
   return 0;
 }
@@ -1591,7 +1647,7 @@ function vencer(){
     tags.push(['💔 sequência zerada','ruim']);
   }
   // prêmio de eficiência: fechar a fase com poucas jogadas rende uma dica extra
-  const alvoJog=Math.round((dentro-minas)*0.45)+minas;
+  const alvoJog=Math.round((dentro-minas)*(0.45-st.dif*0.05))+minas;
   if(jogadas<=alvoJog){
     p.bonus=(p.bonus||0)+1; S().bonus=(S().bonus||0)+1;
     tags.push(['🎯 +1 💡 · alvo era '+alvoJog,'bom']);
