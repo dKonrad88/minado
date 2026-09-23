@@ -355,7 +355,20 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .cx .big{font-size:46px;line-height:1}
 .cx h2{font-size:21px;font-weight:800;margin-top:8px;letter-spacing:-.4px}
 .cx p{font-size:13px;color:var(--ink2);margin-top:6px;line-height:1.45;font-weight:600}
-.estrelas{font-size:30px;letter-spacing:4px;margin-top:12px;height:34px}
+.numeros{display:flex;gap:8px;margin-top:16px}
+.numeros>div{flex:1;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.10);
+  border-radius:16px;padding:10px 4px 8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+.numeros b{display:block;font-size:19px;font-weight:800;color:var(--ink);
+  font-variant-numeric:tabular-nums;line-height:1.1}
+.numeros span{display:block;font-size:9.5px;font-weight:800;letter-spacing:.8px;
+  color:var(--ink3);text-transform:uppercase;margin-top:3px}
+.tags{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:12px}
+.tags i{font-style:normal;font-size:11.5px;font-weight:800;padding:6px 11px;border-radius:12px;
+  background:rgba(255,255,255,.08);color:var(--ink2);border:1px solid rgba(255,255,255,.08)}
+.tags i.bom{background:rgba(61,220,132,.16);color:#8CF0B6;border-color:rgba(61,220,132,.3)}
+.tags i.ruim{background:rgba(255,92,92,.14);color:#FFA8A8;border-color:rgba(255,92,92,.28)}
+.tags i.ouro{background:rgba(255,212,59,.16);color:#FFE07A;border-color:rgba(255,212,59,.32)}
+.estrelas{font-size:30px;letter-spacing:4px;margin-top:10px;height:34px}
 .estrelas i{font-style:normal;display:inline-block;opacity:.18}
 .estrelas i.on{opacity:1;animation:pop .35s backwards}
 .estrelas i:nth-child(1){animation-delay:.1s}.estrelas i:nth-child(2){animation-delay:.28s}
@@ -604,7 +617,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='3.3';
+const VERSAO='3.4';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -1563,37 +1576,39 @@ function vencer(){
   if(fase+1>p.max)p.max=Math.min(fase+1,FASES.length-1);
   salvar();
   const zerou=fase===FASES.length-1;
-  const linhas=[fmt(tempo)+' · '+jogadas+' jogadas'+(novoRec?' · novo recorde 🏅':' · recorde: '+fmt(p.rec[fase]))];
-  linhas.push(zerou ? 'jornada completa · coração cheio de novo'
-                    : 'restam '+vidas+' ❤️ de '+d.vidas+' até o fim das 11');
+  const tags=[];
+  if(novoRec)tags.push(['🏅 novo recorde','ouro']);
   if(limpa){
     p.limpas=(p.limpas||0)+1;
     if(p.limpas>=3){        // da 3ª limpa em diante, TODA fase limpa vale mais um coração
       p.vidas++; vidas=p.vidas; S().vidasGanhas++; atualizarHud();
-      linhas.push('🎁 <b>+1 ❤️</b> · '+p.limpas+' fases limpas seguidas · agora '+p.vidas);
+      tags.push(['🎁 +1 ❤️ · '+p.limpas+' limpas seguidas','bom']);
     }else{
-      linhas.push('fase limpa · <b>'+p.limpas+'/3</b> para começar a ganhar ❤️');
+      tags.push(['🔥 '+p.limpas+'/3 limpas','bom']);
     }
   }else{
     p.limpas=0;
-    linhas.push('pisou em bomba · a sequência de fases limpas recomeça');
+    tags.push(['💔 sequência zerada','ruim']);
   }
   // prêmio de eficiência: fechar a fase com poucas jogadas rende uma dica extra
-  const alvoJog=Math.round((cel.length-minas)*0.45)+minas;
+  const alvoJog=Math.round((dentro-minas)*0.45)+minas;
   if(jogadas<=alvoJog){
     p.bonus=(p.bonus||0)+1; S().bonus=(S().bonus||0)+1;
-    linhas.push('🎯 <b>+1 💡</b> · '+jogadas+' jogadas (alvo era '+alvoJog+')');
+    tags.push(['🎯 +1 💡 · alvo era '+alvoJog,'bom']);
   }
   if(zerou){p.vidas=DIFS[st.dif].vidas; salvar()}            // jornada fechada: coração cheio de novo
   const sa=S(); sa.fases++; sa.tempo+=tempo; sa.jogadas=(sa.jogadas||0)+jogadas;
   if(zerou){sa.jornadas++; if(!sa.melhor||tempo<sa.melhor)sa.melhor=tempo}
   salvar();
-  if(usouDica)linhas.push('usou dica → teto de 2 ⭐');
-  else if(e<3)linhas.push('⭐⭐⭐ até '+fmt(par)+' · ⭐⭐ até '+fmt(par*2));
+  if(usouDica)tags.push(['💡 dica usada · teto de 2 ⭐','']);
+  else if(e<3)tags.push(['⭐⭐⭐ era até '+fmt(par),'']);
+  if(zerou)tags.push(['👑 jornada completa','ouro']);
   ag(()=>caixa({
     big: zerou?'👑':'🎉',
-    h2: zerou?'Você limpou as '+FASES.length+' no '+d.nm+'!':ZAP[(Math.random()*ZAP.length)|0],
-    p: linhas.join('<br>'), est:e,
+    h2: zerou?'Você limpou as '+FASES.length+'!':ZAP[(Math.random()*ZAP.length)|0],
+    est:e,
+    num:[[fmt(tempo),'tempo'],[jogadas,'jogadas'],[vidas+' ❤️','vidas']],
+    tags:tags,
     bts: zerou?[['Voltar ao mapa',()=>{pintarMapa();irPara(telaMapa)},'pri'],['Repetir fase',()=>abrirFase(fase),'sec']]
               :[['Próxima fase →',()=>abrirFase(fase+1),'pri'],['Repetir fase',()=>abrirFase(fase),'sec']]
   }),900);
@@ -1643,10 +1658,11 @@ function fimDerrota(){
   pararPular(); limparAviso();
   const certas=cel.filter(c=>c.m&&c.show).length;
   const d=DIFS[st.dif], ate=faseMorte+1;
-  let p='Suas '+d.vidas+' vidas do '+d.nm+' acabaram na fase '+ate+'.'+
-        '<br>A jornada recomeça do Quintal, com o coração cheio.'+
-        '<br><br>Nesta fase: '+jogadas+' jogadas e '+certas+' de '+minas+' minas achadas.';
-  caixa({big:'🔁',h2:'Fim de jogo',p:p,bts:[
+  caixa({big:'🔁',h2:'Fim de jogo',
+    p:'Suas '+d.vidas+' vidas do '+d.nm+' acabaram. A jornada recomeça do Quintal.',
+    num:[['fase '+ate,'chegou até'],[jogadas,'jogadas'],[certas+'/'+minas,'minas achadas']],
+    tags:[['🔁 coração cheio de novo','bom'],['⭐ estrelas guardadas','ouro']],
+    bts:[
     ['Recomeçar da fase 1',()=>abrirFase(0),'pri'],
     ['👀 Ver o campo',verCampo,'sec'],
     ['Voltar ao mapa',()=>{pintarMapa();irPara(telaMapa)},'sec']
@@ -1685,9 +1701,13 @@ function limparAviso(){const a=$('#aviso');if(a)a.remove()}
 /* ---- modal ---- */
 function caixa(o){
   const bts=o.bts.map(b=>'<button class="'+b[2]+'">'+b[0]+'</button>').join('');
-  cx.innerHTML='<div class="big">'+o.big+'</div><h2>'+o.h2+'</h2><p>'+o.p+'</p>'+
-    (o.est?'<div class="estrelas"><i class="'+(o.est>0?'on':'')+'">⭐</i><i class="'+(o.est>1?'on':'')+'">⭐</i><i class="'+(o.est>2?'on':'')+'">⭐</i></div>':'')+
-    '<div class="acoes">'+bts+'</div>';
+  const estrelas=o.est?'<div class="estrelas"><i class="'+(o.est>0?'on':'')+'">⭐</i><i class="'+(o.est>1?'on':'')+'">⭐</i><i class="'+(o.est>2?'on':'')+'">⭐</i></div>':'';
+  const painel=o.num?'<div class="numeros">'+o.num.map(n=>
+      '<div><b>'+n[0]+'</b><span>'+n[1]+'</span></div>').join('')+'</div>':'';
+  const tags=o.tags&&o.tags.length?'<div class="tags">'+o.tags.map(t=>
+      '<i class="'+(t[1]||'')+'">'+t[0]+'</i>').join('')+'</div>':'';
+  cx.innerHTML='<div class="big">'+o.big+'</div><h2>'+o.h2+'</h2>'+estrelas+
+    (o.p?'<p>'+o.p+'</p>':'')+painel+tags+'<div class="acoes">'+bts+'</div>';
   [...cx.querySelectorAll('.acoes button')].forEach((b,k)=>b.onclick=o.bts[k][1]);
   modal.classList.add('on');
 }
