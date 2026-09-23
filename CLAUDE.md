@@ -20,6 +20,12 @@ tempo e, quando tem, `forma`, `rochas`, `mel` e `regra`. `dicas` sai do tamanho 
 seta, tijolo e trevo. `viz()` **ignora buraco e rocha**, então contagem, flood, chord e solver
 herdam a forma de graça. A área real fica em `dentro` (não use `cel.length`).
 
+⚠️ **Cada fase tem cara e som próprios** (v3.2): o bioma é só o ponto de partida. Cada fase carrega
+`h` (giro de matiz), `dl` (luz), `sf` (afinação/saturação) e o seu `deco`; `gira()` converte a
+paleta pra HSL e desloca. Sem isso as 3 primeiras fases eram todas verdes com o mesmo ruído — foi
+reclamação dele. Ao criar fase nova, **sempre** dar h/sf/deco diferentes das vizinhas.
+Atenção ao sentido do giro: verde (~140°) vai pro amarelo com h **negativo**.
+
 **As regras entram em cena** (v3.1): `bicho(emoji,casa,aoChegar)` faz o personagem voar até a casa,
 agir e sair; `ondaColuna(x,aoPassar)` varre uma coluna. A galinha cisca, o fantasma leva o número,
 o vulcão jorra lava e abre uma poça, o floco recongela, a maré passa como onda. Nada de banner seco.
@@ -82,7 +88,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.1).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.2).
 
 ## Como testar (workflow da suíte)
 
