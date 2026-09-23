@@ -49,6 +49,13 @@ cavada: 2/1/1/0) e a dose de surpresas. Medido: a 1ª cavada abre 31 / 19 / 16 /
 ⚠️ **Trade-off conhecido**: abertura pequena e campo sem chute brigam — na Linha de Frente o
 justo cai para ~58% (nos outros fica 87-100%). É intencional e está escrito na tela de regras.
 
+⚠️ **Regra é raridade, não relógio** (v3.6): nada de `setInterval`. `talvezRegra()` roda **depois
+de cada jogada sua** — 28% de chance, espera de 3-6 jogadas entre uma e outra, teto de 1-3 por
+fase e **30% de chance de a fase não ter nenhuma**. Assim ficar parado não resolve o campo (era o
+caso da galinha, que ciscava a cada 30s e terminava a fase sozinha).
+⚠️ **Nada de efeito fora da fase**: `irPara()` limpa confete, bichos, onda e partículas, e o evento
+sonoro só toca com a tela do jogo ativa — confete continuava caindo sobre o mapa.
+
 **A regra da fase é sorteada a cada partida** (`POOL[bioma]`, a assinatura da fase pesa o dobro),
 e o texto do aviso é montado por `FALA[regra](tema)` — por isso jogar o Quintal duas vezes não dá
 a mesma coisa.
@@ -113,7 +120,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.5).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.6).
 
 ## Como testar (workflow da suíte)
 

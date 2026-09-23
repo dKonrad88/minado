@@ -641,7 +641,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='3.5';
+const VERSAO='3.6';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -737,12 +737,14 @@ function agendarEvento(){
   const p=FASES[fase]&&FASES[fase].tema.som.ev; if(!p)return;
   const t=(p.cada[0]+Math.random()*(p.cada[1]-p.cada[0]))*1000;
   evTimer=setTimeout(()=>{
+    if(!vivo||!telaJogo.classList.contains('on'))return;      // no mapa, silêncio
     p.n.forEach((hz,i)=>setTimeout(()=>bip(hz,p.d||.12,p.t||'sine',p.v||.05), i*(p.g||120)));
     agendarEvento();
   }, t);
 }
 function tocarAmbiente(p){
   pararAmbiente();
+  if(!telaJogo.classList.contains('on'))return;
   const mult=(VOLS[st.vol]||VOLS[2]).g;
   if(!mult||!p||st.amb===false)return;
   try{
@@ -877,6 +879,9 @@ $('#lnRegras').onclick=()=>{
   const nomeRegra={cisca:'bicho que abre casas',mare:'faixa varrida',gelo:'casas que voltam a cobrir',
     brasa:'jorro que abre poça',fantasma:'número que some',cogumelo:'pista da coluna',
     veio:'pista das vizinhas',miragem:'número mentiroso',orbita:'bordas ligadas',rei:'Bombão (−2 ❤️)'};
+  const nota='<div class="reg" style="border:0;padding-top:0">As regras são <b>raridades</b>: '+
+    'aparecem no meio das suas jogadas, poucas vezes por fase — e em boa parte das partidas '+
+    'simplesmente não aparecem. Ficar parado não abre o campo sozinho.</div>';
   const fases=FASES.map((f,i)=>{
     const ops=[...new Set([f.regra,...(POOL[f.b]||[])].filter(Boolean))].map(r=>nomeRegra[r]||r);
     return '<div class="est"><span>'+f.ic+' '+f.nm+'</span><b>'+(i+1)+'</b></div>'+
@@ -885,7 +890,7 @@ $('#lnRegras').onclick=()=>{
   cfg.classList.remove('on');
   caixa({big:'📖',h2:'Como funciona',
     p:'<div class="ests rolar"><div class="sub">O básico</div>'+basico+
-      '<div class="sub">As '+FASES.length+' fases</div>'+fases+'</div>',
+      '<div class="sub">As '+FASES.length+' fases</div>'+nota+fases+'</div>',
     bts:[['Voltar',()=>{modal.classList.remove('on');abrirCfg()},'pri']]});
 };
 $('#lnStats').onclick=()=>{
@@ -953,7 +958,11 @@ $('#lnUp').onclick=async function(){
   setTimeout(()=>location.replace(u.toString()),350);
 };
 function irPara(tela){
-  if(tela!==telaJogo){clearInterval(tick);tick=null;clearInterval(tickRegra);tickRegra=null;pararAmbiente()}
+  if(tela!==telaJogo){
+    clearInterval(tick);tick=null;clearInterval(tickRegra);tickRegra=null;pararAmbiente();
+    document.querySelectorAll('.conf,.bicho,.ondaCol').forEach(x=>x.remove());  // limpa a festa
+    const pt=$('#part'); if(pt)pt.innerHTML='';
+  }
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('on'));
   tela.classList.add('on');
 }
@@ -962,7 +971,7 @@ function irPara(tela){
 let fase=0,cols=0,rows=0,minas=0,cel=[],gerado=false,vivo=false,modo=0;
 let dentro=0,jogadas=0,achadas=0,abertas=0,dicas=0,t0=0,tick=null,tempo=0,fatal=-1,espiando=false,pularAtivo=false,vidas=0;
 let acabou=false,faseMorte=0,limpa=true;
-let regra='',rei=-1,tickRegra=null;
+let regra='',rei=-1,tickRegra=null,regraUsos=0,regraEspera=0,regraTeto=0;
 
 function abrirFase(i){
   limparAgenda(); pararPular(); limparAviso();
@@ -992,11 +1001,9 @@ function abrirFase(i){
   desenhar(); atualizarHud(); setModo(0); sairModoDica(); atualizarMetas();
   if(regra&&FALA[regra]){const [e2,tx]=FALA[regra](f.tema); banner(e2+' '+tx)}
   else if(f.aviso)banner(f.aviso);
-  if(regra==='mare')tickRegra=setInterval(mare,45000);
-  if(regra==='gelo')tickRegra=setInterval(congelar,13000);
-  if(regra==='cisca')tickRegra=setInterval(ciscar,30000);
-  if(regra==='brasa')tickRegra=setInterval(brasa,30000);
-  if(regra==='fantasma')tickRegra=setInterval(assombrar,25000);
+  regraUsos=0; regraEspera=2+((Math.random()*3)|0);     // nem sempre acontece cedo
+  regraTeto=({cisca:2,mare:1,brasa:2,fantasma:2,gelo:3})[regra]||0;
+  if(Math.random()<.3)regraTeto=0;                        // em boa parte das partidas, nem aparece
   ajustar(); requestAnimationFrame(ajustar);   // já nasce no tamanho certo, sem piscar grande
 }
 function aplicarTema(t){
@@ -1353,7 +1360,7 @@ function cavar(i){
   if(c.m)return pisar(i);
   const n=revelar(i,i); sAbrir(n);
   if(c.pista||c.surp)premio(i);
-  checar();
+  checar(); talvezRegra();
 }
 function chord(i){
   const c=cel[i]; if(!c.n)return;
@@ -1394,7 +1401,7 @@ function apostar(i){
     banner('Não tinha bomba em '+coord(i)+' · −1 ❤️');
     bip(200,.3,'sawtooth',.07); vib([40,60,40]);
   }
-  realce(i); atualizarHud(); atualizarMetas(); checar();
+  realce(i); atualizarHud(); atualizarMetas(); checar(); talvezRegra();
 }
 function setModo(n){
   modo=n;
@@ -1442,7 +1449,7 @@ function usarDica(i){
     const n=revelar(i,i); tab.children[i].classList.add('dica');
     bip(1180,.12,'sine',.06); sAbrir(n); vib(15);    // agudo = pode pisar
   }
-  realce(i); sairModoDica(); atualizarHud(); atualizarMetas(); checar();
+  realce(i); sairModoDica(); atualizarHud(); atualizarMetas(); checar(); talvezRegra();
 }
 $('#btVoltar').onclick=()=>{limparAgenda();pararPular();limparAviso();pintarMapa();irPara(telaMapa);modal.classList.remove('on')};
 $('#btReiniciar').onclick=()=>abrirFase(fase);
@@ -1504,6 +1511,18 @@ function pisar(i){
   pintar(i); tab.children[i].classList.add('estourou');
   const b=$('#board'); b.classList.remove('chacoalha'); void b.offsetWidth; b.classList.add('chacoalha');
   sBum(); vib([25,45,70]); atualizarHud(); checar();
+}
+
+/* A regra não é relógio: ela é sorteada nas SUAS jogadas, tem teto por fase e
+   pausa entre uma e outra. Ficar parado não resolve o campo sozinho. */
+function talvezRegra(){
+  if(!vivo||!gerado||!regraTeto||regraUsos>=regraTeto)return;
+  if(regraEspera>0){regraEspera--;return}
+  if(Math.random()>.28)return;
+  const fn={cisca:ciscar,mare:mare,brasa:brasa,fantasma:assombrar,gelo:congelar}[regra];
+  if(!fn)return;
+  regraUsos++; regraEspera=3+((Math.random()*4)|0);
+  fn();
 }
 
 /* ---- personagens: o bicho entra, faz o serviço e sai ---- */
