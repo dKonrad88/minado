@@ -462,27 +462,27 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 /* ---------- biomas: paleta, cenário e trilha compartilhados ---------- */
 const BIOMAS={
  jardim:{ceu:'#0C1710',luz:'rgba(120,220,140,.09)',t1:'#33513A',t2:'#2A4431',ab:'#16241A',
-   deco:['🌿','🌼','🐝','🌱','🍃'],amb:{t:'cai',e:'🍃',n:6},som:{t:'vento',f:900,q:.7,lfo:.07,v:.05,ev:{n:[2400,3100],d:.07,t:'triangle',v:.05,g:90,cada:[5,12]}},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
+   deco:['🌿','🌼','🐝','🌱','🍃'],amb:{t:'cai',e:'🍃',n:6},som:{t:'vento',f:900,q:.7,lfo:.07,v:.05,ev:{n:[2400,3100],d:.07,t:'triangle',v:.05,g:90,cada:[5,12]},tf:'bandpass',prof:.5},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
  mata:{ceu:'#0A1410',luz:'rgba(90,200,150,.08)',t1:'#2B4438',t2:'#233A2F',ab:'#13211B',
-   deco:['🌲','🍄','🦌','🍂','🌲'],amb:{t:'cai',e:'🍂',n:7},som:{t:'vento',f:1500,q:.6,lfo:.05,v:.055,ev:{n:[420,330],d:.26,t:'sine',v:.055,g:280,cada:[7,15]}},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
+   deco:['🌲','🍄','🦌','🍂','🌲'],amb:{t:'cai',e:'🍂',n:7},som:{t:'vento',f:1500,q:.6,lfo:.05,v:.055,ev:{n:[420,330],d:.26,t:'sine',v:.055,g:280,cada:[7,15]},tf:'bandpass',prof:.6,dr:73},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
  mar:{ceu:'#0B1520',luz:'rgba(120,200,255,.09)',t1:'#3A4A5E',t2:'#31404F',ab:'#16202B',
-   deco:['🐚','🌊','⛱️','🦀','🌴'],amb:{t:'sobe',e:'🫧',n:7},som:{t:'vento',f:480,q:.5,lfo:.13,v:.085,ev:{n:[1500,1150,880],d:.16,t:'triangle',v:.05,g:130,cada:[6,13]}},bloco:'🪸',grude:'🌊',grudeNm:'poça'},
+   deco:['🐚','🌊','⛱️','🦀','🌴'],amb:{t:'sobe',e:'🫧',n:7},som:{t:'vento',f:480,q:.5,lfo:.13,v:.085,ev:{n:[1500,1150,880],d:.16,t:'triangle',v:.05,g:130,cada:[6,13]},tf:'lowpass',prof:.8},bloco:'🪸',grude:'🌊',grudeNm:'poça'},
  assombro:{ceu:'#100E17',luz:'rgba(170,140,255,.09)',t1:'#3A3548',t2:'#302C3D',ab:'#1B1826',
-   deco:['🕯️','🕸️','🦇','🏚️','🌫️'],amb:{t:'flutua',e:'👻',n:4},som:{t:'caverna',f:260,q:1,lfo:.05,v:.06,ev:{n:[190,150],d:.5,t:'sine',v:.05,g:420,cada:[8,16]}},bloco:'🚪',grude:'🕸️',grudeNm:'teia'},
+   deco:['🕯️','🕸️','🦇','🏚️','🌫️'],amb:{t:'flutua',e:'👻',n:4},som:{t:'caverna',f:260,q:1,lfo:.05,v:.06,ev:{n:[190,150],d:.5,t:'sine',v:.05,g:420,cada:[8,16]},tf:'bandpass',prof:.35,dr:58,tr:.7,trp:.5},bloco:'🚪',grude:'🕸️',grudeNm:'teia'},
  subsolo:{ceu:'#120D09',luz:'rgba(255,190,110,.08)',t1:'#453528',t2:'#3A2C21',ab:'#201812',
-   deco:['⛏️','💎','🪨','🔦','🕳️'],amb:{t:'sobe',e:'✨',n:6},som:{t:'caverna',f:190,q:1,lfo:.04,v:.065,ev:{n:[1900],d:.22,t:'sine',v:.055,g:0,cada:[4,9]}},bloco:'🪨',grude:'💧',grudeNm:'água'},
+   deco:['⛏️','💎','🪨','🔦','🕳️'],amb:{t:'sobe',e:'✨',n:6},som:{t:'caverna',f:190,q:1,lfo:.04,v:.065,ev:{n:[1900],d:.22,t:'sine',v:.055,g:0,cada:[4,9]},tf:'lowpass',prof:.3,dr:49},bloco:'🪨',grude:'💧',grudeNm:'água'},
  lava:{ceu:'#170A08',luz:'rgba(255,120,60,.11)',t1:'#4C2E26',t2:'#402620',ab:'#241310',
-   deco:['🌋','🔥','🪨','💨','🔥'],amb:{t:'sobe',e:'🔥',n:8},som:{t:'caverna',f:140,q:1.4,lfo:.22,v:.075,ev:{n:[110,85],d:.3,t:'sawtooth',v:.05,g:160,cada:[5,11]}},bloco:'🪨',grude:'🔥',grudeNm:'brasa'},
+   deco:['🌋','🔥','🪨','💨','🔥'],amb:{t:'sobe',e:'🔥',n:8},som:{t:'caverna',f:140,q:1.4,lfo:.22,v:.075,ev:{n:[110,85],d:.3,t:'sawtooth',v:.05,g:160,cada:[5,11]},tf:'lowpass',prof:.6,tr:2.2,trp:.55},bloco:'🪨',grude:'🔥',grudeNm:'brasa'},
  gelo:{ceu:'#0A141C',luz:'rgba(140,215,255,.10)',t1:'#2E4457',t2:'#273A4A',ab:'#14212B',
-   deco:['❄️','🧊','🐧','🌨️','❄️'],amb:{t:'cai',e:'❄️',n:10},som:{t:'vento',f:2300,q:1.2,lfo:.09,v:.05,ev:{n:[3200,2600],d:.13,t:'sine',v:.045,g:150,cada:[6,13]}},bloco:'🧊',grude:'❄️',grudeNm:'gelo'},
+   deco:['❄️','🧊','🐧','🌨️','❄️'],amb:{t:'cai',e:'❄️',n:10},som:{t:'vento',f:2300,q:1.2,lfo:.09,v:.05,ev:{n:[3200,2600],d:.13,t:'sine',v:.045,g:150,cada:[6,13]},tf:'highpass',prof:.35},bloco:'🧊',grude:'❄️',grudeNm:'gelo'},
  areia:{ceu:'#150F08',luz:'rgba(255,200,90,.09)',t1:'#4F4229',t2:'#443922',ab:'#241D11',
-   deco:['🌵','☀️','🦂','🏜️','🌵'],amb:{t:'flutua',e:'🌫️',n:5},som:{t:'vento',f:1050,q:.9,lfo:.06,v:.06,ev:{n:[760,980,700],d:.3,t:'sine',v:.04,g:240,cada:[7,14]}},bloco:'🌵',grude:'💨',grudeNm:'areia'},
+   deco:['🌵','☀️','🦂','🏜️','🌵'],amb:{t:'flutua',e:'🌫️',n:5},som:{t:'vento',f:1050,q:.9,lfo:.06,v:.06,ev:{n:[760,980,700],d:.3,t:'sine',v:.04,g:240,cada:[7,14]},tf:'bandpass',prof:.7},bloco:'🌵',grude:'💨',grudeNm:'areia'},
  ruina:{ceu:'#131110',luz:'rgba(220,200,160,.08)',t1:'#4A4438',t2:'#3E392F',ab:'#211E19',
-   deco:['🏛️','🗿','🌾','🪶','🧭'],amb:{t:'flutua',e:'🍃',n:5},som:{t:'vento',f:760,q:.8,lfo:.05,v:.055,ev:{n:[520,390],d:.4,t:'sine',v:.045,g:330,cada:[8,15]}},bloco:'🏛️',grude:'🌾',grudeNm:'mato alto'},
+   deco:['🏛️','🗿','🌾','🪶','🧭'],amb:{t:'flutua',e:'🍃',n:5},som:{t:'vento',f:760,q:.8,lfo:.05,v:.055,ev:{n:[520,390],d:.4,t:'sine',v:.045,g:330,cada:[8,15]},tf:'bandpass',prof:.45,dr:65},bloco:'🏛️',grude:'🌾',grudeNm:'mato alto'},
  fabrica:{ceu:'#0D1116',luz:'rgba(150,200,255,.08)',t1:'#3A424E',t2:'#313843',ab:'#191D23',
-   deco:['⚙️','🔧','🏭','🚂','🔩'],amb:{t:'sobe',e:'💨',n:6},som:{t:'caverna',f:320,q:1.2,lfo:.3,v:.06,ev:{n:[150,150],d:.09,t:'square',v:.05,g:180,cada:[4,8]}},bloco:'⚙️',grude:'🛢️',grudeNm:'óleo'},
+   deco:['⚙️','🔧','🏭','🚂','🔩'],amb:{t:'sobe',e:'💨',n:6},som:{t:'caverna',f:320,q:1.2,lfo:.3,v:.06,ev:{n:[150,150],d:.09,t:'square',v:.05,g:180,cada:[4,8]},tf:'bandpass',prof:.25,tr:3.4,trp:.6,dr:55},bloco:'⚙️',grude:'🛢️',grudeNm:'óleo'},
  festa:{ceu:'#150C1E',luz:'rgba(255,160,220,.10)',t1:'#4A3155',t2:'#3E2947',ab:'#221630',
-   deco:['🎪','🎡','🎈','🍭','🎠'],amb:{t:'sobe',e:'🎈',n:7},som:{t:'vento',f:1300,q:.7,lfo:.16,v:.055,ev:{n:[1760,2200,1760],d:.11,t:'triangle',v:.045,g:120,cada:[6,12]}},bloco:'🎠',grude:'🍭',grudeNm:'algodão-doce'},
+   deco:['🎪','🎡','🎈','🍭','🎠'],amb:{t:'sobe',e:'🎈',n:7},som:{t:'vento',f:1300,q:.7,lfo:.16,v:.055,ev:{n:[1760,2200,1760],d:.11,t:'triangle',v:.045,g:120,cada:[6,12]},tf:'bandpass',prof:.55,tr:1.1,trp:.35},bloco:'🎠',grude:'🍭',grudeNm:'algodão-doce'},
  espaco:{ceu:'#0A0917',luz:'rgba(150,130,255,.11)',t1:'#322F55',t2:'#2A2848',ab:'#17162B',
    deco:['🚀','⭐','🛰️','🌙','✨'],amb:{t:'pisca',e:'✦',n:14},som:{t:'espaco',hz:98,v:.05,ev:{n:[1250,1600],d:.08,t:'square',v:.04,g:110,cada:[5,11]}},bloco:'☄️',grude:'🌫️',grudeNm:'poeira'},
  final:{ceu:'#120A1C',luz:'rgba(200,140,255,.13)',t1:'#3C2C57',t2:'#322549',ab:'#1B1330',
@@ -529,42 +529,41 @@ function gira(cor,dh,dl,ds){
 
 /* ---------- as 31 fases ---------- */
 const FASES=[
- {ic:'🌱',nm:'Quintal de casa',  b:'jardim',  c:5, r:5,  m:3,  par:15, h:0, dl:0, sf:0, deco:['🌿','🌼','🐝','🌱','🍃'], loop:{hz:392,bpm:74,t:'triangle',v:.035,p:[0,4,7,4,null,2,0,null,null,null]}},
- {ic:'🐔',nm:'Galinheiro',       b:'jardim',  c:6, r:6,  m:4,  par:25,  regra:'cisca', h:-88, dl:0.02, sf:-0.22, deco:['🌾','🥚','🐓','🪵','🪶'], ev:{n:[900,760,620],d:.12,t:'square',v:.055,g:110,cada:[5,11]}, loop:{hz:523,bpm:150,t:'square',v:.028,d:.09,p:[0,0,4,null,0,0,-3,null,7,null,null,null]}},
- {ic:'🌻',nm:'Horta',            b:'jardim',  c:7, r:6,  m:6,  par:35,  forma:'onda', h:-104, dl:0.03, sf:0.38, deco:['🌻','🥕','🍅','🐞','🌱'], ev:{n:[240,250,240],d:.2,t:'sawtooth',v:.04,g:90,cada:[6,12]}, loop:{hz:440,bpm:108,t:'triangle',v:.033,p:[0,7,4,null,5,9,7,null,null,null,null,null]}},
- {ic:'🌳',nm:'Bosque',           b:'mata',    c:7, r:7,  m:6,  par:40,  regra:'cogumelo', h:-8, dl:-0.01, sf:0, deco:['🌲','🍄','🦌','🍂','🌰'], loop:{hz:262,bpm:58,t:'sine',v:.042,d:.5,p:[0,null,3,null,7,null,null,null]}},
- {ic:'🍄',nm:'Clareira',         b:'mata',    c:8, r:7,  m:8,  par:50,  forma:'circulo', rochas:3, h:-42, dl:0.03, sf:0.3, deco:['🍄','🦋','🌸','🐛','🌿'], ev:{n:[2600,3100,2800,3300],d:.06,t:'triangle',v:.05,g:70,cada:[6,12]}, loop:{hz:587,bpm:126,t:'triangle',v:.03,d:.12,p:[0,4,7,12,7,4,null,null,null,null]}},
- {ic:'🦌',nm:'Trilha dos cervos',b:'mata',    c:8, r:8,  m:9,  par:55,  forma:'escada', h:-64, dl:-0.01, sf:-0.16, deco:['🦌','🐾','🌲','🍁','🪵'], ev:{n:[300,300],d:.1,t:'triangle',v:.045,g:200,cada:[6,13]}, loop:{hz:349,bpm:62,t:'sine',v:.04,d:.45,p:[0,2,7,null,5,2,null,null,null,null]}},
- {ic:'🏖️',nm:'Praia minada',     b:'mar',     c:8, r:8,  m:9,  par:55,  regra:'mare', h:0, dl:0, sf:0, deco:['🐚','🌊','⛱️','🦀','🌴'], loop:{hz:330,bpm:52,t:'sine',v:.042,d:.7,p:[0,null,4,null,7,null,4,null]}},
- {ic:'🐚',nm:'Recife',           b:'mar',     c:9, r:8,  m:11, par:65,  forma:'onda', mel:4, h:-38, dl:0.03, sf:0.42, deco:['🐠','🪸','🐙','🫧','🐡'], ev:{n:[1800,2100],d:.09,t:'sine',v:.04,g:80,cada:[5,10]}, loop:{hz:659,bpm:144,t:'sine',v:.026,d:.1,p:[0,5,9,12,9,5,null,null,null,null,null,null]}},
- {ic:'⛵',nm:'Porto velho',      b:'mar',     c:9, r:9,  m:13, par:75,  forma:'taca', h:16, dl:-0.02, sf:-0.26, deco:['⛵','⚓','🪢','🧭','🐟'], ev:{n:[180,150],d:.6,t:'sine',v:.05,g:500,cada:[9,17]}, loop:{hz:196,bpm:66,t:'sawtooth',v:.03,d:.5,p:[0,null,-5,null,0,3,null,null]}},
- {ic:'🏚️',nm:'Vila fantasma',    b:'assombro',c:8, r:9,  m:11, par:70,  regra:'fantasma', h:0, dl:0, sf:0, deco:['🕯️','🕸️','🦇','🏚️','🌫️'], loop:{hz:233,bpm:44,t:'sine',v:.04,d:.9,p:[0,null,6,null,1,null,null,null]}},
- {ic:'🕯️',nm:'Casarão',          b:'assombro',c:9, r:9,  m:13, par:80,  forma:'cruz', rochas:4, h:44, dl:0.02, sf:-0.2, deco:['🚪','🪑','🕰️','🔑','🕸️'], loop:{hz:698,bpm:82,t:'triangle',v:.028,d:.3,p:[0,3,7,3,0,null,-2,null,null,null,null,null]}},
- {ic:'🦇',nm:'Sótão',            b:'assombro',c:9, r:10, m:15, par:88,  forma:'losango', regra:'fantasma', h:-28, dl:-0.01, sf:0.34, deco:['🦇','📦','🕸️','🪞','🧹'], loop:{hz:880,bpm:70,t:'sine',v:.024,d:.18,p:[0,null,null,6,null,null,1,null,null,null,null,null]}},
- {ic:'⛏️',nm:'Mina velha',       b:'subsolo', c:9, r:9,  m:14, par:90,  regra:'veio', h:0, dl:0, sf:0, deco:['⛏️','💎','🪨','🔦','🕳️'], loop:{hz:147,bpm:84,t:'square',v:.032,d:.1,p:[0,null,0,null,0,null,null,null,7,null,null,null]}},
- {ic:'💎',nm:'Veio profundo',    b:'subsolo', c:9, r:11, m:17, par:100, forma:'ampulheta', regra:'veio', h:162, dl:0.03, sf:0.28, deco:['💎','💠','⛏️','✨','🪙'], loop:{hz:784,bpm:88,t:'sine',v:.026,d:.35,p:[0,7,12,null,7,null,null,null,4,null,null,null]}},
- {ic:'🕳️',nm:'Poço sem fundo',   b:'subsolo', c:9, r:12, m:19, par:110, forma:'anel', rochas:5, h:148, dl:-0.02, sf:-0.3, deco:['🕳️','🪨','💧','🦇','🔦'], loop:{hz:110,bpm:40,t:'sine',v:.045,d:1.1,p:[0,null,null,-5,null,null,null,null]}},
- {ic:'🌋',nm:'Cratera',          b:'lava',    c:9, r:11, m:18, par:110, regra:'brasa', h:0, dl:0, sf:0, deco:['🌋','🔥','🪨','💨','🔥'], loop:{hz:131,bpm:96,t:'sawtooth',v:.034,d:.16,p:[0,null,0,0,null,null,-5,null]}},
- {ic:'🔥',nm:'Rio de lava',      b:'lava',    c:10,r:11, m:20, par:120, forma:'onda', regra:'brasa', h:22, dl:0.03, sf:0.32, deco:['🔥','🌋','🫧','💨','🪨'], loop:{hz:117,bpm:104,t:'sawtooth',v:.033,d:.14,p:[0,0,null,3,null,0,null,null]}},
- {ic:'🪨',nm:'Campo de rochas',  b:'lava',    c:10,r:11, m:19, par:125, rochas:12, h:10, dl:-0.03, sf:-0.24, deco:['🪨','🗿','💨','⛰️','🪨'], loop:{hz:98,bpm:64,t:'square',v:.036,d:.12,p:[0,null,null,null,5,null,null,null]}},
- {ic:'❄️',nm:'Geleira',          b:'gelo',    c:10,r:11, m:22, par:135, regra:'gelo', h:0, dl:0, sf:0, deco:['❄️','🧊','🐧','🌨️','❄️'], loop:{hz:988,bpm:50,t:'sine',v:.026,d:.8,p:[0,null,7,null,12,null,null,null]}},
- {ic:'🐧',nm:'Baía congelada',   b:'gelo',    c:10,r:12, m:24, par:145, forma:'circulo', regra:'gelo', h:-26, dl:0.02, sf:-0.18, deco:['🐧','🐻‍❄️','🧊','🌊','❄️'], loop:{hz:1046,bpm:60,t:'sine',v:.024,d:.5,p:[0,4,null,7,null,null,null,null,-5,null,null,null]}},
- {ic:'🏔️',nm:'Pico nevado',      b:'gelo',    c:10,r:12, m:25, par:150, forma:'seta', mel:5, h:10, dl:0.045, sf:0.36, deco:['🏔️','🧗','❄️','🌬️','⛷️'], ev:{n:[2800,3400,2600],d:.1,t:'sine',v:.04,g:120,cada:[7,14]}, loop:{hz:1319,bpm:42,t:'sine',v:.022,d:1,p:[0,null,null,null,-5,null,null,null]}},
- {ic:'🏜️',nm:'Deserto',          b:'areia',   c:10,r:12, m:26, par:165, regra:'miragem', h:0, dl:0, sf:0, deco:['🌵','☀️','🦂','🏜️','🌵'], loop:{hz:294,bpm:72,t:'triangle',v:.034,d:.3,p:[0,1,4,1,0,null,-4,null,null,null]}},
- {ic:'🐪',nm:'Duna alta',        b:'areia',   c:11,r:12, m:28, par:172, forma:'onda', mel:6, h:-20, dl:0.03, sf:0.3, deco:['🐪','🏜️','💨','☀️','🦎'], loop:{hz:247,bpm:64,t:'triangle',v:.036,d:.4,p:[0,1,null,5,4,1,null,null,null,null]}},
- {ic:'🏛️',nm:'Ruínas',           b:'ruina',   c:11,r:12, m:29, par:178, forma:'cruz', rochas:6, h:0, dl:0, sf:0, deco:['🏛️','🗿','🌾','🪶','🧭'], loop:{hz:220,bpm:56,t:'sine',v:.038,d:.6,p:[0,3,null,5,null,3,null,null,null,null]}},
- {ic:'🗿',nm:'Vale das estátuas',b:'ruina',   c:11,r:13, m:30, par:185, forma:'trevo', regra:'miragem', h:46, dl:-0.01, sf:-0.22, deco:['🗿','🏺','🌿','🦅','🏛️'], loop:{hz:165,bpm:90,t:'square',v:.03,d:.12,p:[0,null,0,null,3,null,0,null,-4,null,null,null]}},
- {ic:'🎪',nm:'Parque antigo',    b:'festa',   c:11,r:13, m:30, par:188, forma:'losango', mel:6, h:0, dl:0, sf:0, deco:['🎪','🎡','🎈','🍭','🎠'], loop:{hz:523,bpm:138,t:'square',v:.03,d:.13,h:1,p:[0,4,7,4,0,null,7,7,4,null,0,null]}},
- {ic:'🎢',nm:'Montanha-russa',   b:'festa',   c:11,r:13, m:31, par:192, forma:'escada', regra:'cisca', h:-44, dl:0.03, sf:0.34, deco:['🎢','🎟️','🍿','🎈','🎠'], ev:{n:[600,900,1300,1700],d:.07,t:'triangle',v:.05,g:60,cada:[6,12]}, loop:{hz:392,bpm:168,t:'square',v:.028,d:.09,p:[0,4,7,12,16,12,7,4,0,null,null,null]}},
- {ic:'🏭',nm:'Fábrica',          b:'fabrica', c:11,r:13, m:32, par:195, forma:'tijolo', h:0, dl:0, sf:0, deco:['⚙️','🔧','🏭','🚂','🔩'], loop:{hz:131,bpm:112,t:'square',v:.032,d:.08,p:[0,null,0,7,null,0,null,null]}},
- {ic:'⚙️',nm:'Engrenagens',      b:'fabrica', c:11,r:13, m:33, par:198, forma:'anel', rochas:8, h:-168, dl:0.02, sf:0.3, deco:['⚙️','🔩','🛠️','⛓️','🔧'], loop:{hz:175,bpm:126,t:'square',v:.028,d:.07,p:[0,null,5,null,0,null,3,null]}},
- {ic:'🌌',nm:'Órbita',           b:'espaco',  c:11,r:13, m:32, par:200, regra:'orbita', h:0, dl:0, sf:0, deco:['🚀','⭐','🛰️','🌙','✨'], loop:{hz:294,bpm:48,t:'sine',v:.04,d:1.2,p:[0,null,7,null,10,null,null,null]}},
- {ic:'🎆',nm:'Grande Final',     b:'final',   c:11,r:14, m:38, par:250, regra:'rei', h:0, dl:0, sf:0, deco:['🎆','🎇','🏆','⭐','🎊'], loop:{hz:523,bpm:120,t:'triangle',v:.035,h:1,d:.2,p:[0,4,7,12,null,12,7,null,9,12,null,null]}},
+ {ic:'🌱',nm:'Quintal de casa',  b:'jardim',  c:5, r:5,  m:3,  par:15, h:0, dl:0, sf:0, deco:['🌿','🌼','🐝','🌱','🍃']},
+ {ic:'🐔',nm:'Galinheiro',       b:'jardim',  c:6, r:6,  m:4,  par:25,  regra:'cisca', h:-88, dl:0.02, sf:-0.22, deco:['🌾','🥚','🐓','🪵','🪶'], ev:{n:[900,760,620],d:.12,t:'square',v:.055,g:110,cada:[5,11]}},
+ {ic:'🌻',nm:'Horta',            b:'jardim',  c:7, r:6,  m:6,  par:35,  forma:'onda', h:-104, dl:0.03, sf:0.38, deco:['🌻','🥕','🍅','🐞','🌱'], ev:{n:[240,250,240],d:.2,t:'sawtooth',v:.04,g:90,cada:[6,12]}},
+ {ic:'🌳',nm:'Bosque',           b:'mata',    c:7, r:7,  m:6,  par:40,  regra:'cogumelo', h:-8, dl:-0.01, sf:0, deco:['🌲','🍄','🦌','🍂','🌰']},
+ {ic:'🍄',nm:'Clareira',         b:'mata',    c:8, r:7,  m:8,  par:50,  forma:'circulo', rochas:3, h:-42, dl:0.03, sf:0.3, deco:['🍄','🦋','🌸','🐛','🌿'], ev:{n:[2600,3100,2800,3300],d:.06,t:'triangle',v:.05,g:70,cada:[6,12]}},
+ {ic:'🦌',nm:'Trilha dos cervos',b:'mata',    c:8, r:8,  m:9,  par:55,  forma:'escada', h:-64, dl:-0.01, sf:-0.16, deco:['🦌','🐾','🌲','🍁','🪵'], ev:{n:[300,300],d:.1,t:'triangle',v:.045,g:200,cada:[6,13]}},
+ {ic:'🏖️',nm:'Praia minada',     b:'mar',     c:8, r:8,  m:9,  par:55,  regra:'mare', h:0, dl:0, sf:0, deco:['🐚','🌊','⛱️','🦀','🌴']},
+ {ic:'🐚',nm:'Recife',           b:'mar',     c:9, r:8,  m:11, par:65,  forma:'onda', mel:4, h:-38, dl:0.03, sf:0.42, deco:['🐠','🪸','🐙','🫧','🐡'], ev:{n:[1800,2100],d:.09,t:'sine',v:.04,g:80,cada:[5,10]}},
+ {ic:'⛵',nm:'Porto velho',      b:'mar',     c:9, r:9,  m:13, par:75,  forma:'taca', h:16, dl:-0.02, sf:-0.26, deco:['⛵','⚓','🪢','🧭','🐟'], ev:{n:[180,150],d:.6,t:'sine',v:.05,g:500,cada:[9,17]}},
+ {ic:'🏚️',nm:'Vila fantasma',    b:'assombro',c:8, r:9,  m:11, par:70,  regra:'fantasma', h:0, dl:0, sf:0, deco:['🕯️','🕸️','🦇','🏚️','🌫️']},
+ {ic:'🕯️',nm:'Casarão',          b:'assombro',c:9, r:9,  m:13, par:80,  forma:'cruz', rochas:4, h:44, dl:0.02, sf:-0.2, deco:['🚪','🪑','🕰️','🔑','🕸️']},
+ {ic:'🦇',nm:'Sótão',            b:'assombro',c:9, r:10, m:15, par:88,  forma:'losango', regra:'fantasma', h:-28, dl:-0.01, sf:0.34, deco:['🦇','📦','🕸️','🪞','🧹']},
+ {ic:'⛏️',nm:'Mina velha',       b:'subsolo', c:9, r:9,  m:14, par:90,  regra:'veio', h:0, dl:0, sf:0, deco:['⛏️','💎','🪨','🔦','🕳️']},
+ {ic:'💎',nm:'Veio profundo',    b:'subsolo', c:9, r:11, m:17, par:100, forma:'ampulheta', regra:'veio', h:162, dl:0.03, sf:0.28, deco:['💎','💠','⛏️','✨','🪙']},
+ {ic:'🕳️',nm:'Poço sem fundo',   b:'subsolo', c:9, r:12, m:19, par:110, forma:'anel', rochas:5, h:148, dl:-0.02, sf:-0.3, deco:['🕳️','🪨','💧','🦇','🔦']},
+ {ic:'🌋',nm:'Cratera',          b:'lava',    c:9, r:11, m:18, par:110, regra:'brasa', h:0, dl:0, sf:0, deco:['🌋','🔥','🪨','💨','🔥']},
+ {ic:'🔥',nm:'Rio de lava',      b:'lava',    c:10,r:11, m:20, par:120, forma:'onda', regra:'brasa', h:22, dl:0.03, sf:0.32, deco:['🔥','🌋','🫧','💨','🪨']},
+ {ic:'🪨',nm:'Campo de rochas',  b:'lava',    c:10,r:11, m:19, par:125, rochas:12, h:10, dl:-0.03, sf:-0.24, deco:['🪨','🗿','💨','⛰️','🪨']},
+ {ic:'❄️',nm:'Geleira',          b:'gelo',    c:10,r:11, m:22, par:135, regra:'gelo', h:0, dl:0, sf:0, deco:['❄️','🧊','🐧','🌨️','❄️']},
+ {ic:'🐧',nm:'Baía congelada',   b:'gelo',    c:10,r:12, m:24, par:145, forma:'circulo', regra:'gelo', h:-26, dl:0.02, sf:-0.18, deco:['🐧','🐻‍❄️','🧊','🌊','❄️']},
+ {ic:'🏔️',nm:'Pico nevado',      b:'gelo',    c:10,r:12, m:25, par:150, forma:'seta', mel:5, h:10, dl:0.045, sf:0.36, deco:['🏔️','🧗','❄️','🌬️','⛷️'], ev:{n:[2800,3400,2600],d:.1,t:'sine',v:.04,g:120,cada:[7,14]}},
+ {ic:'🏜️',nm:'Deserto',          b:'areia',   c:10,r:12, m:26, par:165, regra:'miragem', h:0, dl:0, sf:0, deco:['🌵','☀️','🦂','🏜️','🌵']},
+ {ic:'🐪',nm:'Duna alta',        b:'areia',   c:11,r:12, m:28, par:172, forma:'onda', mel:6, h:-20, dl:0.03, sf:0.3, deco:['🐪','🏜️','💨','☀️','🦎']},
+ {ic:'🏛️',nm:'Ruínas',           b:'ruina',   c:11,r:12, m:29, par:178, forma:'cruz', rochas:6, h:0, dl:0, sf:0, deco:['🏛️','🗿','🌾','🪶','🧭']},
+ {ic:'🗿',nm:'Vale das estátuas',b:'ruina',   c:11,r:13, m:30, par:185, forma:'trevo', regra:'miragem', h:46, dl:-0.01, sf:-0.22, deco:['🗿','🏺','🌿','🦅','🏛️']},
+ {ic:'🎪',nm:'Parque antigo',    b:'festa',   c:11,r:13, m:30, par:188, forma:'losango', mel:6, h:0, dl:0, sf:0, deco:['🎪','🎡','🎈','🍭','🎠']},
+ {ic:'🎢',nm:'Montanha-russa',   b:'festa',   c:11,r:13, m:31, par:192, forma:'escada', regra:'cisca', h:-44, dl:0.03, sf:0.34, deco:['🎢','🎟️','🍿','🎈','🎠'], ev:{n:[600,900,1300,1700],d:.07,t:'triangle',v:.05,g:60,cada:[6,12]}},
+ {ic:'🏭',nm:'Fábrica',          b:'fabrica', c:11,r:13, m:32, par:195, forma:'tijolo', h:0, dl:0, sf:0, deco:['⚙️','🔧','🏭','🚂','🔩']},
+ {ic:'⚙️',nm:'Engrenagens',      b:'fabrica', c:11,r:13, m:33, par:198, forma:'anel', rochas:8, h:-168, dl:0.02, sf:0.3, deco:['⚙️','🔩','🛠️','⛓️','🔧']},
+ {ic:'🌌',nm:'Órbita',           b:'espaco',  c:11,r:13, m:32, par:200, regra:'orbita', h:0, dl:0, sf:0, deco:['🚀','⭐','🛰️','🌙','✨']},
+ {ic:'🎆',nm:'Grande Final',     b:'final',   c:11,r:14, m:38, par:250, regra:'rei', h:0, dl:0, sf:0, deco:['🎆','🎇','🏆','⭐','🎊']},
 ].map(f=>{
   const t=BIOMAS[f.b], h=f.h||0, dl=f.dl||0, sf=f.sf||0;
   const som={...t.som};
   if(f.ev)som.ev=f.ev;
-  if(f.loop)som.loop=f.loop;
   if(som.f)som.f=Math.round(som.f*(1+sf));
   if(som.hz)som.hz=Math.round(som.hz*(1+sf));
   if(som.lfo)som.lfo=+(som.lfo*(1+sf*.6)).toFixed(3);
@@ -642,7 +641,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='3.7';
+const VERSAO='3.8';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -726,25 +725,9 @@ function ruidoBuf(){
   AMB.buf=b; return b;
 }
 function pararAmbiente(){
-  pararEventos(); pararLoop();
+  pararEventos();
   AMB.nos.forEach(n=>{try{n.stop&&n.stop()}catch(e){} try{n.disconnect()}catch(e){}});
   AMB.nos=[];
-}
-/* ---- trilha melódica: cada fase tem a sua. p = semitons a partir de hz, null = pausa ---- */
-let loopTimer=null, loopPasso=0;
-function pararLoop(){ clearInterval(loopTimer); loopTimer=null; loopPasso=0 }
-function tocarLoop(L){
-  pararLoop();
-  if(!L||st.amb===false||!(VOLS[st.vol]||VOLS[2]).g)return;
-  const ms=60000/(L.bpm||90);
-  loopTimer=setInterval(()=>{
-    if(!vivo||!telaJogo.classList.contains('on'))return;
-    const n=L.p[loopPasso%L.p.length]; loopPasso++;
-    if(n===null||n===undefined)return;
-    const hz=L.hz*Math.pow(2,n/12);
-    bip(hz, L.d||.24, L.t||'triangle', L.v||.035);
-    if(L.h)bip(hz*2, (L.d||.24)*.6, L.t||'triangle', (L.v||.035)*.35);   // oitava de brilho
-  }, ms);
 }
 let evTimer=null;
 function pararEventos(){ clearTimeout(evTimer); evTimer=null }
@@ -768,7 +751,7 @@ function tocarAmbiente(p){
     ac=ac||new (window.AudioContext||window.webkitAudioContext)();
     if(ac.state==='suspended')ac.resume();
     const out=ac.createGain(); out.gain.value=0; out.connect(ac.destination);
-    out.gain.linearRampToValueAtTime(Math.min(.14,p.v*mult*(p.loop?.22:.5)), ac.currentTime+2.5);
+    out.gain.linearRampToValueAtTime(Math.min(.24,p.v*mult*.62), ac.currentTime+2.5);
     if(p.t==='espaco'){
       [[p.hz,1],[p.hz*1.5,.35],[p.hz*2.01,.18]].forEach(([hz,g])=>{
         const o=ac.createOscillator(), gn=ac.createGain();
@@ -778,12 +761,24 @@ function tocarAmbiente(p){
     }else{
       const src=ac.createBufferSource(); src.buffer=ruidoBuf(); src.loop=true;
       const filtro=ac.createBiquadFilter();
-      filtro.type = p.t==='caverna' ? 'lowpass' : (p.f>1400?'highpass':'bandpass');
+      filtro.type = p.tf || (p.t==='caverna' ? 'lowpass' : (p.f>1400?'highpass':'bandpass'));
       filtro.frequency.value=p.f; filtro.Q.value=p.q||1;
-      const lfo=ac.createOscillator(), prof=ac.createGain();
-      lfo.frequency.value=p.lfo||.08; prof.gain.value=p.f*.45;
+      const lfo=ac.createOscillator(), prof=ac.createGain();       // varre o filtro: dá o "respiro"
+      lfo.frequency.value=p.lfo||.08; prof.gain.value=p.f*(p.prof||.45);
       lfo.connect(prof); prof.connect(filtro.frequency);
-      src.connect(filtro); filtro.connect(out);
+      src.connect(filtro);
+      if(p.tr){                                                    // tremolo: pulsa o volume
+        const trem=ac.createGain(), osc=ac.createOscillator(), amp=ac.createGain();
+        trem.gain.value=1-(p.trp||.4); osc.frequency.value=p.tr; amp.gain.value=p.trp||.4;
+        osc.connect(amp); amp.connect(trem.gain);
+        filtro.connect(trem); trem.connect(out); osc.start();
+        AMB.nos.push(trem,osc,amp);
+      } else filtro.connect(out);
+      if(p.dr){                                                    // fio grave por baixo
+        const o=ac.createOscillator(), g=ac.createGain();
+        o.type='sine'; o.frequency.value=p.dr; g.gain.value=.22;
+        o.connect(g); g.connect(out); o.start(); AMB.nos.push(o,g);
+      }
       src.start(); lfo.start(); AMB.nos.push(src,filtro,lfo,prof);
     }
     AMB.nos.push(out);
@@ -1015,7 +1010,7 @@ function abrirFase(i){
     '<small>FASE '+(i+1)+'/'+FASES.length+' · '+d.nm.toUpperCase()+'</small>';
   modal.classList.remove('on');
   irPara(telaJogo);
-  tocarAmbiente(f.tema.som); agendarEvento(); tocarLoop(f.tema.som.loop);   // já com a tela no ar
+  tocarAmbiente(f.tema.som); agendarEvento();   // já com a tela no ar
   desenhar(); atualizarHud(); setModo(0); sairModoDica(); atualizarMetas();
   if(regra&&FALA[regra]){const [e2,tx]=FALA[regra](f.tema); banner(e2+' '+tx)}
   else if(f.aviso)banner(f.aviso);
