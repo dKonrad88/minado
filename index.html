@@ -449,32 +449,35 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 /* ---------- biomas: paleta, cenário e trilha compartilhados ---------- */
 const BIOMAS={
  jardim:{ceu:'#0C1710',luz:'rgba(120,220,140,.09)',t1:'#33513A',t2:'#2A4431',ab:'#16241A',
-   deco:['🌿','🌼','🐝','🌱','🍃'],amb:{t:'cai',e:'🍃',n:6},som:{t:'vento',f:900,q:.7,lfo:.07,v:.05},bloco:'🪵',grude:'🌿'},
+   deco:['🌿','🌼','🐝','🌱','🍃'],amb:{t:'cai',e:'🍃',n:6},som:{t:'vento',f:900,q:.7,lfo:.07,v:.05},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
  mata:{ceu:'#0A1410',luz:'rgba(90,200,150,.08)',t1:'#2B4438',t2:'#233A2F',ab:'#13211B',
-   deco:['🌲','🍄','🦌','🍂','🌲'],amb:{t:'cai',e:'🍂',n:7},som:{t:'vento',f:1500,q:.6,lfo:.05,v:.055},bloco:'🪵',grude:'🌿'},
+   deco:['🌲','🍄','🦌','🍂','🌲'],amb:{t:'cai',e:'🍂',n:7},som:{t:'vento',f:1500,q:.6,lfo:.05,v:.055},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
  mar:{ceu:'#0B1520',luz:'rgba(120,200,255,.09)',t1:'#3A4A5E',t2:'#31404F',ab:'#16202B',
-   deco:['🐚','🌊','⛱️','🦀','🌴'],amb:{t:'sobe',e:'🫧',n:7},som:{t:'vento',f:480,q:.5,lfo:.13,v:.085},bloco:'🪸',grude:'🌊'},
+   deco:['🐚','🌊','⛱️','🦀','🌴'],amb:{t:'sobe',e:'🫧',n:7},som:{t:'vento',f:480,q:.5,lfo:.13,v:.085},bloco:'🪸',grude:'🌊',grudeNm:'poça'},
  assombro:{ceu:'#100E17',luz:'rgba(170,140,255,.09)',t1:'#3A3548',t2:'#302C3D',ab:'#1B1826',
-   deco:['🕯️','🕸️','🦇','🏚️','🌫️'],amb:{t:'flutua',e:'👻',n:4},som:{t:'caverna',f:260,q:1,lfo:.05,v:.06},bloco:'🚪',grude:'🕸️'},
+   deco:['🕯️','🕸️','🦇','🏚️','🌫️'],amb:{t:'flutua',e:'👻',n:4},som:{t:'caverna',f:260,q:1,lfo:.05,v:.06},bloco:'🚪',grude:'🕸️',grudeNm:'teia'},
  subsolo:{ceu:'#120D09',luz:'rgba(255,190,110,.08)',t1:'#453528',t2:'#3A2C21',ab:'#201812',
-   deco:['⛏️','💎','🪨','🔦','🕳️'],amb:{t:'sobe',e:'✨',n:6},som:{t:'caverna',f:190,q:1,lfo:.04,v:.065},bloco:'🪨',grude:'💧'},
+   deco:['⛏️','💎','🪨','🔦','🕳️'],amb:{t:'sobe',e:'✨',n:6},som:{t:'caverna',f:190,q:1,lfo:.04,v:.065},bloco:'🪨',grude:'💧',grudeNm:'água'},
  lava:{ceu:'#170A08',luz:'rgba(255,120,60,.11)',t1:'#4C2E26',t2:'#402620',ab:'#241310',
-   deco:['🌋','🔥','🪨','💨','🔥'],amb:{t:'sobe',e:'🔥',n:8},som:{t:'caverna',f:140,q:1.4,lfo:.22,v:.075},bloco:'🪨',grude:'🔥'},
+   deco:['🌋','🔥','🪨','💨','🔥'],amb:{t:'sobe',e:'🔥',n:8},som:{t:'caverna',f:140,q:1.4,lfo:.22,v:.075},bloco:'🪨',grude:'🔥',grudeNm:'brasa'},
  gelo:{ceu:'#0A141C',luz:'rgba(140,215,255,.10)',t1:'#2E4457',t2:'#273A4A',ab:'#14212B',
-   deco:['❄️','🧊','🐧','🌨️','❄️'],amb:{t:'cai',e:'❄️',n:10},som:{t:'vento',f:2300,q:1.2,lfo:.09,v:.05},bloco:'🧊',grude:'❄️'},
+   deco:['❄️','🧊','🐧','🌨️','❄️'],amb:{t:'cai',e:'❄️',n:10},som:{t:'vento',f:2300,q:1.2,lfo:.09,v:.05},bloco:'🧊',grude:'❄️',grudeNm:'gelo'},
  areia:{ceu:'#150F08',luz:'rgba(255,200,90,.09)',t1:'#4F4229',t2:'#443922',ab:'#241D11',
-   deco:['🌵','☀️','🦂','🏜️','🌵'],amb:{t:'flutua',e:'🌫️',n:5},som:{t:'vento',f:1050,q:.9,lfo:.06,v:.06},bloco:'🌵',grude:'💨'},
+   deco:['🌵','☀️','🦂','🏜️','🌵'],amb:{t:'flutua',e:'🌫️',n:5},som:{t:'vento',f:1050,q:.9,lfo:.06,v:.06},bloco:'🌵',grude:'💨',grudeNm:'areia'},
  ruina:{ceu:'#131110',luz:'rgba(220,200,160,.08)',t1:'#4A4438',t2:'#3E392F',ab:'#211E19',
-   deco:['🏛️','🗿','🌾','🪶','🧭'],amb:{t:'flutua',e:'🍃',n:5},som:{t:'vento',f:760,q:.8,lfo:.05,v:.055},bloco:'🏛️',grude:'🌾'},
+   deco:['🏛️','🗿','🌾','🪶','🧭'],amb:{t:'flutua',e:'🍃',n:5},som:{t:'vento',f:760,q:.8,lfo:.05,v:.055},bloco:'🏛️',grude:'🌾',grudeNm:'mato alto'},
  fabrica:{ceu:'#0D1116',luz:'rgba(150,200,255,.08)',t1:'#3A424E',t2:'#313843',ab:'#191D23',
-   deco:['⚙️','🔧','🏭','🚂','🔩'],amb:{t:'sobe',e:'💨',n:6},som:{t:'caverna',f:320,q:1.2,lfo:.3,v:.06},bloco:'⚙️',grude:'🛢️'},
+   deco:['⚙️','🔧','🏭','🚂','🔩'],amb:{t:'sobe',e:'💨',n:6},som:{t:'caverna',f:320,q:1.2,lfo:.3,v:.06},bloco:'⚙️',grude:'🛢️',grudeNm:'óleo'},
  festa:{ceu:'#150C1E',luz:'rgba(255,160,220,.10)',t1:'#4A3155',t2:'#3E2947',ab:'#221630',
-   deco:['🎪','🎡','🎈','🍭','🎠'],amb:{t:'sobe',e:'🎈',n:7},som:{t:'vento',f:1300,q:.7,lfo:.16,v:.055},bloco:'🎠',grude:'🍭'},
+   deco:['🎪','🎡','🎈','🍭','🎠'],amb:{t:'sobe',e:'🎈',n:7},som:{t:'vento',f:1300,q:.7,lfo:.16,v:.055},bloco:'🎠',grude:'🍭',grudeNm:'algodão-doce'},
  espaco:{ceu:'#0A0917',luz:'rgba(150,130,255,.11)',t1:'#322F55',t2:'#2A2848',ab:'#17162B',
-   deco:['🚀','⭐','🛰️','🌙','✨'],amb:{t:'pisca',e:'✦',n:14},som:{t:'espaco',hz:98,v:.05},bloco:'☄️',grude:'🌫️'},
+   deco:['🚀','⭐','🛰️','🌙','✨'],amb:{t:'pisca',e:'✦',n:14},som:{t:'espaco',hz:98,v:.05},bloco:'☄️',grude:'🌫️',grudeNm:'poeira'},
  final:{ceu:'#120A1C',luz:'rgba(200,140,255,.13)',t1:'#3C2C57',t2:'#322549',ab:'#1B1330',
-   deco:['🎆','🎇','🏆','⭐','🎊'],amb:{t:'sobe',e:'🎇',n:8},som:{t:'espaco',hz:146,v:.055},bloco:'🎁',grude:'🎊'},
+   deco:['🎆','🎇','🏆','⭐','🎊'],amb:{t:'sobe',e:'🎇',n:8},som:{t:'espaco',hz:146,v:.055},bloco:'🎁',grude:'🎊',grudeNm:'confete'},
 };
+
+/* ---------- surpresas: parecem casa comum até você tocar ---------- */
+const BONS=['presente','sopro','alarme'], RUINS=['grude','desaba','fumaca'];
 
 /* ---------- formas do campo: quem responde false vira buraco ---------- */
 const FORMAS={
@@ -561,10 +564,10 @@ const CHEFES=[15,30];                          // fases que ocupam dois lugares 
 const TOTAL_ESTRELAS=FASES.length*3;
 
 const DIFS=[
- {ic:'🍃',nm:'Brisa',    vidas:7, mult:0.75, dica: 1, par:1.6,  cor:'#3DDC84', rochas:-1, mel:-1, presente:2},
- {ic:'🎯',nm:'Na Medida',vidas:5, mult:1.00, dica: 0, par:1.0,  cor:'#FFD43B', rochas: 0, mel: 0, presente:1},
- {ic:'🥶',nm:'Suor Frio',vidas:4, mult:1.20, dica: 0, par:0.8,  cor:'#5AA9FF', rochas: 2, mel: 2, presente:0},
- {ic:'⚡',nm:'Relâmpago',vidas:3, mult:1.40, dica:-1, par:0.65, cor:'#C08CFF', rochas: 4, mel: 4, presente:0},
+ {ic:'🍃',nm:'Brisa',    vidas:7, mult:0.75, dica: 1, par:1.6,  cor:'#3DDC84', rochas:-1, mel:-1, bons:4, ruins:0},
+ {ic:'🎯',nm:'Na Medida',vidas:5, mult:1.00, dica: 0, par:1.0,  cor:'#FFD43B', rochas: 0, mel: 0, bons:2, ruins:1},
+ {ic:'🥶',nm:'Suor Frio',vidas:4, mult:1.20, dica: 0, par:0.8,  cor:'#5AA9FF', rochas: 2, mel: 2, bons:1, ruins:3},
+ {ic:'⚡',nm:'Relâmpago',vidas:3, mult:1.40, dica:-1, par:0.65, cor:'#C08CFF', rochas: 4, mel: 4, bons:0, ruins:5},
 ];
 /* casas que existem de verdade: dentro da forma e sem rocha */
 function areaDe(i,d){
@@ -601,7 +604,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='3.2';
+const VERSAO='3.3';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -639,7 +642,7 @@ function salvarPartida(){
     localStorage.setItem(CHAVE_P,JSON.stringify({
       d:st.dif, f:fase, t:tempo, h:dicas, lp:limpa, rk:rei,
       c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.rev?64:0)|(c.show?128:0)|
-        (c.fora?256:0)|(c.rocha?512:0)|(c.mel?1024:0)|(c.premio?2048:0)|(c.pista?4096:0))
+        (c.fora?256:0)|(c.rocha?512:0)|(c.mel?1024:0)|(c.surp?2048:0)|(c.pista?4096:0))
     }));
   }catch(e){}
 }
@@ -815,6 +818,8 @@ $('#lnRegras').onclick=()=>{
     ['💡 Dica','você escolhe a casa e ela conta a verdade. Nunca explode nem custa vida, mas limita a fase a 2 ⭐.'],
     ['❤️ Vidas','são da jornada inteira, não da fase. Quando acabam, tudo recomeça da fase 1.'],
     ['🎁 Prêmios','3 fases seguidas sem pisar em bomba dão 1 ❤️ — e cada fase limpa depois disso dá mais um. Fechar a fase com poucas jogadas rende 1 💡 extra.'],
+    ['🎲 Surpresas','algumas casas escondem coisa. Boas: presente (+1 💡), lufada (abre a vizinhança) e alarme (aponta uma bomba). Ruins: grude (precisa de outro toque), desabamento (a casa vira entulho) e fumaça (some com os números em volta por uns segundos). Quanto mais difícil o modo, mais surpresa ruim e menos boa.'],
+    ['🪨 Obstáculos','dez fases têm bloqueio ou grude à vista, com a cara do cenário: tronco, coral, porta, coluna, engrenagem, cacto…'],
     ['⭐ Estrelas','pelo tempo. As metas aparecem embaixo do placar durante a fase.'],
     ['🚩 Sem bandeira','o campo só guarda o que é certeza: bomba exposta ou bomba pisada.'],
   ].map(l=>'<div class="est"><span>'+l[0]+'</span></div><div class="reg">'+l[1]+'</div>').join('');
@@ -916,7 +921,7 @@ function abrirFase(i){
   aplicarTema(f.tema); tocarAmbiente(f.tema.som);
   const molde=FORMAS[f.forma]||FORMAS.cheio;
   cel=Array.from({length:cols*rows},(_,k)=>({m:false,n:0,ab:false,rev:false,boom:false,gelo:false,
-    show:false,pista:false,oculto:false,mente:0,rocha:false,mel:0,premio:false,
+    show:false,pista:false,oculto:false,mente:0,rocha:false,mel:0,surp:null,
     fora:!molde(k%cols,(k/cols)|0,cols,rows)}));
   espalharObstaculos(f,d);
   dentro=cel.reduce((a,c)=>a+((!c.fora&&!c.rocha)?1:0),0);
@@ -960,10 +965,9 @@ function ambiente(a){
 function espalharObstaculos(f,d){
   // a dificuldade não inventa obstáculo: ela só engrossa o que a fase já tem
   const nR=(f.rochas||0) ? (f.rochas+(d.rochas||0)) : 0,
-        nM=(f.mel||0)    ? (f.mel+(d.mel||0))       : 0,
-        nP=(d.presente||0);
+        nM=(f.mel||0)    ? (f.mel+(d.mel||0))       : 0;
   for(let tent=0;tent<30;tent++){
-    cel.forEach(c=>{c.rocha=false;c.mel=0;c.premio=false});
+    cel.forEach(c=>{c.rocha=false;c.mel=0;c.surp=null});
     const livres=[];
     for(let i=0;i<cel.length;i++)if(!cel[i].fora)livres.push(i);
     for(let i=livres.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[livres[i],livres[j]]=[livres[j],livres[i]]}
@@ -976,7 +980,10 @@ function espalharObstaculos(f,d){
   for(let i=livres2.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[livres2[i],livres2[j]]=[livres2[j],livres2[i]]}
   let p=0;
   for(let k=0;k<nM&&p<livres2.length;k++)cel[livres2[p++]].mel=1;
-  for(let k=0;k<nP&&p<livres2.length;k++)cel[livres2[p++]].premio=true;
+  for(let k=0;k<(d.bons||0)&&p<livres2.length;k++)
+    cel[livres2[p++]].surp=BONS[(Math.random()*BONS.length)|0];
+  for(let k=0;k<(d.ruins||0)&&p<livres2.length;k++)
+    cel[livres2[p++]].surp=RUINS[(Math.random()*RUINS.length)|0];
 }
 function conexo(){
   const val=[]; for(let i=0;i<cel.length;i++)if(!cel[i].fora&&!cel[i].rocha)val.push(i);
@@ -1190,12 +1197,57 @@ function revelar(i,origem){
   }
   return n;
 }
-function premio(i){                                // pista escondida na casa que você abriu
+/* surpresa que trava a casa: aparece ANTES de abrir, e custa mais uma jogada */
+function surpresaTrava(i){
+  const c=cel[i], t=FASES[fase].tema;
+  if(c.surp==='grude'){
+    c.surp=null; c.mel=2; jogadas++; pintar(i);
+    tab.children[i].classList.add('surge');
+    banner((t.grude||'🍯')+' Tinha '+(t.grudeNm||'grude')+' escondido aqui — toque de novo');
+    bip(260,.18,'triangle',.05); vib(18); atualizarHud(); return true;
+  }
+  if(c.surp==='desaba'){
+    c.surp=null;
+    c.rocha=true;
+    if(!conexo()){ c.rocha=false; }                // nunca trancar um pedaço do campo
+    else { dentro--; jogadas++; pintar(i);
+      tab.children[i].classList.add('estourou');
+      const b=$('#board'); b.classList.remove('chacoalha'); void b.offsetWidth; b.classList.add('chacoalha');
+      banner('🕳️ O chão cedeu! Essa casa virou entulho');
+      bip(120,.35,'sawtooth',.06); vib([25,40,25]); atualizarHud(); checar(); return true; }
+  }
+  if(c.surp==='fumaca'){
+    c.surp=null; jogadas++;
+    const alvos=[];
+    for(let k=0;k<cel.length;k++)if(cel[k].ab&&cel[k].n&&!cel[k].oculto)alvos.push(k);
+    alvos.sort((a,b)=>cheb(a,i)-cheb(b,i));
+    alvos.slice(0,6).forEach(k=>{ cel[k].oculto=true; pintar(k);
+      ag(()=>{ if(cel[k]){cel[k].oculto=false;pintar(k)} },9000) });
+    banner('💨 Fumaça! Os números em volta somem por um tempo');
+    bip(200,.3,'sine',.05); vib(15);
+  }
+  return false;
+}
+function premio(i){                                // o que a casa escondia, depois de abrir
   const c=cel[i];
-  if(c.premio){                                    // presente: uma dica extra na hora
-    c.premio=false; dicas++; atualizarHud();
+  if(c.surp==='presente'){
+    c.surp=null; dicas++; atualizarHud();
     tab.children[i].classList.add('dica'); banner('🎁 Um presente! +1 💡');
     [880,1180,1480].forEach((h,k)=>setTimeout(()=>bip(h,.09,'triangle',.05),k*70));
+  }else if(c.surp==='sopro'){
+    c.surp=null;
+    const vz=viz(i).filter(k=>!cel[k].m&&!cel[k].ab);
+    vz.forEach((k,n)=>ag(()=>{revelar(k,i);tab.children[k].classList.add('novo');
+      if(n===vz.length-1)checar()},n*70));
+    banner('💨 Uma lufada abriu a vizinhança'); bip(660,.2,'triangle',.05);
+  }else if(c.surp==='alarme'){
+    c.surp=null;
+    const ms=[]; for(let k=0;k<cel.length;k++)if(cel[k].m&&!cel[k].show&&!cel[k].boom)ms.push(k);
+    if(ms.length){ const k=ms[(Math.random()*ms.length)|0];
+      cel[k].show=true; cel[k].rev=true; achadas=contaAchadas(); pintar(k);
+      tab.children[k].classList.add('surge');
+      banner('🔔 O alarme apontou uma bomba em '+coord(k)); atualizarHud(); }
+    [1180,880].forEach((h,n)=>setTimeout(()=>bip(h,.14,'square',.05),n*140));
   }
   if(!c.pista)return; c.pista=false;
   if(regra==='cogumelo'){
@@ -1215,10 +1267,14 @@ function premio(i){                                // pista escondida na casa qu
 function cavar(i){
   const c=cel[i];
   if(!vivo||c.show||c.fora||c.rocha)return;
-  if(c.mel){                                   // mel: o primeiro toque só limpa
+  if(c.mel===1){                               // grude à vista: o 1º toque só limpa
     c.mel=0; jogadas++; pintar(i); tab.children[i].classList.add('novo');
     bip(300,.14,'triangle',.05); vib(12); atualizarHud(); return;
   }
+  if(c.mel===2){                               // grude que era surpresa: quebra e abre na mesma
+    c.mel=0; pintar(i); bip(420,.12,'triangle',.05);
+  }
+  if(c.surp&&surpresaTrava(i))return;           // surpresa escondida que impede a cavada
   if(c.show)return;
   jogadas++;
   if(c.gelo){c.gelo=false;pintar(i);tab.children[i].classList.add('novo');bip(900,.06,'sine',.04);return}
@@ -1227,7 +1283,7 @@ function cavar(i){
   if(c.ab){chord(i);return}
   if(c.m)return pisar(i);
   const n=revelar(i,i); sAbrir(n);
-  if(c.pista||c.premio)premio(i);
+  if(c.pista||c.surp)premio(i);
   checar();
 }
 function chord(i){
@@ -1327,7 +1383,7 @@ function retomar(sv){
   cel.forEach((c,i)=>{
     const v=sv.c[i];
     c.m=!!(v&1); c.ab=!!(v&2); c.boom=!!(v&4); c.rev=!!(v&64); c.show=!!(v&128);
-    c.fora=!!(v&256); c.rocha=!!(v&512); c.mel=(v&1024)?1:0; c.premio=!!(v&2048); c.pista=!!(v&4096);
+    c.fora=!!(v&256); c.rocha=!!(v&512); c.mel=(v&1024)?1:0; c.surp=(v&2048)?'presente':null; c.pista=!!(v&4096);
   });
   for(let i=0;i<cel.length;i++)cel[i].n=viz(i).filter(v=>cel[v].m).length;
   gerado=true; limpa=sv.lp!==false; dicas=sv.h; tempo=sv.t; rei=sv.rk!==undefined?sv.rk:-1;

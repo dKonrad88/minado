@@ -39,6 +39,13 @@ já tem (`rochas: -1` no Brisa chega a zerar).
 e `c.premio` (presente: +1 💡 ao abrir). `espalharObstaculos()` sorteia e testa `conexo()` —
 rocha nunca pode partir o campo em dois, senão o pedaço isolado exigiria adivinhação.
 
+**Surpresas** (`c.surp`, invisíveis até tocar; `BONS`/`RUINS`): presente (+1 💡), sopro (abre a
+vizinhança), alarme (expõe uma mina) · grude (vira `mel=2`, que quebra **e abre** no toque
+seguinte — `mel=1` é o grude visível, que só limpa), desabamento (a casa vira rocha, `dentro--`,
+e **só acontece se `conexo()` continuar true**) e fumaça (oculta 6 números por 9s).
+É o principal diferencial entre dificuldades hoje: Brisa 4 boas / 0 ruins · Na Medida 2/1 ·
+Suor Frio 1/3 · Relâmpago 0/5.
+
 **A dificuldade muda o terreno também**: Brisa dá 2 presentes; Suor Frio joga 4 rochas e 3 mel;
 Relâmpago, 8 rochas e 6 mel. `areaDe()`/`minasDe()` já descontam isso.
 
@@ -88,7 +95,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.2).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.3).
 
 ## Como testar (workflow da suíte)
 
