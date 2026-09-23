@@ -60,6 +60,17 @@ sonoro só toca com a tela do jogo ativa — confete continuava caindo sobre o m
 e o texto do aviso é montado por `FALA[regra](tema)` — por isso jogar o Quintal duas vezes não dá
 a mesma coisa.
 
+**Trilha em 3 camadas** (v3.7) — e as 31 são diferentes:
+1. `som.loop` = **melodia própria** (sequenciador: `hz` de base, `p` em semitons com `null` de pausa,
+   `bpm`, timbre, `h:1` dobra a oitava). É o que dá personalidade — valsa de circo no Parque,
+   batida industrial na Fábrica, trítono lento na Vila, escala árabe no Deserto, fanfarra no Final.
+2. `som.t/f/q/lfo` = cama de ruído (recua para .22 quando há melodia).
+3. `som.ev` = o bicho, de tempos em tempos.
+⚠️ Só mudar a frequência do ruído **não** soa diferente — foi reclamação dele duas vezes. Fase nova
+precisa de melodia própria.
+⚠️ Áudio começa **depois** de `irPara(telaJogo)`: o guard "só toca com a tela do jogo no ar" cortava
+a cama quando a chamada vinha antes.
+
 **Cada fase tem um bicho sonoro** (`tema.som.ev`): motivo curto que toca a cada 4-17s — pássaro,
 galinha, abelha, coruja, gota, buzina… É o que faz perceber a diferença entre fases; só mudar a
 frequência do ruído não bastava (reclamação dele).
@@ -120,7 +131,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.6).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.7).
 
 ## Como testar (workflow da suíte)
 
