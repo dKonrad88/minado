@@ -704,7 +704,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='4.2';
+const VERSAO='4.3';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -1425,6 +1425,9 @@ function surpresaTrava(i){
   }
   if(c.surp==='desaba'){
     c.surp=null;
+    // ⚠️ mina NUNCA vira entulho: viz() deixaria de enxergá-la e os números em volta
+    // virariam mentira permanente, com a vitória disparando uma casa antes.
+    if(c.m){ banner('🕳️ O chão cedeu… e tinha bomba embaixo'); return false }
     c.rocha=true;
     if(!conexo()){ c.rocha=false; }                // nunca trancar um pedaço do campo
     else { dentro--; if(c.ab){c.ab=false; abertas--}   // virou entulho: sai da conta de abertas também

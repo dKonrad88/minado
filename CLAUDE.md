@@ -130,7 +130,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.2).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.3).
 
 ## ⚠️ Invariantes que a v4.0 firmou (não desfazer)
 
@@ -195,6 +195,10 @@ Se copiar esse sw.js para outro app, trocar o prefixo do filtro junto com o CACH
   rejogar a fase 31 farmava jornada e vidas. E a reposição usa `Math.max` — nunca
   tira vida de quem juntou prêmio.
 - **O relógio para no segundo plano** (senão come as estrelas de quem atende o celular).
+- ⚠️ **Mina nunca vira entulho.** `espalharObstaculos()` roda ANTES de `gerar()`, então a
+  mina cai debaixo de uma surpresa em **73 de 124 partidas**. Se o desabamento virasse
+  rocha ali, `viz()` pararia de enxergar a mina: os números em volta viravam mentira
+  permanente e a vitória disparava uma casa antes. O ramo `desaba` sai fora quando `c.m`.
 
 ## Trilha (v4.1) — o bioma dá o timbre, a fase dá o resto
 
