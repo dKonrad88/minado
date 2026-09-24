@@ -130,7 +130,47 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 3.9).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.0).
+
+## ⚠️ Invariantes que a v4.0 firmou (não desfazer)
+
+Vieram de uma varredura completa + testes em execução. Cada um já foi bug de verdade.
+
+**A fase só acaba uma vez.** `checar()` começa com `if(!vivo)return` e compara com `>=`
+(não `===`). `vencer()` e `perder()` começam com `if(!vivo)return` + `limparAgenda()`.
+Sem isso, qualquer callback de raridade ainda na agenda chamava `vencer()` de novo e
+contava tudo em dobro: vidas, `p.limpas`, `S().fases`, tempo e um segundo modal.
+Motivo raiz: `vencer()` expõe todas as minas, então `contaAchadas()===minas` fica
+**permanentemente verdadeiro** depois da primeira vitória.
+
+**A partida salva tem que guardar a REGRA.** `viz()` muda de topologia conforme
+`regra` (`orbita` faz a vizinhança dar a volta), e `retomar()` recalcula todos os `n`.
+Salvar sem a regra fazia `abrirFase()` sortear outra e **renumerar o tabuleiro que o
+jogador já tinha deduzido**. Por isso `abrirFase(i, regraFixa)` aceita a regra forçada —
+tem que ser no argumento, não depois, senão o banner e o `regraTeto` saem errados.
+O save também guarda `jogadas`, `gelo`, `oculto`, `mente`, `mel` (0/1/2), o **tipo** da
+surpresa (índice em `SURPS`, ordem FIXA) e o orçamento de regra (`ru`/`re`/`rt`).
+Tem `v:VERSAO` e `n:cel.length`; `retomar()` recusa save de tamanho diferente em vez de
+montar uma fase sem mina.
+
+**Quem mexe no campo depois de um `ag()` checa `vivo` e `gerado` de novo.** Vale para
+todo callback de `bicho()`/`ondaColuna()`. Cada raridade devolve `true`/`false`, e
+`talvezRegra()` só gasta o uso da fase quando ela **realmente** agiu — senão a maré
+queimava o único uso da fase sem aparecer.
+
+**`abertas` e `dentro` andam juntos.** O desabamento (`surp:'desaba'`) numa casa já
+aberta pelo flood precisa de `abertas--` junto do `dentro--`; sem isso a vitória por
+limpeza ficava impossível para sempre.
+
+**`acabou` é por dificuldade** (`acabouDif`). Global, ele jogava o jogador na fase 1 de
+uma dificuldade intacta.
+
+**Voltar do segundo plano re-arma `agendarEvento()`.** `pararAmbiente()` mata `evTimer`
+e só `abrirFase()` religava — o bicho da fase calava para sempre depois de uma
+notificação no celular.
+
+**Nada de `tickRegra`.** Foi removido na v4.0. A regra é sorteada nas jogadas
+(`talvezRegra`), nunca por relógio.
 
 ## Como testar (workflow da suíte)
 

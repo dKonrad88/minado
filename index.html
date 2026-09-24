@@ -340,10 +340,12 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 .linha.ruim{color:#FF9B9B}
 .linha.ocupado{opacity:.6}
 .rodapinho{font-size:10.5px!important;color:var(--ink3)!important;margin-top:14px!important;letter-spacing:.2px}
-#cfg{position:absolute;inset:0;background:rgba(5,8,15,.82);backdrop-filter:blur(6px);
+#cfg{position:absolute;inset:0;background:rgba(5,8,15,.82);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
   display:none;align-items:center;justify-content:center;padding:24px;z-index:25}
 #cfg.on{display:flex;animation:fade .2s}
-#modal{position:absolute;inset:0;background:rgba(5,8,15,.82);backdrop-filter:blur(6px);
+#modal{position:absolute;inset:0;background:rgba(5,8,15,.82);
+  -webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);
   display:none;align-items:center;justify-content:center;padding:26px;z-index:20}
 #modal.on{display:flex;animation:fade .2s}
 @keyframes fade{from{opacity:0}to{opacity:1}}
@@ -491,6 +493,7 @@ const BIOMAS={
 
 /* ---------- surpresas: parecem casa comum até você tocar ---------- */
 const BONS=['presente','sopro','alarme'], RUINS=['grude','desaba','fumaca'];
+const SURPS=[...BONS,...RUINS];                 // ordem FIXA: a partida salva guarda o índice
 
 /* ---------- formas do campo: quem responde false vira buraco ---------- */
 const FORMAS={
@@ -643,7 +646,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='3.9';
+const VERSAO='4.0';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -679,9 +682,14 @@ function salvarPartida(){
   if(!vivo||!gerado)return;
   try{
     localStorage.setItem(CHAVE_P,JSON.stringify({
+      v:VERSAO, n:cel.length,
       d:st.dif, f:fase, t:tempo, h:dicas, lp:limpa, rk:rei,
-      c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.rev?64:0)|(c.show?128:0)|
-        (c.fora?256:0)|(c.rocha?512:0)|(c.mel?1024:0)|(c.surp?2048:0)|(c.pista?4096:0))
+      rg:regra, jg:jogadas, ru:regraUsos, re:regraEspera, rt:regraTeto,
+      c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.gelo?8:0)|(c.oculto?16:0)|
+        (c.rev?64:0)|(c.show?128:0)|(c.fora?256:0)|(c.rocha?512:0)|
+        ((c.mel&3)<<10)|(c.pista?4096:0)),
+      sp:cel.map(c=>c.surp?SURPS.indexOf(c.surp)+1:0).join(''),
+      mt:cel.map(c=>c.mente===1?1:(c.mente===-1?2:0)).join('')
     }));
   }catch(e){}
 }
@@ -973,7 +981,7 @@ $('#lnUp').onclick=async function(){
 };
 function irPara(tela){
   if(tela!==telaJogo){
-    clearInterval(tick);tick=null;clearInterval(tickRegra);tickRegra=null;pararAmbiente();
+    clearInterval(tick);tick=null;pararAmbiente();
     document.querySelectorAll('.conf,.bicho,.ondaCol').forEach(x=>x.remove());  // limpa a festa
     const pt=$('#part'); if(pt)pt.innerHTML='';
   }
@@ -984,21 +992,22 @@ function irPara(tela){
 /* ============ JOGO ============ */
 let fase=0,cols=0,rows=0,minas=0,cel=[],gerado=false,vivo=false,modo=0;
 let dentro=0,jogadas=0,achadas=0,abertas=0,dicas=0,t0=0,tick=null,tempo=0,fatal=-1,espiando=false,pularAtivo=false,vidas=0;
-let acabou=false,faseMorte=0,limpa=true;
-let regra='',rei=-1,tickRegra=null,regraUsos=0,regraEspera=0,regraTeto=0;
+let acabou=false,acabouDif=-1,faseMorte=0,limpa=true;
+let regra='',rei=-1,regraUsos=0,regraEspera=0,regraTeto=0;
 
-function abrirFase(i){
+function abrirFase(i,regraFixa){
   limparAgenda(); pararPular(); limparAviso();
   flash.classList.remove('on'); app.classList.remove('treme');
-  if(acabou){i=0; acabou=false}            // depois do fim de jogo só se entra pela fase 1
-  clearInterval(tickRegra); tickRegra=null; rei=-1;
+  // depois do fim de jogo só se entra pela fase 1 — mas só na dificuldade que morreu
+  if(acabou&&acabouDif===st.dif){i=0; acabou=false; acabouDif=-1}
+  rei=-1;
   fase=i; const f=FASES[i], d=DIFS[st.dif];
   const pool=POOL[f.b]||[];
   const opcoes=[f.regra,f.regra,...pool].filter(Boolean);        // a assinatura pesa o dobro
-  regra=opcoes.length?opcoes[(Math.random()*opcoes.length)|0]:'';
+  regra=regraFixa!==undefined?regraFixa:(opcoes.length?opcoes[(Math.random()*opcoes.length)|0]:'');
   if(regra==='orbita'&&f.b!=='espaco')regra='miragem';           // wrap só faz sentido no espaço
   cols=f.cols; rows=f.rows; minas=minasDe(i,st.dif); vidas=P().vidas;
-  dicas=dicasDe(i,st.dif)+(P().bonus||0); P().bonus=0;
+  dicas=dicasDe(i,st.dif)+(P().bonus||0); if(P().bonus){P().bonus=0; salvar()}   // gastou: grava já
   aplicarTema(f.tema);
   const molde=FORMAS[f.forma]||FORMAS.cheio;
   cel=Array.from({length:cols*rows},(_,k)=>({m:false,n:0,ab:false,rev:false,boom:false,gelo:false,
@@ -1345,7 +1354,8 @@ function surpresaTrava(i){
     c.surp=null;
     c.rocha=true;
     if(!conexo()){ c.rocha=false; }                // nunca trancar um pedaço do campo
-    else { dentro--; jogadas++; pintar(i);
+    else { dentro--; if(c.ab){c.ab=false; abertas--}   // virou entulho: sai da conta de abertas também
+           jogadas++; pintar(i);
       tab.children[i].classList.add('estourou');
       const b=$('#board'); b.classList.remove('chacoalha'); void b.offsetWidth; b.classList.add('chacoalha');
       banner('🕳️ O chão cedeu! Essa casa virou entulho');
@@ -1514,14 +1524,26 @@ $('#btVoltar').onclick=()=>{limparAgenda();pararPular();limparAviso();pintarMapa
 $('#btReiniciar').onclick=()=>abrirFase(fase);
 
 function retomar(sv){
-  st.dif=sv.d; abrirFase(sv.f); limparAgenda();
+  if(!sv||!Array.isArray(sv.c)){limparPartida(); return abrirFase(0)}
+  st.dif=sv.d;
+  abrirFase(sv.f, sv.rg);                       // MESMA regra da partida: viz() precisa dela p/ renumerar
+  limparAgenda();
+  if(sv.c.length!==cel.length){                 // save de um formato antigo: começa a fase limpa
+    limparPartida(); banner('🔄 A partida salva era de outra versão — fase recomeçada'); return;
+  }
+  const sp=sv.sp||'', mt=sv.mt||'';
   cel.forEach((c,i)=>{
     const v=sv.c[i];
-    c.m=!!(v&1); c.ab=!!(v&2); c.boom=!!(v&4); c.rev=!!(v&64); c.show=!!(v&128);
-    c.fora=!!(v&256); c.rocha=!!(v&512); c.mel=(v&1024)?1:0; c.surp=(v&2048)?'presente':null; c.pista=!!(v&4096);
+    c.m=!!(v&1); c.ab=!!(v&2); c.boom=!!(v&4); c.gelo=!!(v&8); c.oculto=!!(v&16);
+    c.rev=!!(v&64); c.show=!!(v&128); c.fora=!!(v&256); c.rocha=!!(v&512);
+    c.mel=(v>>10)&3; c.pista=!!(v&4096);
+    c.surp=SURPS[(+sp[i]||0)-1]||null;
+    c.mente=mt[i]==='1'?1:(mt[i]==='2'?-1:0);
   });
-  for(let i=0;i<cel.length;i++)cel[i].n=viz(i).filter(v=>cel[v].m).length;
+  for(let i=0;i<cel.length;i++)cel[i].n=(cel[i].fora||cel[i].rocha)?0:viz(i).filter(v=>cel[v].m).length;
   gerado=true; limpa=sv.lp!==false; dicas=sv.h; tempo=sv.t; rei=sv.rk!==undefined?sv.rk:-1;
+  jogadas=sv.jg||0;                             // o contador não volta do zero
+  regraUsos=sv.ru||0; regraEspera=sv.re||0; regraTeto=sv.rt!==undefined?sv.rt:regraTeto;
   dentro=cel.reduce((a,c)=>a+((!c.fora&&!c.rocha)?1:0),0);
   abertas=cel.reduce((a,c)=>a+(c.ab?1:0),0);
   achadas=contaAchadas();
@@ -1580,8 +1602,8 @@ function talvezRegra(){
   if(Math.random()>.28)return;
   const fn={cisca:ciscar,mare:mare,brasa:brasa,fantasma:assombrar,gelo:congelar}[regra];
   if(!fn)return;
+  if(fn()===false)return;                       // não achou onde agir: não gasta o uso da fase
   regraUsos++; regraEspera=3+((Math.random()*4)|0);
-  fn();
 }
 
 /* ---- personagens: o bicho entra, faz o serviço e sai ---- */
@@ -1616,44 +1638,47 @@ function banner(txt){
   const b=$('#banner'); b.innerHTML=txt; b.classList.remove('on'); void b.offsetWidth; b.classList.add('on');
 }
 function mare(){                                   // Praia: molha a faixa mais à esquerda
-  if(!vivo||!gerado)return;
+  if(!vivo||!gerado)return false;
   for(let x=0;x<cols;x++){
-    const col=[];
-    for(let y=0;y<rows;y++){const i=y*cols+x; if(!cel[i].ab&&!cel[i].show&&!cel[i].boom&&!cel[i].fora&&!cel[i].rocha)col.push(i)}
-    if(!col.length)continue;
-    const seguras=col.filter(i=>!cel[i].m);
-    if(seguras.length){
-      bip(300,.5,'sine',.05);
-      ondaColuna(x,()=>{
-        seguras.forEach((i,n)=>ag(()=>{ revelar(i,i); tab.children[i].classList.add('novo');
-          if(n===seguras.length-1)checar() }, n*40));
-        banner('🌊 A maré molhou a coluna '+LETRAS[x]);
-      });
-    }
-    return;
+    const seguras=[];
+    for(let y=0;y<rows;y++){const i=y*cols+x;
+      if(!cel[i].ab&&!cel[i].show&&!cel[i].boom&&!cel[i].fora&&!cel[i].rocha&&!cel[i].mel&&!cel[i].m)seguras.push(i)}
+    if(!seguras.length)continue;                 // coluna só com mina ou grude: tenta a próxima
+    bip(300,.5,'sine',.05);
+    ondaColuna(x,()=>{
+      if(!vivo||!gerado)return;
+      seguras.forEach((i,n)=>ag(()=>{ revelar(i,i); tab.children[i].classList.add('novo');
+        if(n===seguras.length-1)checar() }, n*40));
+      banner('🌊 A maré molhou a coluna '+LETRAS[x]);
+    });
+    return true;
   }
+  return false;
 }
 function ciscar(){                                 // Galinheiro: a galinha entra e cisca
-  if(!vivo||!gerado)return;
+  if(!vivo||!gerado)return false;
   const cand=[];
   for(let i=0;i<cel.length;i++)if(!cel[i].ab&&!cel[i].m&&!cel[i].show&&!cel[i].fora&&!cel[i].rocha&&!cel[i].mel)cand.push(i);
-  if(!cand.length)return;
+  if(!cand.length)return false;
   const i=cand[(Math.random()*cand.length)|0];
   bip(880,.07,'square',.04); ag(()=>bip(740,.07,'square',.04),150);
   bicho('🐔',i,()=>{
+    if(!vivo||!gerado)return;
     tab.children[i].classList.add('chacoalha');
     revelar(i,i); tab.children[i].classList.add('dica');
     bip(1180,.12,'triangle',.05); checar();
   });
+  return true;
 }
 function brasa(){                                  // Cratera: a lava jorra e abre uma poça
-  if(!vivo||!gerado)return;
+  if(!vivo||!gerado)return false;
   const cand=[];
   for(let i=0;i<cel.length;i++)if(!cel[i].ab&&!cel[i].m&&!cel[i].fora&&!cel[i].rocha&&!cel[i].mel)cand.push(i);
-  if(!cand.length)return;
+  if(!cand.length)return false;
   const i=cand[(Math.random()*cand.length)|0];
   bip(90,.4,'sawtooth',.06);
   bicho('🌋',i,()=>{
+    if(!vivo||!gerado)return;
     const poca=[i,...viz(i).filter(k=>!cel[k].m&&!cel[k].ab)];
     poca.forEach((k,n)=>ag(()=>{
       tab.children[k].classList.add('lava');
@@ -1662,40 +1687,48 @@ function brasa(){                                  // Cratera: a lava jorra e ab
       if(n===poca.length-1)checar();
     },n*90));
   });
+  return true;
 }
 function assombrar(){                              // Vila: o fantasma vem e leva o número
-  if(!vivo||!gerado)return;
+  if(!vivo||!gerado)return false;
   const cand=[];
   for(let i=0;i<cel.length;i++)if(cel[i].ab&&cel[i].n&&!cel[i].oculto)cand.push(i);
-  if(!cand.length)return;
+  if(!cand.length)return false;
   const i=cand[(Math.random()*cand.length)|0];
   [520,440,360].forEach((h,k)=>ag(()=>bip(h,.3,'sine',.035),k*220));
   bicho('👻',i,()=>{
+    if(!vivo||!gerado)return;
     cel[i].oculto=true; pintar(i); tab.children[i].classList.add('surge');
     ag(()=>{ if(!cel[i])return; cel[i].oculto=false; pintar(i);
              tab.children[i]&&tab.children[i].classList.add('novo'); bip(900,.1,'sine',.04) },8000);
   },1000);
+  return true;
 }
 function congelar(){                               // Geleira: o floco desce e refaz o gelo
-  if(!vivo)return;
+  if(!vivo||!gerado)return false;
   const cand=[];
   for(let i=0;i<cel.length;i++)if(cel[i].ab&&!cel[i].n&&!cel[i].gelo&&!cel[i].m&&!cel[i].fora)cand.push(i);
-  if(!cand.length)return;
+  if(!cand.length)return false;
   const i=cand[(Math.random()*cand.length)|0];
   bicho('❄️',i,()=>{
+    if(!vivo||!gerado)return;
     cel[i].gelo=true; pintar(i); tab.children[i].classList.add('surge');
     bip(1500,.14,'sine',.04);
   },700);
+  return true;
 }
 
 /* ---- fim: vitória ---- */
 function checar(){
+  if(!vivo)return;                     // fase já encerrada: callback atrasado não decide nada
   atualizarHud();
   // acaba de dois jeitos: limpou tudo que era seguro, OU achou todas as minas
-  if(abertas===dentro-minas || contaAchadas()===minas)vencer();
+  if(abertas>=dentro-minas || contaAchadas()>=minas)vencer();
 }
 function vencer(){
-  vivo=false; clearInterval(tick); tick=null; clearInterval(tickRegra); limparPartida();
+  if(!vivo)return;                     // só vence uma vez
+  limparAgenda();                      // raridade a caminho não mexe mais no campo ganho
+  vivo=false; clearInterval(tick); tick=null; limparPartida();
   const centro=((rows/2)|0)*cols+((cols/2)|0);
   cel.forEach((c,k)=>{if(c.m&&!c.show){c.show=true;c.rev=true;pintar(k);anima(k,centro,'surge')}});
   achadas=minas;
@@ -1750,9 +1783,11 @@ function vencer(){
 
 /* ---- fim: derrota em 3 tempos ---- */
 function perder(i){
-  vivo=false; clearInterval(tick); tick=null; clearInterval(tickRegra); fatal=i;
+  if(!vivo)return;
+  limparAgenda();
+  vivo=false; clearInterval(tick); tick=null; fatal=i;
   const sa=S(); sa.mortes[fase]=(sa.mortes[fase]||0)+1;
-  acabou=true; faseMorte=fase; novaJornada(); limparPartida();   // a jornada já volta pro começo aqui
+  acabou=true; acabouDif=st.dif; faseMorte=fase; novaJornada(); limparPartida();   // a jornada já volta pro começo aqui
   atualizarHud(); sBum(); vib([40,50,110]);
   cel[i].rev=true; pintar(i); tab.children[i].classList.add('surge');
   // 1) as minas e as bandeiras erradas aparecem em ondas
@@ -1859,10 +1894,12 @@ function confete(){
 }
 
 addEventListener('visibilitychange',()=>{
-  if(document.hidden){salvarPartida();pararAmbiente()}
-  else if(vivo&&telaJogo.classList.contains('on'))tocarAmbiente(FASES[fase].tema.som);
+  if(document.hidden){salvarPartida();salvar();pararAmbiente()}
+  else if(vivo&&telaJogo.classList.contains('on')){
+    tocarAmbiente(FASES[fase].tema.som); agendarEvento();   // pararAmbiente matou o bicho: re-arma
+  }
 });
-addEventListener('pagehide',salvarPartida);
+addEventListener('pagehide',()=>{salvarPartida();salvar()});
 
 /* ============ INÍCIO ============ */
 pintarMapa();

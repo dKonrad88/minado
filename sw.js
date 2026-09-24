@@ -4,7 +4,7 @@
    - Resto (ícones, manifest): stale-while-revalidate.
    O botão "Atualizar o jogo" (Ajustes) apaga estes caches e recarrega sem cache.
    Suba o número do CACHE quando quiser forçar limpeza em todo mundo. */
-var CACHE = 'minado-v1';
+var CACHE = 'minado-v4';
 var SHELL = ['./', './index.html', './manifest.json',
              './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
