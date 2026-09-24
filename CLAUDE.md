@@ -130,7 +130,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.0).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.1).
 
 ## ⚠️ Invariantes que a v4.0 firmou (não desfazer)
 
@@ -171,6 +171,30 @@ notificação no celular.
 
 **Nada de `tickRegra`.** Foi removido na v4.0. A regra é sorteada nas jogadas
 (`talvezRegra`), nunca por relógio.
+
+## Trilha (v4.1) — o bioma dá o timbre, a fase dá o resto
+
+Ele reclamou **três vezes** que as fases soavam igual ("circo tem que soar como circo").
+A causa era estrutural: o `som` era só do bioma e a fase só escalava a frequência do
+filtro (`sf`) — 31 fases com **6 timbres**.
+
+Hoje: `BIOMAS[x].som` define o timbre do bioma e `TRILHA[i]` (tabela nova, antes de
+`FASES`) dá a **cada** fase o seu `ev` (o bicho, som ocasional do cenário) e um `s`
+opcional que torce o caráter da cama. O `.map()` aplica `sf`, depois `Object.assign(som, tr.s)`.
+
+`tocarAmbiente()` entende: `tf/f/q/lfo/prof` (camada de ruído filtrada), `n2` (2ª camada),
+`acorde`+`tipoOsc`+`ag` (acorde PARADO), `bat` (desafinagem em cents → batimento),
+`tr/trp/trt` (tremolo, com `trt:'square'` cortando seco para máquina).
+
+⚠️ **`acorde` é cama, não melodia.** As notas nascem juntas e não mudam até a fase acabar.
+Ele mandou tirar a melodia na v3.8 ("tipo piano, enjoativo") — nunca sequenciar notas na
+cama. O `ev` é um motivo curto e esparso e ele aceitou; não crescer isso.
+
+⚠️ **Como medir se mudou de verdade:** renderizar num `OfflineAudioContext` e comparar
+*espectro* **e** *pulsação* (espectro do envelope). Só o espectro não serve — circo e
+fábrica dão 99% de parecido nele e soam completamente diferentes. E **descartar os
+primeiros ~3 s**: a rampa de entrada de 2,5 s domina a medição do envelope e faz tudo
+parecer idêntico. Hoje: mediana 29%, nenhuma dupla do mesmo bioma acima de 88%.
 
 ## Como testar (workflow da suíte)
 

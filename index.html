@@ -464,31 +464,31 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
 /* ---------- biomas: paleta, cenário e trilha compartilhados ---------- */
 const BIOMAS={
  jardim:{ceu:'#0C1710',luz:'rgba(120,220,140,.09)',t1:'#33513A',t2:'#2A4431',ab:'#16241A',
-   deco:['🌿','🌼','🐝','🌱','🍃'],amb:{t:'cai',e:'🍃',n:6},som:{t:'vento',f:900,q:.7,lfo:.07,v:.05,ev:{n:[2400,3100],d:.07,t:'triangle',v:.05,g:90,cada:[5,12]},tf:'bandpass',prof:.5},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
+   deco:['🌿','🌼','🐝','🌱','🍃'],amb:{t:'cai',e:'🍃',n:6},som:{t:'vento',tf:'bandpass',f:900,q:.7,lfo:.07,prof:.5,v:.05,n2:{tf:'highpass',f:5200,q:.5,g:.18,lfo:.21,prof:.3}},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
  mata:{ceu:'#0A1410',luz:'rgba(90,200,150,.08)',t1:'#2B4438',t2:'#233A2F',ab:'#13211B',
-   deco:['🌲','🍄','🦌','🍂','🌲'],amb:{t:'cai',e:'🍂',n:7},som:{t:'vento',f:1500,q:.6,lfo:.05,v:.055,ev:{n:[420,330],d:.26,t:'sine',v:.055,g:280,cada:[7,15]},tf:'bandpass',prof:.6,dr:73},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
+   deco:['🌲','🍄','🦌','🍂','🌲'],amb:{t:'cai',e:'🍂',n:7},som:{t:'vento',tf:'lowpass',f:640,q:.6,lfo:.035,prof:.7,v:.06,acorde:[73,110],tipoOsc:'sine',ag:.16},bloco:'🪵',grude:'🌿',grudeNm:'mato'},
  mar:{ceu:'#0B1520',luz:'rgba(120,200,255,.09)',t1:'#3A4A5E',t2:'#31404F',ab:'#16202B',
-   deco:['🐚','🌊','⛱️','🦀','🌴'],amb:{t:'sobe',e:'🫧',n:7},som:{t:'vento',f:480,q:.5,lfo:.13,v:.085,ev:{n:[1500,1150,880],d:.16,t:'triangle',v:.05,g:130,cada:[6,13]},tf:'lowpass',prof:.8},bloco:'🪸',grude:'🌊',grudeNm:'poça'},
+   deco:['🐚','🌊','⛱️','🦀','🌴'],amb:{t:'sobe',e:'🫧',n:7},som:{t:'vento',tf:'lowpass',f:420,q:.4,lfo:.11,prof:1.15,v:.09},bloco:'🪸',grude:'🌊',grudeNm:'poça'},
  assombro:{ceu:'#100E17',luz:'rgba(170,140,255,.09)',t1:'#3A3548',t2:'#302C3D',ab:'#1B1826',
-   deco:['🕯️','🕸️','🦇','🏚️','🌫️'],amb:{t:'flutua',e:'👻',n:4},som:{t:'caverna',f:260,q:1,lfo:.05,v:.06,ev:{n:[190,150],d:.5,t:'sine',v:.05,g:420,cada:[8,16]},tf:'bandpass',prof:.35,dr:58,tr:.7,trp:.5},bloco:'🚪',grude:'🕸️',grudeNm:'teia'},
+   deco:['🕯️','🕸️','🦇','🏚️','🌫️'],amb:{t:'flutua',e:'👻',n:4},som:{t:'caverna',tf:'bandpass',f:260,q:2.6,lfo:.05,prof:.35,v:.06,acorde:[58,87],bat:14,tipoOsc:'sine',ag:.2,tr:.7,trp:.5},bloco:'🚪',grude:'🕸️',grudeNm:'teia'},
  subsolo:{ceu:'#120D09',luz:'rgba(255,190,110,.08)',t1:'#453528',t2:'#3A2C21',ab:'#201812',
-   deco:['⛏️','💎','🪨','🔦','🕳️'],amb:{t:'sobe',e:'✨',n:6},som:{t:'caverna',f:190,q:1,lfo:.04,v:.065,ev:{n:[1900],d:.22,t:'sine',v:.055,g:0,cada:[4,9]},tf:'lowpass',prof:.3,dr:49},bloco:'🪨',grude:'💧',grudeNm:'água'},
+   deco:['⛏️','💎','🪨','🔦','🕳️'],amb:{t:'sobe',e:'✨',n:6},som:{t:'caverna',tf:'lowpass',f:170,q:1,lfo:.03,prof:.28,v:.07,acorde:[41,49],tipoOsc:'sine',ag:.22},bloco:'🪨',grude:'💧',grudeNm:'água'},
  lava:{ceu:'#170A08',luz:'rgba(255,120,60,.11)',t1:'#4C2E26',t2:'#402620',ab:'#241310',
-   deco:['🌋','🔥','🪨','💨','🔥'],amb:{t:'sobe',e:'🔥',n:8},som:{t:'caverna',f:140,q:1.4,lfo:.22,v:.075,ev:{n:[110,85],d:.3,t:'sawtooth',v:.05,g:160,cada:[5,11]},tf:'lowpass',prof:.6,tr:2.2,trp:.55},bloco:'🪨',grude:'🔥',grudeNm:'brasa'},
+   deco:['🌋','🔥','🪨','💨','🔥'],amb:{t:'sobe',e:'🔥',n:8},som:{t:'caverna',tf:'lowpass',f:150,q:1.6,lfo:.24,prof:.7,v:.08,acorde:[55],tipoOsc:'sawtooth',ag:.1,tr:2.6,trp:.6,trt:'triangle'},bloco:'🪨',grude:'🔥',grudeNm:'brasa'},
  gelo:{ceu:'#0A141C',luz:'rgba(140,215,255,.10)',t1:'#2E4457',t2:'#273A4A',ab:'#14212B',
-   deco:['❄️','🧊','🐧','🌨️','❄️'],amb:{t:'cai',e:'❄️',n:10},som:{t:'vento',f:2300,q:1.2,lfo:.09,v:.05,ev:{n:[3200,2600],d:.13,t:'sine',v:.045,g:150,cada:[6,13]},tf:'highpass',prof:.35},bloco:'🧊',grude:'❄️',grudeNm:'gelo'},
+   deco:['❄️','🧊','🐧','🌨️','❄️'],amb:{t:'cai',e:'❄️',n:10},som:{t:'vento',tf:'highpass',f:2600,q:1.2,lfo:.09,prof:.35,v:.05,acorde:[1046,1568],tipoOsc:'sine',ag:.045,bat:6},bloco:'🧊',grude:'❄️',grudeNm:'gelo'},
  areia:{ceu:'#150F08',luz:'rgba(255,200,90,.09)',t1:'#4F4229',t2:'#443922',ab:'#241D11',
-   deco:['🌵','☀️','🦂','🏜️','🌵'],amb:{t:'flutua',e:'🌫️',n:5},som:{t:'vento',f:1050,q:.9,lfo:.06,v:.06,ev:{n:[760,980,700],d:.3,t:'sine',v:.04,g:240,cada:[7,14]},tf:'bandpass',prof:.7},bloco:'🌵',grude:'💨',grudeNm:'areia'},
+   deco:['🌵','☀️','🦂','🏜️','🌵'],amb:{t:'flutua',e:'🌫️',n:5},som:{t:'vento',tf:'bandpass',f:1250,q:.45,lfo:.055,prof:.75,v:.062,n2:{tf:'bandpass',f:3400,q:2.2,g:.16,lfo:.13,prof:.5}},bloco:'🌵',grude:'💨',grudeNm:'areia'},
  ruina:{ceu:'#131110',luz:'rgba(220,200,160,.08)',t1:'#4A4438',t2:'#3E392F',ab:'#211E19',
-   deco:['🏛️','🗿','🌾','🪶','🧭'],amb:{t:'flutua',e:'🍃',n:5},som:{t:'vento',f:760,q:.8,lfo:.05,v:.055,ev:{n:[520,390],d:.4,t:'sine',v:.045,g:330,cada:[8,15]},tf:'bandpass',prof:.45,dr:65},bloco:'🏛️',grude:'🌾',grudeNm:'mato alto'},
+   deco:['🏛️','🗿','🌾','🪶','🧭'],amb:{t:'flutua',e:'🍃',n:5},som:{t:'vento',tf:'bandpass',f:700,q:9,lfo:.04,prof:.25,v:.055,acorde:[98,147],tipoOsc:'triangle',ag:.1},bloco:'🏛️',grude:'🌾',grudeNm:'mato alto'},
  fabrica:{ceu:'#0D1116',luz:'rgba(150,200,255,.08)',t1:'#3A424E',t2:'#313843',ab:'#191D23',
-   deco:['⚙️','🔧','🏭','🚂','🔩'],amb:{t:'sobe',e:'💨',n:6},som:{t:'caverna',f:320,q:1.2,lfo:.3,v:.06,ev:{n:[150,150],d:.09,t:'square',v:.05,g:180,cada:[4,8]},tf:'bandpass',prof:.25,tr:3.4,trp:.6,dr:55},bloco:'⚙️',grude:'🛢️',grudeNm:'óleo'},
+   deco:['⚙️','🔧','🏭','🚂','🔩'],amb:{t:'sobe',e:'💨',n:6},som:{t:'caverna',tf:'bandpass',f:330,q:3.2,lfo:.3,prof:.25,v:.06,tr:3.4,trp:.75,trt:'square',acorde:[55,110],tipoOsc:'square',ag:.055},bloco:'⚙️',grude:'🛢️',grudeNm:'óleo'},
  festa:{ceu:'#150C1E',luz:'rgba(255,160,220,.10)',t1:'#4A3155',t2:'#3E2947',ab:'#221630',
-   deco:['🎪','🎡','🎈','🍭','🎠'],amb:{t:'sobe',e:'🎈',n:7},som:{t:'vento',f:1300,q:.7,lfo:.16,v:.055,ev:{n:[1760,2200,1760],d:.11,t:'triangle',v:.045,g:120,cada:[6,12]},tf:'bandpass',prof:.55,tr:1.1,trp:.35},bloco:'🎠',grude:'🍭',grudeNm:'algodão-doce'},
+   deco:['🎪','🎡','🎈','🍭','🎠'],amb:{t:'sobe',e:'🎈',n:7},som:{t:'vento',tf:'bandpass',f:1500,q:1.1,lfo:.16,prof:.5,v:.05,acorde:[262,330,392,523],tipoOsc:'square',ag:.05,tr:1.5,trp:.5,trt:'triangle'},bloco:'🎠',grude:'🍭',grudeNm:'algodão-doce'},
  espaco:{ceu:'#0A0917',luz:'rgba(150,130,255,.11)',t1:'#322F55',t2:'#2A2848',ab:'#17162B',
-   deco:['🚀','⭐','🛰️','🌙','✨'],amb:{t:'pisca',e:'✦',n:14},som:{t:'espaco',hz:98,v:.05,ev:{n:[1250,1600],d:.08,t:'square',v:.04,g:110,cada:[5,11]}},bloco:'☄️',grude:'🌫️',grudeNm:'poeira'},
+   deco:['🚀','⭐','🛰️','🌙','✨'],amb:{t:'pisca',e:'✦',n:14},som:{t:'espaco',hz:98,v:.05,bat:5},bloco:'☄️',grude:'🌫️',grudeNm:'poeira'},
  final:{ceu:'#120A1C',luz:'rgba(200,140,255,.13)',t1:'#3C2C57',t2:'#322549',ab:'#1B1330',
-   deco:['🎆','🎇','🏆','⭐','🎊'],amb:{t:'sobe',e:'🎇',n:8},som:{t:'espaco',hz:146,v:.055,ev:{n:[880,1320,1760],d:.12,t:'triangle',v:.05,g:100,cada:[4,9]}},bloco:'🎁',grude:'🎊',grudeNm:'confete'},
+   deco:['🎆','🎇','🏆','⭐','🎊'],amb:{t:'sobe',e:'🎇',n:8},som:{t:'espaco',hz:146,v:.055,bat:8},bloco:'🎁',grude:'🎊',grudeNm:'confete'},
 };
 
 /* ---------- surpresas: parecem casa comum até você tocar ---------- */
@@ -530,17 +530,74 @@ function gira(cor,dh,dl,ds){
                       : 'rgba('+R+','+G+','+B+','+a+')';
 }
 
+/* ---------- trilha por fase ----------
+   O BIOMA dá o timbre. A FASE dá o bicho (`ev`, o som ocasional do cenário) e pode
+   torcer o caráter da cama (`s`) — não só a frequência do filtro, senão as fases do
+   mesmo bioma soam idênticas, que foi exatamente a reclamação do Diego.
+   `ev` é um motivo curto e esparso; NÃO é trilha melódica (isso ele já mandou tirar). */
+const TRILHA=[
+ /* 1  Quintal     */ {ev:{n:[2400,3100],d:.07,t:'triangle',v:.05,g:90,cada:[5,12]}},
+ /* 2  Galinheiro  */ {ev:{n:[900,760,620],d:.12,t:'square',v:.055,g:110,cada:[5,11]},
+                       s:{f:1150,q:2.2,lfo:.28,prof:.35,n2:{tf:'bandpass',f:2600,q:1.4,g:.22,lfo:.3,prof:.4}}},
+ /* 3  Horta       */ {ev:{n:[240,250,240],d:.2,t:'sawtooth',v:.04,g:90,cada:[6,12]},
+                       s:{lfo:.12,n2:{tf:'highpass',f:6500,q:.5,g:.12,lfo:.17,prof:.3}}},
+ /* 4  Bosque      */ {ev:{n:[420,330],d:.26,t:'sine',v:.055,g:280,cada:[7,15]}},
+ /* 5  Clareira    */ {ev:{n:[2600,3100,2800,3300],d:.06,t:'triangle',v:.05,g:70,cada:[6,12]},
+                       s:{acorde:[98,147],ag:.13}},
+ /* 6  Cervos      */ {ev:{n:[300,300],d:.1,t:'triangle',v:.045,g:200,cada:[6,13]},
+                       s:{acorde:[65,98],ag:.19,lfo:.025}},
+ /* 7  Praia       */ {ev:{n:[1500,1150,880],d:.16,t:'triangle',v:.05,g:130,cada:[6,13]}},
+ /* 8  Recife      */ {ev:{n:[1800,2100],d:.09,t:'sine',v:.04,g:80,cada:[5,10]},
+                       s:{prof:.8,n2:{tf:'highpass',f:4200,q:.6,g:.14,lfo:.3,prof:.4}}},
+ /* 9  Porto velho */ {ev:{n:[180,150],d:.6,t:'sine',v:.05,g:500,cada:[9,17]},
+                       s:{prof:1.45,lfo:.045,tr:.22,trp:.45,acorde:[49,73],tipoOsc:'triangle',ag:.16}},
+ /* 10 Vila        */ {ev:{n:[190,150],d:.5,t:'sine',v:.05,g:420,cada:[8,16]}},
+ /* 11 Casarão     */ {ev:{n:[300,210,160],d:.35,t:'sawtooth',v:.045,g:190,cada:[7,14]},
+                       s:{acorde:[62,93],bat:22,tr:.45}},
+ /* 12 Sótão       */ {ev:{n:[4200,3600,4400],d:.05,t:'sine',v:.04,g:55,cada:[5,11]},
+                       s:{q:5,tr:1.3,trp:.6,acorde:[110,165],bat:9,ag:.1}},
+ /* 13 Mina velha  */ {ev:{n:[1900],d:.22,t:'sine',v:.055,g:0,cada:[4,9]}},
+ /* 14 Veio        */ {ev:{n:[2600,1900],d:.07,t:'triangle',v:.05,g:130,cada:[6,12]},
+                       s:{acorde:[37,55],ag:.26,q:1.6}},
+ /* 15 Poço        */ {ev:{n:[520,300,170],d:.3,t:'sine',v:.05,g:260,cada:[7,15]},
+                       s:{f:130,q:6,tr:.35,trp:.5,acorde:[33,49,73],ag:.2,lfo:.02,n2:{tf:'bandpass',f:1800,q:8,g:.1,lfo:.05,prof:.3}}},
+ /* 16 Cratera     */ {ev:{n:[110,85],d:.3,t:'sawtooth',v:.05,g:160,cada:[5,11]}},
+ /* 17 Rio de lava */ {ev:{n:[420,180],d:.08,t:'square',v:.045,g:70,cada:[4,9]},
+                       s:{tr:3.6,trp:.7,acorde:[49,73],ag:.12}},
+ /* 18 Rochas      */ {ev:{n:[140,120,95,80],d:.14,t:'sawtooth',v:.05,g:90,cada:[6,13]},
+                       s:{tr:1.4,trp:.45,q:2.4,tipoOsc:'square',acorde:[41],ag:.09}},
+ /* 19 Geleira     */ {ev:{n:[3200,2600],d:.13,t:'sine',v:.045,g:150,cada:[6,13]}},
+ /* 20 Baía        */ {ev:{n:[700,1100,700],d:.09,t:'square',v:.045,g:95,cada:[5,11]},
+                       s:{acorde:[1318,1976],ag:.035,bat:9}},
+ /* 21 Pico nevado */ {ev:{n:[2800,3400,2600],d:.1,t:'sine',v:.04,g:120,cada:[7,14]},
+                       s:{q:2.2,lfo:.16,n2:{tf:'bandpass',f:7200,q:3,g:.15,lfo:.25,prof:.4}}},
+ /* 22 Deserto     */ {ev:{n:[760,980,700],d:.3,t:'sine',v:.04,g:240,cada:[7,14]}},
+ /* 23 Duna alta   */ {ev:{n:[5200,4600],d:.28,t:'sine',v:.035,g:300,cada:[8,16]},
+                       s:{q:.7,lfo:.028,tr:.28,trp:.35,n2:{tf:'bandpass',f:5200,q:3.4,g:.2,lfo:.09,prof:.5}}},
+ /* 24 Ruínas      */ {ev:{n:[520,390],d:.4,t:'sine',v:.045,g:330,cada:[8,15]}},
+ /* 25 Estátuas    */ {ev:{n:[220,165,110],d:.45,t:'triangle',v:.05,g:380,cada:[9,17]},
+                       s:{q:14,f:520,acorde:[82,123,165],ag:.08}},
+ /* 26 Parque      */ {ev:{n:[1760,2200,1760],d:.11,t:'triangle',v:.045,g:120,cada:[6,12]}},
+ /* 27 Montanha-r. */ {ev:{n:[600,900,1300,1700],d:.07,t:'triangle',v:.05,g:60,cada:[6,12]},
+                       s:{tr:2.2,trt:'square',acorde:[294,370,440,587],tipoOsc:'sawtooth',ag:.042}},
+ /* 28 Fábrica     */ {ev:{n:[150,150],d:.09,t:'square',v:.05,g:180,cada:[4,8]}},
+ /* 29 Engrenagens */ {ev:{n:[320,240,320,240],d:.06,t:'square',v:.045,g:95,cada:[4,9]},
+                       s:{tr:5.2,trt:'square',trp:.8,acorde:[73,110,146],tipoOsc:'square',ag:.045,q:5}},
+ /* 30 Órbita      */ {ev:{n:[1250,1600],d:.08,t:'square',v:.04,g:110,cada:[5,11]}},
+ /* 31 Final       */ {ev:{n:[880,1320,1760],d:.12,t:'triangle',v:.05,g:100,cada:[4,9]}},
+];
+
 /* ---------- as 31 fases ---------- */
 const FASES=[
  {ic:'🌱',nm:'Quintal de casa',  b:'jardim',  c:5, r:5,  m:3,  par:15, h:0, dl:0, sf:0, deco:['🌿','🌼','🐝','🌱','🍃']},
- {ic:'🐔',nm:'Galinheiro',       b:'jardim',  c:6, r:6,  m:4,  par:25,  regra:'cisca', h:-88, dl:0.02, sf:-0.22, deco:['🌾','🥚','🐓','🪵','🪶'], ev:{n:[900,760,620],d:.12,t:'square',v:.055,g:110,cada:[5,11]}},
- {ic:'🌻',nm:'Horta',            b:'jardim',  c:7, r:6,  m:6,  par:35,  forma:'onda', h:-104, dl:0.03, sf:0.38, deco:['🌻','🥕','🍅','🐞','🌱'], ev:{n:[240,250,240],d:.2,t:'sawtooth',v:.04,g:90,cada:[6,12]}},
+ {ic:'🐔',nm:'Galinheiro',       b:'jardim',  c:6, r:6,  m:4,  par:25,  regra:'cisca', h:-88, dl:0.02, sf:-0.22, deco:['🌾','🥚','🐓','🪵','🪶']},
+ {ic:'🌻',nm:'Horta',            b:'jardim',  c:7, r:6,  m:6,  par:35,  forma:'onda', h:-104, dl:0.03, sf:0.38, deco:['🌻','🥕','🍅','🐞','🌱']},
  {ic:'🌳',nm:'Bosque',           b:'mata',    c:7, r:7,  m:6,  par:40,  regra:'cogumelo', h:-8, dl:-0.01, sf:0, deco:['🌲','🍄','🦌','🍂','🌰']},
- {ic:'🍄',nm:'Clareira',         b:'mata',    c:8, r:7,  m:8,  par:50,  forma:'circulo', rochas:3, h:-42, dl:0.03, sf:0.3, deco:['🍄','🦋','🌸','🐛','🌿'], ev:{n:[2600,3100,2800,3300],d:.06,t:'triangle',v:.05,g:70,cada:[6,12]}},
- {ic:'🦌',nm:'Trilha dos cervos',b:'mata',    c:8, r:8,  m:9,  par:55,  forma:'escada', h:-64, dl:-0.01, sf:-0.16, deco:['🦌','🐾','🌲','🍁','🪵'], ev:{n:[300,300],d:.1,t:'triangle',v:.045,g:200,cada:[6,13]}},
+ {ic:'🍄',nm:'Clareira',         b:'mata',    c:8, r:7,  m:8,  par:50,  forma:'circulo', rochas:3, h:-42, dl:0.03, sf:0.3, deco:['🍄','🦋','🌸','🐛','🌿']},
+ {ic:'🦌',nm:'Trilha dos cervos',b:'mata',    c:8, r:8,  m:9,  par:55,  forma:'escada', h:-64, dl:-0.01, sf:-0.16, deco:['🦌','🐾','🌲','🍁','🪵']},
  {ic:'🏖️',nm:'Praia minada',     b:'mar',     c:8, r:8,  m:9,  par:55,  regra:'mare', h:0, dl:0, sf:0, deco:['🐚','🌊','⛱️','🦀','🌴']},
- {ic:'🐚',nm:'Recife',           b:'mar',     c:9, r:8,  m:11, par:65,  forma:'onda', mel:4, h:-38, dl:0.03, sf:0.42, deco:['🐠','🪸','🐙','🫧','🐡'], ev:{n:[1800,2100],d:.09,t:'sine',v:.04,g:80,cada:[5,10]}},
- {ic:'⛵',nm:'Porto velho',      b:'mar',     c:9, r:9,  m:13, par:75,  forma:'taca', h:16, dl:-0.02, sf:-0.26, deco:['⛵','⚓','🪢','🧭','🐟'], ev:{n:[180,150],d:.6,t:'sine',v:.05,g:500,cada:[9,17]}},
+ {ic:'🐚',nm:'Recife',           b:'mar',     c:9, r:8,  m:11, par:65,  forma:'onda', mel:4, h:-38, dl:0.03, sf:0.42, deco:['🐠','🪸','🐙','🫧','🐡']},
+ {ic:'⛵',nm:'Porto velho',      b:'mar',     c:9, r:9,  m:13, par:75,  forma:'taca', h:16, dl:-0.02, sf:-0.26, deco:['⛵','⚓','🪢','🧭','🐟']},
  {ic:'🏚️',nm:'Vila fantasma',    b:'assombro',c:8, r:9,  m:11, par:70,  regra:'fantasma', h:0, dl:0, sf:0, deco:['🕯️','🕸️','🦇','🏚️','🌫️']},
  {ic:'🕯️',nm:'Casarão',          b:'assombro',c:9, r:9,  m:13, par:80,  forma:'cruz', rochas:4, h:44, dl:0.02, sf:-0.2, deco:['🚪','🪑','🕰️','🔑','🕸️']},
  {ic:'🦇',nm:'Sótão',            b:'assombro',c:9, r:10, m:15, par:88,  forma:'losango', regra:'fantasma', h:-28, dl:-0.01, sf:0.34, deco:['🦇','📦','🕸️','🪞','🧹']},
@@ -552,24 +609,25 @@ const FASES=[
  {ic:'🪨',nm:'Campo de rochas',  b:'lava',    c:10,r:11, m:19, par:125, rochas:12, h:10, dl:-0.03, sf:-0.24, deco:['🪨','🗿','💨','⛰️','🪨']},
  {ic:'❄️',nm:'Geleira',          b:'gelo',    c:10,r:11, m:22, par:135, regra:'gelo', h:0, dl:0, sf:0, deco:['❄️','🧊','🐧','🌨️','❄️']},
  {ic:'🐧',nm:'Baía congelada',   b:'gelo',    c:10,r:12, m:24, par:145, forma:'circulo', regra:'gelo', h:-26, dl:0.02, sf:-0.18, deco:['🐧','🐻‍❄️','🧊','🌊','❄️']},
- {ic:'🏔️',nm:'Pico nevado',      b:'gelo',    c:10,r:12, m:25, par:150, forma:'seta', mel:5, h:10, dl:0.045, sf:0.36, deco:['🏔️','🧗','❄️','🌬️','⛷️'], ev:{n:[2800,3400,2600],d:.1,t:'sine',v:.04,g:120,cada:[7,14]}},
+ {ic:'🏔️',nm:'Pico nevado',      b:'gelo',    c:10,r:12, m:25, par:150, forma:'seta', mel:5, h:10, dl:0.045, sf:0.36, deco:['🏔️','🧗','❄️','🌬️','⛷️']},
  {ic:'🏜️',nm:'Deserto',          b:'areia',   c:10,r:12, m:26, par:165, regra:'miragem', h:0, dl:0, sf:0, deco:['🌵','☀️','🦂','🏜️','🌵']},
  {ic:'🐪',nm:'Duna alta',        b:'areia',   c:11,r:12, m:28, par:172, forma:'onda', mel:6, h:-20, dl:0.03, sf:0.3, deco:['🐪','🏜️','💨','☀️','🦎']},
  {ic:'🏛️',nm:'Ruínas',           b:'ruina',   c:11,r:12, m:29, par:178, forma:'cruz', rochas:6, h:0, dl:0, sf:0, deco:['🏛️','🗿','🌾','🪶','🧭']},
  {ic:'🗿',nm:'Vale das estátuas',b:'ruina',   c:11,r:13, m:30, par:185, forma:'trevo', regra:'miragem', h:46, dl:-0.01, sf:-0.22, deco:['🗿','🏺','🌿','🦅','🏛️']},
  {ic:'🎪',nm:'Parque antigo',    b:'festa',   c:11,r:13, m:30, par:188, forma:'losango', mel:6, h:0, dl:0, sf:0, deco:['🎪','🎡','🎈','🍭','🎠']},
- {ic:'🎢',nm:'Montanha-russa',   b:'festa',   c:11,r:13, m:31, par:192, forma:'escada', regra:'cisca', h:-44, dl:0.03, sf:0.34, deco:['🎢','🎟️','🍿','🎈','🎠'], ev:{n:[600,900,1300,1700],d:.07,t:'triangle',v:.05,g:60,cada:[6,12]}},
+ {ic:'🎢',nm:'Montanha-russa',   b:'festa',   c:11,r:13, m:31, par:192, forma:'escada', regra:'cisca', h:-44, dl:0.03, sf:0.34, deco:['🎢','🎟️','🍿','🎈','🎠']},
  {ic:'🏭',nm:'Fábrica',          b:'fabrica', c:11,r:13, m:32, par:195, forma:'tijolo', h:0, dl:0, sf:0, deco:['⚙️','🔧','🏭','🚂','🔩']},
  {ic:'⚙️',nm:'Engrenagens',      b:'fabrica', c:11,r:13, m:33, par:198, forma:'anel', rochas:8, h:-168, dl:0.02, sf:0.3, deco:['⚙️','🔩','🛠️','⛓️','🔧']},
  {ic:'🌌',nm:'Órbita',           b:'espaco',  c:11,r:13, m:32, par:200, regra:'orbita', h:0, dl:0, sf:0, deco:['🚀','⭐','🛰️','🌙','✨']},
  {ic:'🎆',nm:'Grande Final',     b:'final',   c:11,r:14, m:38, par:250, regra:'rei', h:0, dl:0, sf:0, deco:['🎆','🎇','🏆','⭐','🎊']},
-].map(f=>{
+].map((f,idx)=>{
   const t=BIOMAS[f.b], h=f.h||0, dl=f.dl||0, sf=f.sf||0;
-  const som={...t.som};
-  if(f.ev)som.ev=f.ev;
+  const som={...t.som}, tr=TRILHA[idx]||{};
   if(som.f)som.f=Math.round(som.f*(1+sf));
   if(som.hz)som.hz=Math.round(som.hz*(1+sf));
   if(som.lfo)som.lfo=+(som.lfo*(1+sf*.6)).toFixed(3);
+  if(tr.s)Object.assign(som,tr.s);          // a fase torce o caráter, não só a frequência
+  som.ev=tr.ev;                             // e tem o seu próprio bicho
   return {...f, cols:f.c, rows:f.r, minas:f.m,
     dicas: f.c*f.r<60?1:(f.c*f.r<100?2:3),
     forma: f.forma||'cheio',
@@ -646,7 +704,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='4.0';
+const VERSAO='4.1';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -762,36 +820,49 @@ function tocarAmbiente(p){
     if(ac.state==='suspended')ac.resume();
     const out=ac.createGain(); out.gain.value=0; out.connect(ac.destination);
     out.gain.linearRampToValueAtTime(Math.min(.24,p.v*mult*.62), ac.currentTime+2.5);
-    if(p.t==='espaco'){
-      [[p.hz,1],[p.hz*1.5,.35],[p.hz*2.01,.18]].forEach(([hz,g])=>{
-        const o=ac.createOscillator(), gn=ac.createGain();
-        o.type='sine'; o.frequency.value=hz; gn.gain.value=g;
-        o.connect(gn); gn.connect(out); o.start(); AMB.nos.push(o,gn);
-      });
-    }else{
+    const guarda=(...ns)=>AMB.nos.push(...ns);
+
+    /* camada de ruído: filtro varrido por um LFO lento — é o "respiro" do cenário */
+    const camada=(c,destino)=>{
       const src=ac.createBufferSource(); src.buffer=ruidoBuf(); src.loop=true;
       const filtro=ac.createBiquadFilter();
-      filtro.type = p.tf || (p.t==='caverna' ? 'lowpass' : (p.f>1400?'highpass':'bandpass'));
-      filtro.frequency.value=p.f; filtro.Q.value=p.q||1;
-      const lfo=ac.createOscillator(), prof=ac.createGain();       // varre o filtro: dá o "respiro"
-      lfo.frequency.value=p.lfo||.08; prof.gain.value=p.f*(p.prof||.45);
+      filtro.type=c.tf||'bandpass'; filtro.frequency.value=c.f; filtro.Q.value=c.q||1;
+      const lfo=ac.createOscillator(), prof=ac.createGain();
+      lfo.frequency.value=c.lfo||.08; prof.gain.value=c.f*(c.prof||.45);
       lfo.connect(prof); prof.connect(filtro.frequency);
-      src.connect(filtro);
-      if(p.tr){                                                    // tremolo: pulsa o volume
+      const vol=ac.createGain(); vol.gain.value=c.g===undefined?1:c.g;
+      src.connect(filtro); filtro.connect(vol); vol.connect(destino);
+      src.start(); lfo.start(); guarda(src,filtro,lfo,prof,vol);
+    };
+    /* acorde PARADO. É cama de fundo, nunca melodia: as notas nascem juntas e não mudam.
+       `bat` duplica cada nota desafinada em cents — dá o batimento (assombro, gelo, espaço). */
+    const acorde=(hzs,tipo,g,bat)=>{
+      const vozes = bat ? [0,bat] : [0];
+      hzs.forEach((hz,i)=>vozes.forEach(cents=>{
+        const o=ac.createOscillator(), gn=ac.createGain();
+        o.type=tipo||'sine'; o.frequency.value=hz*Math.pow(2,cents/1200);
+        gn.gain.value=(g===undefined?.2:g)/((1+i*.55)*vozes.length);
+        o.connect(gn); gn.connect(out); o.start(); guarda(o,gn);
+      }));
+    };
+
+    if(p.t==='espaco'){
+      acorde([p.hz,p.hz*1.5,p.hz*2.01],'sine',.2,p.bat);
+    }else{
+      let destino=out;
+      if(p.tr){                      // tremolo: pulsa o volume. `trt:'square'` corta seco (máquina)
         const trem=ac.createGain(), osc=ac.createOscillator(), amp=ac.createGain();
-        trem.gain.value=1-(p.trp||.4); osc.frequency.value=p.tr; amp.gain.value=p.trp||.4;
+        trem.gain.value=1-(p.trp||.4);
+        osc.type=p.trt||'sine'; osc.frequency.value=p.tr; amp.gain.value=p.trp||.4;
         osc.connect(amp); amp.connect(trem.gain);
-        filtro.connect(trem); trem.connect(out); osc.start();
-        AMB.nos.push(trem,osc,amp);
-      } else filtro.connect(out);
-      if(p.dr){                                                    // fio grave por baixo
-        const o=ac.createOscillator(), g=ac.createGain();
-        o.type='sine'; o.frequency.value=p.dr; g.gain.value=.22;
-        o.connect(g); g.connect(out); o.start(); AMB.nos.push(o,g);
+        trem.connect(out); osc.start(); guarda(trem,osc,amp);
+        destino=trem;
       }
-      src.start(); lfo.start(); AMB.nos.push(src,filtro,lfo,prof);
+      camada({tf:p.tf,f:p.f,q:p.q,lfo:p.lfo,prof:p.prof},destino);
+      if(p.n2)camada(p.n2,out);      // 2ª camada: brilho por cima ou grave por baixo
+      if(p.acorde)acorde(p.acorde,p.tipoOsc,p.ag,p.bat);
     }
-    AMB.nos.push(out);
+    guarda(out);
   }catch(e){}
 }
 const sAbrir=n=>{for(let j=0;j<Math.min(5,n);j++)setTimeout(()=>bip(540+j*80,.05,'triangle',.045),j*45)};
