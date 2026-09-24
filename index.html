@@ -245,7 +245,7 @@ button{font-family:inherit;border:0;cursor:pointer;background:none;color:inherit
   100%{transform:scale(1)}}
 @keyframes chacoalha{0%,100%{transform:translate(0,0)}25%{transform:translate(-4px,2px)}
   60%{transform:translate(3px,-2px)}}
-#board.chacoalha{animation:chacoalha .32s ease-out}
+#board.chacoalha,.c.chacoalha{animation:chacoalha .32s ease-out}
 .c.bum{background:var(--bad)!important;box-shadow:0 0 22px rgba(255,92,92,.7)!important}
 .c.erro{background:rgba(255,92,92,.18);box-shadow:inset 0 0 0 1px rgba(255,92,92,.45)}
 .c.espia{opacity:.5;background:rgba(255,255,255,.05)}
@@ -704,7 +704,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='4.1';
+const VERSAO='4.2';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -731,7 +731,7 @@ function S(){
   return st.sta;
 }
 function novaJornada(){                       // recomeça do Quintal com o coração cheio
-  const p=P(); p.max=0; p.vidas=DIFS[st.dif].vidas; p.limpas=0; p.bonus=0; salvar(); return p;
+  const p=P(); p.max=0; p.vidas=DIFS[st.dif].vidas; p.limpas=0; p.bonus=0; p.fechou=false; salvar(); return p;
 }
 const salvar=()=>{try{localStorage.setItem(CHAVE,JSON.stringify(st))}catch(e){}};
 
@@ -742,7 +742,7 @@ function salvarPartida(){
     localStorage.setItem(CHAVE_P,JSON.stringify({
       v:VERSAO, n:cel.length,
       d:st.dif, f:fase, t:tempo, h:dicas, lp:limpa, rk:rei,
-      rg:regra, jg:jogadas, ru:regraUsos, re:regraEspera, rt:regraTeto,
+      rg:regra, jg:jogadas, ud:usouDica, ru:regraUsos, re:regraEspera, rt:regraTeto,
       c:cel.map(c=>(c.m?1:0)|(c.ab?2:0)|(c.boom?4:0)|(c.gelo?8:0)|(c.oculto?16:0)|
         (c.rev?64:0)|(c.show?128:0)|(c.fora?256:0)|(c.rocha?512:0)|
         ((c.mel&3)<<10)|(c.pista?4096:0)),
@@ -1012,7 +1012,7 @@ $('#lnStats').onclick=()=>{
 $('#lnRecomecar').onclick=()=>{
   const d=DIFS[st.dif];
   confirmar('Recomeçar a jornada?',
-    'As 11 fases do '+d.nm+' voltam a ficar trancadas e você joga de novo do Quintal, '+
+    'As '+FASES.length+' fases do '+d.nm+' voltam a ficar trancadas e você joga de novo do Quintal, '+
     'com as '+d.vidas+' vidas cheias.<br>Suas estrelas e recordes continuam guardados.',
     'Recomeçar do Quintal',
     ()=>{novaJornada(); limparPartida(); pintarMapa(); irPara(telaMapa); bip(660,.1,'triangle',.06)});
@@ -1036,13 +1036,15 @@ $('#lnUp').onclick=async function(){
   b.classList.add('ocupado'); rot.textContent='buscando…';
   try{
     if('serviceWorker' in navigator){
-      const regs=await navigator.serviceWorker.getRegistrations();
+      // ⚠️ a suíte inteira mora em dkonrad88.github.io: mexer só no que é do Minado
+      const todas=await navigator.serviceWorker.getRegistrations();
+      const regs=todas.filter(r=>((r.scope||'')+'').indexOf('/minado')>=0);
       await Promise.all(regs.map(r=>r.update().catch(()=>{})));
       await Promise.all(regs.map(r=>r.unregister().catch(()=>{})));
     }
     if(window.caches){
       const ks=await caches.keys();
-      await Promise.all(ks.map(k=>caches.delete(k)));
+      await Promise.all(ks.filter(k=>k.indexOf('minado')===0).map(k=>caches.delete(k)));
     }
   }catch(e){}
   rot.textContent='recarregando…';
@@ -1063,7 +1065,7 @@ function irPara(tela){
 /* ============ JOGO ============ */
 let fase=0,cols=0,rows=0,minas=0,cel=[],gerado=false,vivo=false,modo=0;
 let dentro=0,jogadas=0,achadas=0,abertas=0,dicas=0,t0=0,tick=null,tempo=0,fatal=-1,espiando=false,pularAtivo=false,vidas=0;
-let acabou=false,acabouDif=-1,faseMorte=0,limpa=true;
+let acabou=false,acabouDif=-1,faseMorte=0,limpa=true,usouDica=false;
 let regra='',rei=-1,regraUsos=0,regraEspera=0,regraTeto=0;
 
 function abrirFase(i,regraFixa){
@@ -1086,7 +1088,7 @@ function abrirFase(i,regraFixa){
     fora:!molde(k%cols,(k/cols)|0,cols,rows)}));
   espalharObstaculos(f,d);
   dentro=cel.reduce((a,c)=>a+((!c.fora&&!c.rocha)?1:0),0);
-  gerado=false; vivo=true; jogadas=0; achadas=0; abertas=0; tempo=0; fatal=-1; espiando=false; limpa=true;
+  gerado=false; vivo=true; jogadas=0; achadas=0; abertas=0; tempo=0; fatal=-1; espiando=false; limpa=true; usouDica=false;
   clearInterval(tick); tick=null;
   $('#tituloFase').innerHTML=f.ic+' '+f.nm+
     '<small>FASE '+(i+1)+'/'+FASES.length+' · '+d.nm.toUpperCase()+'</small>';
@@ -1201,7 +1203,7 @@ function pintar(i){
   }
 }
 function atualizarMetas(){
-  const par=parDe(fase,st.dif), usou=dicasDe(fase,st.dif)-dicas>0;
+  const par=parDe(fase,st.dif), usou=usouDica;
   $('#metas').innerHTML = usou
     ? '💡 usou dica · teto de ⭐⭐ · <b>'+fmt(par*2)+'</b> pra não cair pra ⭐'
     : '⭐⭐⭐ até <b>'+fmt(par)+'</b> · ⭐⭐ até <b>'+fmt(par*2)+'</b> · depois ⭐';
@@ -1482,7 +1484,7 @@ function premio(i){                                // o que a casa escondia, dep
 }
 function cavar(i){
   const c=cel[i];
-  if(!vivo||c.show||c.fora||c.rocha)return;
+  if(!vivo||c.show||c.boom||c.fora||c.rocha)return;   // bomba já pisada não cobra vida de novo
   if(c.mel===1){                               // grude à vista: o 1º toque só limpa
     c.mel=0; jogadas++; pintar(i); tab.children[i].classList.add('novo');
     bip(300,.14,'triangle',.05); vib(12); atualizarHud(); return;
@@ -1520,8 +1522,8 @@ function oposto(i){ modo===2 ? cavar(i) : apostar(i) }
 function apostar(i){
   const c=cel[i];
   if(!vivo||c.ab||c.show||c.boom||c.gelo||c.fora||c.rocha||c.mel)return;
+  if(!gerado){banner('💣 Cave a primeira casa antes de apostar');return}   // não gasta jogada à toa
   jogadas++;
-  if(!gerado){banner('💣 Cave a primeira casa antes de apostar');return}
   relogio();
   if(c.m){
     c.show=true; c.rev=true;
@@ -1578,7 +1580,7 @@ function usarDica(i){
   if(c.ab||c.mel){bip(220,.06,'sine',.04);return}   // casa já aberta (ou com mel): não gasta
   if(!gerado)gerarJusto(i);
   relogio();                                         // 1ª jogada: a escolhida nasce segura
-  dicas--; jogadas++; S().dicas++;
+  dicas--; jogadas++; S().dicas++; usouDica=true;   // marca a fase: presente depois não apaga isso
   if(c.m){
     c.show=true; c.rev=true;                 // a bomba aparece, como no Revelar
     achadas=contaAchadas();
@@ -1613,7 +1615,7 @@ function retomar(sv){
   });
   for(let i=0;i<cel.length;i++)cel[i].n=(cel[i].fora||cel[i].rocha)?0:viz(i).filter(v=>cel[v].m).length;
   gerado=true; limpa=sv.lp!==false; dicas=sv.h; tempo=sv.t; rei=sv.rk!==undefined?sv.rk:-1;
-  jogadas=sv.jg||0;                             // o contador não volta do zero
+  jogadas=sv.jg||0; usouDica=!!sv.ud;           // o contador e o teto de ⭐ não voltam do zero
   regraUsos=sv.ru||0; regraEspera=sv.re||0; regraTeto=sv.rt!==undefined?sv.rt:regraTeto;
   dentro=cel.reduce((a,c)=>a+((!c.fora&&!c.rocha)?1:0),0);
   abertas=cel.reduce((a,c)=>a+(c.ab?1:0),0);
@@ -1805,9 +1807,9 @@ function vencer(){
   achadas=minas;
   atualizarHud(); sWin(); vib([30,40,30]); confete();
   const d=DIFS[st.dif], p=P(), par=parDe(fase,st.dif);
-  const usouDica=dicasDe(fase,st.dif)-dicas>0;
+  const usou=usouDica;
   let e = tempo<=par?3 : (tempo<=par*2?2:1);
-  if(usouDica)e=Math.min(e,2);
+  if(usou)e=Math.min(e,2);
   const rec=p.rec[fase], novoRec=!rec||tempo<rec;
   if(novoRec)p.rec[fase]=tempo;
   p.est[fase]=Math.max(p.est[fase]||0,e);
@@ -1834,11 +1836,13 @@ function vencer(){
     p.bonus=(p.bonus||0)+1; S().bonus=(S().bonus||0)+1;
     tags.push(['🎯 +1 💡 · alvo era '+alvoJog,'bom']);
   }
-  if(zerou){p.vidas=DIFS[st.dif].vidas; salvar()}            // jornada fechada: coração cheio de novo
+  const fecha=zerou&&!p.fechou;                              // só fecha a jornada UMA vez
+  // fechar a jornada REPÕE o coração, mas nunca tira de quem juntou prêmio
+  if(fecha){p.fechou=true; p.vidas=Math.max(p.vidas,DIFS[st.dif].vidas); vidas=p.vidas; salvar()}
   const sa=S(); sa.fases++; sa.tempo+=tempo; sa.jogadas=(sa.jogadas||0)+jogadas;
-  if(zerou){sa.jornadas++; if(!sa.melhor||tempo<sa.melhor)sa.melhor=tempo}
+  if(fecha){sa.jornadas++; if(!sa.melhor||tempo<sa.melhor)sa.melhor=tempo}
   salvar();
-  if(usouDica)tags.push(['💡 dica usada · teto de 2 ⭐','']);
+  if(usou)tags.push(['💡 dica usada · teto de 2 ⭐','']);
   else if(e<3)tags.push(['⭐⭐⭐ era até '+fmt(par),'']);
   if(zerou)tags.push(['👑 jornada completa','ouro']);
   ag(()=>caixa({
@@ -1860,7 +1864,8 @@ function perder(i){
   const sa=S(); sa.mortes[fase]=(sa.mortes[fase]||0)+1;
   acabou=true; acabouDif=st.dif; faseMorte=fase; novaJornada(); limparPartida();   // a jornada já volta pro começo aqui
   atualizarHud(); sBum(); vib([40,50,110]);
-  cel[i].rev=true; pintar(i); tab.children[i].classList.add('surge');
+  cel[i].rev=true; if(cel[i].m)cel[i].boom=true;   // a fatal também conta como achada
+  pintar(i); tab.children[i].classList.add('surge');
   // 1) as minas e as bandeiras erradas aparecem em ondas
   let tMax=0;
   for(let k=0;k<cel.length;k++){
@@ -1896,7 +1901,7 @@ function explodirTudo(i){
 }
 function fimDerrota(){
   pararPular(); limparAviso();
-  const certas=cel.filter(c=>c.m&&c.show).length;
+  const certas=contaAchadas();   // apostadas + pisadas
   const d=DIFS[st.dif], ate=faseMorte+1;
   caixa({big:'🔁',h2:'Fim de jogo',
     p:'Suas '+d.vidas+' vidas do '+d.nm+' acabaram. A jornada recomeça do Quintal.',
@@ -1948,7 +1953,9 @@ function caixa(o){
       '<i class="'+(t[1]||'')+'">'+t[0]+'</i>').join('')+'</div>':'';
   cx.innerHTML='<div class="big">'+o.big+'</div><h2>'+o.h2+'</h2>'+estrelas+
     (o.p?'<p>'+o.p+'</p>':'')+painel+tags+'<div class="acoes">'+bts+'</div>';
-  [...cx.querySelectorAll('.acoes button')].forEach((b,k)=>b.onclick=o.bts[k][1]);
+  // o botão SEMPRE fecha o modal antes de agir, senão ele fica por cima da tela de destino
+  [...cx.querySelectorAll('.acoes button')].forEach((b,k)=>
+    b.onclick=()=>{modal.classList.remove('on'); o.bts[k][1]()});
   modal.classList.add('on');
 }
 function confete(){
@@ -1965,9 +1972,10 @@ function confete(){
 }
 
 addEventListener('visibilitychange',()=>{
-  if(document.hidden){salvarPartida();salvar();pararAmbiente()}
+  if(document.hidden){salvarPartida();salvar();pararAmbiente();clearInterval(tick);tick=null}
   else if(vivo&&telaJogo.classList.contains('on')){
     tocarAmbiente(FASES[fase].tema.som); agendarEvento();   // pararAmbiente matou o bicho: re-arma
+    if(gerado)relogio();                                    // e o relógio volta de onde parou
   }
 });
 addEventListener('pagehide',()=>{salvarPartida();salvar()});

@@ -4,7 +4,7 @@
    - Resto (ícones, manifest): stale-while-revalidate.
    O botão "Atualizar o jogo" (Ajustes) apaga estes caches e recarrega sem cache.
    Suba o número do CACHE quando quiser forçar limpeza em todo mundo. */
-var CACHE = 'minado-v5';
+var CACHE = 'minado-v6';
 var SHELL = ['./', './index.html', './manifest.json',
              './icon-192.png', './icon-512.png', './apple-touch-icon.png'];
 
@@ -19,7 +19,10 @@ self.addEventListener('install', function (e) {
 self.addEventListener('activate', function (e) {
   e.waitUntil(
     caches.keys().then(function (keys) {
-      return Promise.all(keys.map(function (k) { if (k !== CACHE) return caches.delete(k); }));
+      /* ⚠️ a origem e compartilhada com os outros apps da suite: so apagar o que e do Minado */
+      return Promise.all(keys.map(function (k) {
+        if (k.indexOf('minado') === 0 && k !== CACHE) return caches.delete(k);
+      }));
     }).then(function () { return self.clients.claim(); })
   );
 });

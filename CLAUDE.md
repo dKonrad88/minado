@@ -130,7 +130,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.1).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.2).
 
 ## ⚠️ Invariantes que a v4.0 firmou (não desfazer)
 
@@ -171,6 +171,30 @@ notificação no celular.
 
 **Nada de `tickRegra`.** Foi removido na v4.0. A regra é sorteada nas jogadas
 (`talvezRegra`), nunca por relógio.
+
+## ⚠️ A origem é compartilhada com a suíte inteira (v4.2)
+
+Todos os apps do Diego moram em `dkonrad88.github.io/<app>/` — **mesma origem**.
+Logo `caches.keys()` e `navigator.serviceWorker.getRegistrations()` enxergam os
+outros apps. O `activate` do sw.js apagava **todo** cache com nome diferente do seu,
+e o botão Atualizar desregistrava **todo** service worker da origem: o Minado
+derrubava o River Raid, o HUB, o Viagem… Hoje ambos filtram por `minado`.
+Se copiar esse sw.js para outro app, trocar o prefixo do filtro junto com o CACHE.
+
+## ⚠️ Outras travas da v4.2
+
+- **Bomba pisada não cobra de novo.** `cavar()` tem que barrar `c.boom` — a casa
+  fica `ab=false, show=false, boom=true`, então sem essa guarda dava para tocar na
+  mesma mina e drenar a jornada inteira.
+- **Botão de modal sempre fecha o modal.** `caixa()` embrulha o handler com
+  `modal.classList.remove('on')`; `irPara()` não fecha o `#modal` (ele não é `.screen`),
+  então "Voltar ao mapa" deixava o jogador preso.
+- **`usouDica` é um booleano da fase**, não `dicasDe()-dicas>0`: um presente repondo a
+  dica gasta apagava o teto de 2 ⭐. Vai no save (`ud`).
+- **Fechar a jornada é uma vez só** (`p.fechou`, zerado em `novaJornada()`), senão
+  rejogar a fase 31 farmava jornada e vidas. E a reposição usa `Math.max` — nunca
+  tira vida de quem juntou prêmio.
+- **O relógio para no segundo plano** (senão come as estrelas de quem atende o celular).
 
 ## Trilha (v4.1) — o bioma dá o timbre, a fase dá o resto
 
