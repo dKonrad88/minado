@@ -665,8 +665,8 @@ const TOTAL_ESTRELAS=FASES.length*3;
 const DIFS=[
  {ic:'🎒',nm:'Treinamento',  vidas:7, mult:0.75, dica: 1, par:1.6,  cor:'#3DDC84', rochas:-1, mel:-1, bons:4, ruins:0, abre:2, min:1, teto:.75},
  {ic:'🧭',nm:'Patrulha',     vidas:5, mult:1.00, dica: 0, par:1.0,  cor:'#FFD43B', rochas: 0, mel: 0, bons:2, ruins:1, abre:1, min:1, teto:.60},
- {ic:'🛡️',nm:'Operação',     vidas:4, mult:1.20, dica:-1, par:0.8,  cor:'#5AA9FF', rochas: 2, mel: 2, bons:1, ruins:3, abre:1, min:0, teto:.45},
- {ic:'⚡',nm:'Linha de Frente',vidas:3, mult:1.45, dica:-2, par:0.65, cor:'#C08CFF', rochas: 4, mel: 4, bons:0, ruins:5, abre:1, min:0, teto:.35},
+ {ic:'🛡️',nm:'Operação',     vidas:4, mult:1.20, dica:-1, par:0.8,  cor:'#5AA9FF', rochas: 2, mel: 2, bons:1, ruins:3, abre:0, min:0, teto:.35, tetoAbs:14},
+ {ic:'⚡',nm:'Linha de Frente',vidas:3, mult:1.45, dica:-2, par:0.65, cor:'#C08CFF', rochas: 4, mel: 4, bons:0, ruins:5, abre:0, min:0, teto:.18, tetoAbs:6},
 ];
 /* casas que existem de verdade: dentro da forma e sem rocha */
 function areaDe(i,d){
@@ -705,7 +705,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='4.4';
+const VERSAO='4.5';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -964,7 +964,7 @@ $('#lnRegras').onclick=()=>{
     ['💡 Dica','você escolhe a casa e ela conta a verdade. Nunca explode nem custa vida, mas limita a fase a 2 ⭐.'],
     ['❤️ Vidas','são da jornada inteira, não da fase. Quando acabam, tudo recomeça da fase 1.'],
     ['🎁 Prêmios','3 fases seguidas sem pisar em bomba dão 1 ❤️ — e cada fase limpa depois disso dá mais um. Fechar a fase com poucas jogadas rende 1 💡 extra.'],
-    ['🎒 Os quatro modos','Treinamento: 7 vidas, campo mais aberto, 4 surpresas boas. Patrulha: o equilíbrio. Operação: 4 vidas, menos dica, surpresas ruins. Linha de Frente: 3 vidas, 45% mais minas, nenhuma dica nas fases pequenas, a primeira cavada abre pouco — e aí o campo nem sempre dá para resolver só deduzindo.'],
+    ['🎒 Os quatro modos','Treinamento: 7 vidas, campo bem aberto no 1º toque (~22 casas), 4 surpresas boas. Patrulha: o equilíbrio (~13 casas). Operação: 4 vidas, menos dica, 3 surpresas ruins e o 1º toque abre pouco (~7 casas, no máximo 14). Linha de Frente: 3 vidas, 45% mais minas, nenhuma dica nas fases pequenas e o 1º toque mal arranha o campo (~3 ou 4 casas, no máximo 6) — nesses dois modos não há anel limpo em volta do dedo, então o campo muitas vezes NÃO dá para resolver só deduzindo.'],
     ['🎲 Surpresas','algumas casas escondem coisa. Boas: presente (+1 💡), lufada (abre a vizinhança) e alarme (aponta uma bomba). Ruins: grude (precisa de outro toque), desabamento (a casa vira entulho) e fumaça (some com os números em volta por uns segundos). Quanto mais difícil o modo, mais surpresa ruim e menos boa.'],
     ['🪨 Obstáculos','dez fases têm bloqueio ou grude à vista, com a cara do cenário: tronco, coral, porta, coluna, engrenagem, cacto…'],
     ['⭐ Estrelas','pelo tempo. As metas aparecem embaixo do placar durante a fase.'],
@@ -1360,7 +1360,11 @@ function gerarJusto(seguro){
   const seguras=dentro-minas;
   // teto de abertura: aperta conforme a dificuldade, mas SEMPRE deixa casas para o jogador
   const folga=Math.max(4,Math.round(seguras*.12));
-  const teto=Math.min(seguras-folga, Math.max(11,Math.round(seguras*(DIFS[st.dif].teto||.6))));
+  const D=DIFS[st.dif];
+  // teto em % das casas seguras, com piso de 11 — e, nos modos duros, um teto ABSOLUTO
+  // por cima: sem ele uma fase grande entrega de graça o que uma fase pequena nunca daria.
+  let teto=Math.min(seguras-folga, Math.max(11,Math.round(seguras*(D.teto||.6))));
+  if(D.tetoAbs)teto=Math.min(teto,D.tetoAbs);
   let reserva=null;
   for(let t=0;t<9000;t++){
     gerar(seguro);

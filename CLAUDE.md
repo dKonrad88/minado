@@ -130,7 +130,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.4).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.5).
 
 ## ⚠️ Invariantes que a v4.0 firmou (não desfazer)
 
@@ -199,6 +199,32 @@ Se copiar esse sw.js para outro app, trocar o prefixo do filtro junto com o CACH
   mina cai debaixo de uma surpresa em **73 de 124 partidas**. Se o desabamento virasse
   rocha ali, `viz()` pararia de enxergar a mina: os números em volta viravam mentira
   permanente e a vitória disparava uma casa antes. O ramo `desaba` sai fora quando `c.m`.
+
+## Abertura do 1º toque (v4.5) — três botões, e um deles quase não faz nada
+
+Medido, 496 partidas. ⚠️ **Baixar o `teto` (%) quase não mexe na média** — ele só corta
+as aberturas grandes e raras. Operação de 45%→30% saiu de 10,3 para 9,6 casas. Quem
+manda na média é o **`abre`** (anel limpo em volta do dedo).
+
+| | `abre` | `teto` | `tetoAbs` | média | faixa | sem chute |
+|---|---|---|---|---|---|---|
+| Treinamento | 2 | 75% | — | 21,8 (38%) | 9–60 | 99% |
+| Patrulha | 1 | 60% | — | 13,2 (25%) | 5–53 | 91% |
+| Operação | 0 | 35% | 14 | 7,1 (16%) | 1–14 | 75% |
+| Linha de Frente | 0 | 18% | 6 | 3,4 (9%) | 1–6 | 47% |
+
+- `abre:0` = **nenhum** anel limpo: só a casa tocada é garantida sem mina, então ela
+  costuma nascer com número e não cascateia. É o botão forte.
+- `tetoAbs` (novo na v4.5) = teto **absoluto** em casas, por cima do teto em %. Sem ele
+  uma fase grande entregava 25-30 casas de graça enquanto uma pequena dava 4. Ele é o
+  que aperta a *faixa*, não a média.
+- A `folga` (≥4 casas seguras fechadas) continua valendo sempre: é o que impede o 1º
+  toque de ganhar a fase.
+
+⚠️ **O preço está no "sem chute".** Operação quase não sentiu (77%→75%), mas a Linha de
+Frente caiu de 69% para **47%** — mais da metade das partidas pede palpite em algum ponto.
+Foi escolha do Diego (24/09, pediu os dois modos "ainda mais difíceis" com números).
+Se ele reclamar de chute na Linha de Frente, o botão é `tetoAbs` (8 devolve ~56%).
 
 ## Névoa (v4.4) — a única coisa que anda no relógio
 
