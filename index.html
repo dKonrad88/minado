@@ -637,12 +637,12 @@ const FASES=[
 });
 /* cada fase tem uma assinatura, mas sorteia entre as suas regras possíveis a cada partida */
 const POOL={
- jardim:['cisca','cogumelo','veio'],      mata:['cogumelo','cisca','fantasma'],
- mar:['mare','cisca','gelo'],             assombro:['fantasma','miragem','gelo'],
- subsolo:['veio','brasa','fantasma'],     lava:['brasa','mare','miragem'],
- gelo:['gelo','cisca','veio'],            areia:['miragem','mare','brasa'],
- ruina:['miragem','cogumelo','fantasma'], fabrica:['brasa','gelo','cisca'],
- festa:['cisca','cogumelo','fantasma'],   espaco:['orbita','miragem','gelo'],
+ jardim:['cisca','cogumelo','veio'],              mata:['cogumelo','cisca','fantasma','nevoa'],
+ mar:['mare','cisca','gelo','nevoa'],             assombro:['fantasma','miragem','gelo','nevoa'],
+ subsolo:['veio','brasa','fantasma','nevoa'],     lava:['brasa','mare','miragem','nevoa'],
+ gelo:['gelo','cisca','veio','nevoa'],            areia:['miragem','mare','brasa','nevoa'],
+ ruina:['miragem','cogumelo','fantasma','nevoa'], fabrica:['brasa','gelo','cisca','nevoa'],
+ festa:['cisca','cogumelo','fantasma'],           espaco:['orbita','miragem','gelo','nevoa'],
  final:['rei','brasa','miragem'],
 };
 /* o texto do aviso sai da regra + do cenário */
@@ -652,6 +652,7 @@ const FALA={
  gelo: t=>[t.grude||'❄️','casas vazias voltam a ficar cobertas — um toque limpa, o número não muda'],
  brasa:t=>[t.deco[1]||'🔥','de tempos em tempos jorra algo aqui e abre uma poça de casas'],
  fantasma:t=>['👻','de vez em quando um número some por alguns segundos'],
+ nevoa:t=>['🌫️','a névoa cobre parte dos números — ela passa e cobre outros, sempre'],
  cogumelo:t=>['🍄','há pistas escondidas: abrir uma conta as minas da coluna inteira'],
  veio: t=>['💎','há pistas escondidas: abrir uma denuncia as minas vizinhas'],
  miragem:t=>['🌀','um número do campo está mentindo (±1) — ache a contradição'],
@@ -704,7 +705,7 @@ function patente(){
 const ZAP=['Boa!','Na mosca!','Limpinho!','Tranquilo.','Sem suar.','Isso aí!','Nossa senhora.'];
 
 /* ============ ESTADO SALVO ============ */
-const VERSAO='4.3';
+const VERSAO='4.4';
 const CHAVE='minado11.v1';
 const CHAVE_P='minado11.partida';
 let st={dif:1,vol:2,prog:{},sta:{}};
@@ -971,7 +972,8 @@ $('#lnRegras').onclick=()=>{
   ].map(l=>'<div class="est"><span>'+l[0]+'</span></div><div class="reg">'+l[1]+'</div>').join('');
   const nomeRegra={cisca:'bicho que abre casas',mare:'faixa varrida',gelo:'casas que voltam a cobrir',
     brasa:'jorro que abre poça',fantasma:'número que some',cogumelo:'pista da coluna',
-    veio:'pista das vizinhas',miragem:'número mentiroso',orbita:'bordas ligadas',rei:'Bombão (−2 ❤️)'};
+    veio:'pista das vizinhas',miragem:'número mentiroso',orbita:'bordas ligadas',rei:'Bombão (−2 ❤️)',
+    nevoa:'névoa que reveza'};
   const nota='<div class="reg" style="border:0;padding-top:0">As regras são <b>raridades</b>: '+
     'aparecem no meio das suas jogadas, poucas vezes por fase — e em boa parte das partidas '+
     'simplesmente não aparecem. Ficar parado não abre o campo sozinho.</div>';
@@ -1054,7 +1056,7 @@ $('#lnUp').onclick=async function(){
 };
 function irPara(tela){
   if(tela!==telaJogo){
-    clearInterval(tick);tick=null;pararAmbiente();
+    clearInterval(tick);tick=null;pararAmbiente();pararNevoa();
     document.querySelectorAll('.conf,.bicho,.ondaCol').forEach(x=>x.remove());  // limpa a festa
     const pt=$('#part'); if(pt)pt.innerHTML='';
   }
@@ -1099,8 +1101,9 @@ function abrirFase(i,regraFixa){
   if(regra&&FALA[regra]){const [e2,tx]=FALA[regra](f.tema); banner(e2+' '+tx)}
   else if(f.aviso)banner(f.aviso);
   regraUsos=0; regraEspera=2+((Math.random()*3)|0);     // nem sempre acontece cedo
-  regraTeto=({cisca:2,mare:1,brasa:2,fantasma:2,gelo:3})[regra]||0;
+  regraTeto=({cisca:2,mare:1,brasa:2,fantasma:2,gelo:3})[regra]||0;   // névoa não passa por aqui: é da fase inteira
   if(Math.random()<.3)regraTeto=0;                        // em boa parte das partidas, nem aparece
+  comecarNevoa();
   ajustar(); requestAnimationFrame(ajustar);   // já nasce no tamanho certo, sem piscar grande
 }
 function aplicarTema(t){
@@ -1625,7 +1628,7 @@ function retomar(sv){
   achadas=contaAchadas();
   cel.forEach((_,i)=>pintar(i));
   $('#cTempo').textContent=fmt(tempo);
-  atualizarHud(); atualizarMetas();
+  atualizarHud(); atualizarMetas(); comecarNevoa();
 }
 
 /* ---- toques ---- */
@@ -1668,6 +1671,38 @@ function pisar(i){
   pintar(i); tab.children[i].classList.add('estourou');
   const b=$('#board'); b.classList.remove('chacoalha'); void b.offsetWidth; b.classList.add('chacoalha');
   sBum(); vib([25,45,70]); atualizarHud(); checar();
+}
+
+/* ---- névoa: parte dos números fica coberta, e a cobertura REVEZA ----
+   ⚠️ Esta é a ÚNICA coisa do jogo que anda no relógio, e pode: ela não abre casa,
+   não fecha casa e não mexe em nada do campo — só troca o que está VISÍVEL. Nunca
+   transformar isto em algo que progrida a partida sozinho (foi a reclamação da v3.7).
+   Cobrir e devolver tudo não adianta: dá pra esperar. Revezando, esperar custa tempo. */
+let tickNevoa=null;
+const NEVOA_MS=4500, NEVOA_PCT=.3;
+function pararNevoa(){ if(tickNevoa){clearInterval(tickNevoa);tickNevoa=null} }
+function limparNevoa(){                      // fim de fase: o campo tem que ficar legível
+  let mudou=false;
+  cel.forEach((c,i)=>{ if(c.oculto){c.oculto=false;mudou=true;pintar(i)} });
+  return mudou;
+}
+function girarNevoa(){
+  if(!vivo||regra!=='nevoa'||!telaJogo.classList.contains('on'))return;
+  const alvos=[];
+  for(let i=0;i<cel.length;i++)if(cel[i].ab&&cel[i].n&&!cel[i].m)alvos.push(i);
+  const antes=cel.map(c=>c.oculto);
+  cel.forEach(c=>{if(c.ab&&c.n)c.oculto=false});
+  if(alvos.length>=4){                       // com pouca coisa aberta a névoa não entra
+    for(let k=alvos.length-1;k>0;k--){const j=(Math.random()*(k+1))|0;[alvos[k],alvos[j]]=[alvos[j],alvos[k]]}
+    alvos.slice(0,Math.max(1,Math.round(alvos.length*NEVOA_PCT))).forEach(i=>cel[i].oculto=true);
+  }
+  cel.forEach((c,i)=>{ if(antes[i]!==c.oculto)pintar(i) });
+}
+function comecarNevoa(){
+  pararNevoa();
+  if(regra!=='nevoa'||!vivo)return;
+  girarNevoa();
+  tickNevoa=setInterval(girarNevoa,NEVOA_MS);
 }
 
 /* A regra não é relógio: ela é sorteada nas SUAS jogadas, tem teto por fase e
@@ -1804,6 +1839,7 @@ function checar(){
 function vencer(){
   if(!vivo)return;                     // só vence uma vez
   limparAgenda();                      // raridade a caminho não mexe mais no campo ganho
+  pararNevoa(); limparNevoa();         // e o campo final aparece inteiro
   vivo=false; clearInterval(tick); tick=null; limparPartida();
   const centro=((rows/2)|0)*cols+((cols/2)|0);
   cel.forEach((c,k)=>{if(c.m&&!c.show){c.show=true;c.rev=true;pintar(k);anima(k,centro,'surge')}});
@@ -1862,7 +1898,7 @@ function vencer(){
 /* ---- fim: derrota em 3 tempos ---- */
 function perder(i){
   if(!vivo)return;
-  limparAgenda();
+  limparAgenda(); pararNevoa(); limparNevoa();
   vivo=false; clearInterval(tick); tick=null; fatal=i;
   const sa=S(); sa.mortes[fase]=(sa.mortes[fase]||0)+1;
   acabou=true; acabouDif=st.dif; faseMorte=fase; novaJornada(); limparPartida();   // a jornada já volta pro começo aqui
@@ -1975,10 +2011,11 @@ function confete(){
 }
 
 addEventListener('visibilitychange',()=>{
-  if(document.hidden){salvarPartida();salvar();pararAmbiente();clearInterval(tick);tick=null}
+  if(document.hidden){salvarPartida();salvar();pararAmbiente();pararNevoa();clearInterval(tick);tick=null}
   else if(vivo&&telaJogo.classList.contains('on')){
     tocarAmbiente(FASES[fase].tema.som); agendarEvento();   // pararAmbiente matou o bicho: re-arma
     if(gerado)relogio();                                    // e o relógio volta de onde parou
+    comecarNevoa();
   }
 });
 addEventListener('pagehide',()=>{salvarPartida();salvar()});

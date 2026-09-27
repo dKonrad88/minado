@@ -130,7 +130,7 @@ o diálogo nativo é engolido sem aviso em PWA dentro de iframe, e foi por isso 
 não conseguiu zerar o progresso no celular.
 O Atualizar desregistra o service worker, apaga os caches e recarrega com `?v=<timestamp>` —
 é o caminho pro Diego pegar no celular o que foi mudado aqui sem esperar cache.
-Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.3).
+Subir `VERSAO` no topo do `<script>` a cada mudança publicada (hoje: 4.4).
 
 ## ⚠️ Invariantes que a v4.0 firmou (não desfazer)
 
@@ -199,6 +199,26 @@ Se copiar esse sw.js para outro app, trocar o prefixo do filtro junto com o CACH
   mina cai debaixo de uma surpresa em **73 de 124 partidas**. Se o desabamento virasse
   rocha ali, `viz()` pararia de enxergar a mina: os números em volta viravam mentira
   permanente e a vitória disparava uma casa antes. O ramo `desaba` sai fora quando `c.m`.
+
+## Névoa (v4.4) — a única coisa que anda no relógio
+
+Ele viu o "?" da fumaça e gostou, mas notou o furo: **cobria tudo e devolvia tudo**,
+então bastava esperar uns segundos e não tinha efeito nenhum. Pediu "abrir 30% e ir
+revezando, mas não desaparecer".
+
+Regra `nevoa`: enquanto a fase corre, ~30% dos números abertos ficam com `?` e **quais**
+muda a cada 4,5 s. Esperar não limpa o campo — limpa uns e cobre outros, e custa tempo
+(que custa ⭐). Está no POOL de 11 dos 13 biomas, então é sorteada em várias fases.
+
+⚠️ **É a ÚNICA coisa do jogo com `setInterval`, e só pode existir porque não progride a
+partida**: não abre casa, não fecha casa, não mexe em `cel` além de `oculto`. A proibição
+de regra-no-relógio (v3.7, a galinha que terminava a fase sozinha) continua valendo para
+tudo que *joga por você*. Se um dia a névoa passar a abrir ou fechar algo, ela vira aquele
+bug de novo.
+
+`pararNevoa()` + `limparNevoa()` em `vencer`, `perder` e `irPara` — o campo final tem que
+ficar legível. `comecarNevoa()` em `abrirFase`, em `retomar` e na volta do segundo plano.
+`regraTeto` não cobre a névoa de propósito: ela é da fase inteira, não uma raridade avulsa.
 
 ## Trilha (v4.1) — o bioma dá o timbre, a fase dá o resto
 
